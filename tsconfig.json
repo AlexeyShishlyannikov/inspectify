@@ -13,8 +13,5 @@
     "types": ["webpack-env"],
     "noImplicitAny": false
   },
-  "exclude": [
-      "bin",
-      "node_modules"
-  ]
+  "exclude": ["bin", "node_modules"]
 }

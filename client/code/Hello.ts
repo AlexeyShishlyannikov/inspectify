@@ -1,6 +1,6 @@
 interface FooInterface {
-    foo: string;
-    bar: number; // This interface should be stripped and the line numbers should still fit.
+  foo: string;
+  bar: number; // This interface should be stripped and the line numbers should still fit.
 }
 
 export class Hello {
@@ -15,14 +15,15 @@ export class Hello {
 
     this.unexcuted(() => {});
 
-    throw new Error('Hello error!');
+    throw new Error("Hello error!");
   }
 
-  public unexcuted(action: () => void = () => {}): void { // tslint:disable-line
+  public unexcuted(action: () => void = () => {}): void {
+    // tslint:disable-line
     if (action) {
       action();
     } else {
-      console.log('unexcuted');
+      console.log("unexcuted");
     }
   }
 }
