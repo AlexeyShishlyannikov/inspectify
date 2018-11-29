@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Logistics.Models
 {
@@ -13,5 +14,11 @@ namespace Logistics.Models
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
+        public List<VehicleReport> Reports { get; set; }
+
+        public Person()
+        {
+            Reports = new List<VehicleReport>();
+        }
     }
 }

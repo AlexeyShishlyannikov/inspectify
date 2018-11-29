@@ -1,108 +1,83 @@
-/* eslint-disable */
-const path = require("path");
-const webpack = require("webpack");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CheckerPlugin = require("awesome-typescript-loader").CheckerPlugin;
-const merge = require("webpack-merge");
-
-const isDebug =
-  global.DEBUG === false ? false : !process.argv.includes("--release");
-
-const config = isDebug => {
-  const isDevBuild = isDebug;
-
-  // Configuration in common to both client-side and server-side bundles
-  const sharedConfig = () => ({
-    mode: isDevBuild ? "development" : "production",
-    stats: { modules: false },
-    resolve: { extensions: [".js", ".jsx", ".ts", ".tsx"] },
-    output: {
-      filename: "[name].js",
-      publicPath: "dist/" // Webpack dev middleware, if enabled, handles requests for this URL prefix
-    },
-    module: {
-      rules: [
-        {
-          test: /\.tsx?$/,
-          include: /client/,
-          use: [
-            {
-              loader: "babel-loader",
-              options: {
-                babelrc: false,
-                plugins: ["react-hot-loader/babel"]
-              }
-            },
-            "awesome-typescript-loader?silent=true" // (or awesome-typescript-loader)
-          ]
-        },
-        {
-          test: /\.js$/,
-          use: ["source-map-loader"],
-          enforce: "pre"
-        },
-        { test: /\.(png|jpg|jpeg|gif|svg)$/, use: "url-loader?limit=25000" }
-      ]
-    },
-    plugins: [new CheckerPlugin()]
-  });
-
-  // Configuration for client-side bundle suitable for running in browsers
-  const clientBundleOutputDir = "./wwwroot/dist";
-  const clientBundleConfig = merge(sharedConfig(), {
-    entry: { "main-client": "./client/boot-client.tsx" },
-    module: {
-      rules: [
-        {
-          test: /\.css$/,
-          use: [
-            MiniCssExtractPlugin.loader,
-            {
-              loader: "css-loader",
-              options: {
-                minimize: isDevBuild,
-                sourceMap: isDevBuild
-              }
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { DefinePlugin } = require('webpack');
+const MODE = process.env.NODE_ENV;
+const devMode = MODE !== 'production';
+module.exports = {
+  entry: { index: ['react-hot-loader/patch','./client/index.tsx'] },
+  mode: 'development',
+  output: {
+    path: path.resolve(__dirname, './wwwroot/dist'),
+    filename: devMode ? '[name].js' : `[name].[hash].js`,
+    publicPath: '/dist/'
+  },
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        sideEffects: false,
+        use: [
+          {
+            loader: 'babel-loader'
+          },
+          {
+            loader: 'awesome-typescript-loader'
+          }
+        ]
+      },
+      {
+        enforce: 'pre',
+        test: /\.js$/,
+        loader: 'source-map-loader'
+      },
+      {
+        test: /\.(sa|sc|c)ss$/,
+        use: [
+          devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: loader => [
+                require('autoprefixer')({ })
+              ]
             }
-          ]
+          },
+          'sass-loader'
+        ]
+      },
+      {
+        test: /\.(png|jpg|gif|svg|ttf|eot|woff|woff2)$/,
+        loader: 'url-loader',
+        query: {
+          limit: 25000
         }
-      ]
-    },
-    output: { path: path.join(__dirname, clientBundleOutputDir) },
-    plugins: [
-      new MiniCssExtractPlugin({ filename: "site.css" }),
-      new webpack.DllReferencePlugin({
-        context: __dirname,
-        manifest: require("./wwwroot/dist/vendor-manifest.json")
-      })
-    ],
-    optimization: {
-      minimize: !isDevBuild
-    },
-    devtool: isDevBuild ? "inline-source-map" : "source-map"
-  });
-
-  // Configuration for server-side (prerendering) bundle suitable for running in Node
-  const serverBundleConfig = merge(sharedConfig(), {
-    resolve: { mainFields: ["main"] },
-    entry: { "main-server": "./client/boot-server.tsx" },
-    plugins: [
-      new webpack.DllReferencePlugin({
-        context: __dirname,
-        manifest: require("./wwwroot/dist/server/vendor-manifest.json"),
-        sourceType: "commonjs2",
-        name: "./vendor"
-      })
-    ],
-    output: {
-      libraryTarget: "commonjs",
-      path: path.join(__dirname, "wwwroot", "dist", "server")
-    },
-    target: "node",
-    devtool: isDevBuild ? "inline-source-map" : "source-map"
-  });
-
-  return [clientBundleConfig, serverBundleConfig];
+      }
+    ]
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './server/Views/Shared/_WebpackTemplate.cshtml',
+      filename: './..\\..\\server\\Views\\Home\\Index.cshtml',
+      inject: true,
+      xhtml: true
+    }),
+    new DefinePlugin({
+      'process.env': {
+        ENV: JSON.stringify(MODE),
+        NODE_ENV: JSON.stringify(MODE)
+      }
+    }),
+    new MiniCssExtractPlugin({
+      // Options similar to the same options in webpackOptions.output
+      // both options are optional
+      filename: devMode ? '[name].css' : '[name].[hash].css',
+      chunkFilename: devMode ? '[id].css' : '[id].[hash].css'
+    })
+  ],
+  devtool: devMode ? 'inline-source-map' : 'none',
+  resolve: {
+    extensions: ['.js', '.ts', '.tsx']
+  }
 };
-
-module.exports = config(isDebug);

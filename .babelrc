@@ -8,5 +8,15 @@
         "modules": false
       }
     ]
+  ],
+  "env": {
+    "production": {
+      "presets": ["minify"]
+    }
+  },
+  "plugins": [
+    "transform-class-properties",
+    "lodash",
+    "react-hot-loader/babel"
   ]
 }

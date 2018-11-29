@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -77,8 +77,7 @@ namespace Logistics.BusinessLayer
 
         public async Task<List<ReportForm>> GetForms(int teamId, string searchTerm)
         {
-            var form = dbContext.Forms
-                .Where(f => f.TeamId == teamId);
+            var form = dbContext.Forms.Where(f => f.TeamId == teamId);
             if (!String.IsNullOrEmpty(searchTerm))
             {
                 form = form.Where(f => f.Name == searchTerm);

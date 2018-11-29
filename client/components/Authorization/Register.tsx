@@ -1,18 +1,17 @@
 import * as React from 'react';
-import {
-  StyleRulesCallback,
-  FormControl,
-  InputLabel,
-  Input,
-  InputAdornment,
-  IconButton,
-  withStyles,
-  Button
-} from '@material-ui/core';
-import classNames = require('classnames');
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Input from '@material-ui/core/Input';
+import { StyleRulesCallback, withStyles } from '@material-ui/core/styles';
+import classNames from 'classnames';
+
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { Link } from 'react-router-dom';
+import { IRegister } from './models/AccontModels';
 
 const styles: StyleRulesCallback = theme => ({
   container: {
@@ -33,15 +32,11 @@ const styles: StyleRulesCallback = theme => ({
   }
 });
 
-class Register extends React.Component<
-  any,
-  {
-    showPassword: boolean;
-    password: string;
-    confirmPassword: string;
-    email: string;
-  }
-> {
+interface IRegisterState extends IRegister {
+  showPassword: boolean;
+}
+
+class Register extends React.Component<any, IRegisterState> {
   constructor(props) {
     super(props);
     this.handleChange.bind(this);
@@ -50,7 +45,7 @@ class Register extends React.Component<
 
   componentWillMount() {
     this.setState({
-      email: '',
+      userName: '',
       password: '',
       confirmPassword: '',
       showPassword: false
@@ -74,6 +69,10 @@ class Register extends React.Component<
     }));
   };
 
+  isButtonDisabled = () => {
+    return !this.state.userName || !this.state.password || !this.state.confirmPassword;
+  };
+
   render(): JSX.Element {
     const { classes } = this.props;
     return (
@@ -85,8 +84,8 @@ class Register extends React.Component<
             <InputLabel htmlFor="email">Email</InputLabel>
             <Input
               type={this.state.showPassword ? 'text' : 'email'}
-              value={this.state.email}
-              onChange={this.handleChange('email')}
+              value={this.state.userName}
+              onChange={this.handleChange('userName')}
             />
           </FormControl>
           <FormControl
@@ -138,13 +137,16 @@ class Register extends React.Component<
             />
           </FormControl>
           <Button
+            disabled={this.isButtonDisabled()}
             className={classes.marginTop}
             variant="contained"
             color="primary"
           >
             Register
           </Button>
-          <Link className={classes.marginTop} to="login">Sign in</Link>
+          <Link className={classes.marginTop} to="login">
+            Sign in
+          </Link>
         </div>
       </div>
     );

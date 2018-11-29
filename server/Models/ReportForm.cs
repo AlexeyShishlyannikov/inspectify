@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Logistics.Models
@@ -8,14 +8,17 @@ namespace Logistics.Models
         [Required]
         public int Id { get; set; }
         [Required]
-        public int TeamId { get; set; }
-        [Required]
         public string Name { get; set; }
+        [Required]
+        public int TeamId { get; set; }
+        public Team Team { get; set; }
+        public List<VehicleReport> Reports { get; set; }
         public List<ReportFormInput> Inputs { get; set; }
 
         public ReportForm()
         {
             Inputs = new List<ReportFormInput>();
+            Reports = new List<VehicleReport>();
         }
     }
 
@@ -24,10 +27,10 @@ namespace Logistics.Models
         [Required]
         public int Id { get; set; }
         [Required]
+        public string Name { get; set; }
+        [Required]
         public int FormId { get; set; }
         public ReportForm Form { get; set; }
-        [Required]
-        public string Name { get; set; }
         public bool IsRequired { get; set; }
         [Required]
         public ReportFormInputType InputType { get; set; }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Logistics.Models
@@ -14,14 +14,17 @@ namespace Logistics.Models
         public int VehicleId { get; set; }
         public Vehicle Vehicle { get; set; }
         [Required]
+        public int PersonId { get; set; }
+        public Person Person { get; set; }
+        [Required]
+        public int TeamId { get; set; }
+        public Team Team { get; set; }
+        [Required]
         public int ReportFormId { get; set; }
         public ReportForm ReportForm { get; set; }
         [Required]
         public DateTime DateCreated { get; set; }
         [Range(1, 11)]
         public int Rate { get; set; }
-        [Required]
-        public int TeamId { get; set; }
-        public Team Team { get; set; }
     }
 }

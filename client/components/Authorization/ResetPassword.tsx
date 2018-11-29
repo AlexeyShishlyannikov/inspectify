@@ -1,17 +1,16 @@
 import * as React from 'react';
-import {
-  StyleRulesCallback,
-  FormControl,
-  InputLabel,
-  Input,
-  InputAdornment,
-  IconButton,
-  Button,
-  withStyles
-} from '@material-ui/core';
-import classNames = require('classnames');
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Input from '@material-ui/core/Input';
+import { StyleRulesCallback, withStyles } from '@material-ui/core/styles';
+import classNames from 'classnames';
+
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import { IResetPassword } from './models/AccontModels';
 
 const styles: StyleRulesCallback = theme => ({
   container: {
@@ -37,14 +36,11 @@ const styles: StyleRulesCallback = theme => ({
   }
 });
 
-class ResetPassword extends React.Component<
-  any,
-  {
-    showPassword: boolean;
-    password: string;
-    confirmPassword: string;
-  }
-> {
+interface IResetPasswordState extends IResetPassword {
+  showPassword: boolean;
+}
+
+class ResetPassword extends React.Component<any, IResetPasswordState> {
   constructor(props) {
     super(props);
     this.handleChange.bind(this);
@@ -67,12 +63,15 @@ class ResetPassword extends React.Component<
       [prop]: value
     }));
   };
+
   handleClickShowPassword = (): void => {
     this.setState(state => ({
       ...state,
       showPassword: !state.showPassword
     }));
   };
+
+  isButtonDisabled = () => !this.state.password || !this.state.confirmPassword;
 
   render() {
     const { classes } = this.props;
@@ -129,6 +128,7 @@ class ResetPassword extends React.Component<
             />
           </FormControl>
           <Button
+            disabled={this.isButtonDisabled()}
             className={classes.marginTop}
             variant="contained"
             color="primary"

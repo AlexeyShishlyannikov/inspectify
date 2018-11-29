@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Logistics.Models
@@ -15,21 +15,16 @@ namespace Logistics.Models
         public VehicleModel Model { get; set; }
         [Required]
         public int TeamId { get; set; }
+        public Team Team { get; set; }
         public int? Year { get; set; }
         public string LicensePlate { get; set; }
         public string VIN { get; set; }
-    }
+        public List<VehicleReport> Reports { get; set; }
 
-    public class VehicleModel
-    {
-        [Required]
-        public int Id { get; set; }
-        [Required]
-        [MaxLength(256)]
-        public string Name { get; set; }
-        [Required]
-        public int MarkId { get; set; }
-        public VehicleMark Mark { get; set; }
+        public Vehicle()
+        {
+            Reports = new List<VehicleReport>();
+        }
     }
 
     public class VehicleMark
@@ -45,5 +40,17 @@ namespace Logistics.Models
         {
             Models = new List<VehicleModel>();
         }
+    }
+
+    public class VehicleModel
+    {
+        [Required]
+        public int Id { get; set; }
+        [Required]
+        [MaxLength(256)]
+        public string Name { get; set; }
+        [Required]
+        public int MarkId { get; set; }
+        public VehicleMark Mark { get; set; }
     }
 }

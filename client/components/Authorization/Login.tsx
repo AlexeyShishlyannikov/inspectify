@@ -1,10 +1,8 @@
-import {
-  FormControl,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  Button
-} from '@material-ui/core';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
 import { StyleRulesCallback, withStyles } from '@material-ui/core/styles';
 import Visibility from '@material-ui/icons/Visibility';
@@ -12,6 +10,7 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import classNames from 'classnames';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
+import { ILogin } from './models/AccontModels';
 
 const styles: StyleRulesCallback = theme => ({
   container: {
@@ -37,23 +36,21 @@ const styles: StyleRulesCallback = theme => ({
   }
 });
 
-class Login extends React.Component<
-  any,
-  {
-    showPassword: boolean;
-    password: string;
-    email: string;
-  }
-> {
+interface ILoginState extends ILogin {
+  showPassword: boolean;
+}
+
+class Login extends React.Component<any, ILoginState> {
   constructor(props) {
     super(props);
     this.handleChange.bind(this);
     this.handleClickShowPassword.bind(this);
+    this.callLoginApi.bind(this);
   }
 
   componentWillMount() {
     this.setState({
-      email: '',
+      userName: '',
       password: '',
       showPassword: false
     });
@@ -76,6 +73,29 @@ class Login extends React.Component<
     }));
   };
 
+  callLoginApi = () => {
+    fetch(window.location.origin + '/api/account/login/user', {
+      body: JSON.stringify({
+        userName: this.state.userName,
+        password: this.state.password
+      }),
+      method: 'POST',
+      cache: 'default',
+      mode: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(res => res.json())
+      .then((response: string) => {
+        localStorage.setItem('authToken', response);
+        console.log(response);
+      })
+      .catch(res => console.log(res));
+  };
+
+  isButtonDisabled = () => !this.state.userName || !this.state.password;
+
   render(): JSX.Element {
     const { classes } = this.props;
     return (
@@ -87,8 +107,8 @@ class Login extends React.Component<
             <InputLabel htmlFor="email">Email</InputLabel>
             <Input
               type={this.state.showPassword ? 'text' : 'email'}
-              value={this.state.email}
-              onChange={this.handleChange('email')}
+              value={this.state.userName}
+              onChange={this.handleChange('userName')}
             />
           </FormControl>
           <FormControl
@@ -116,6 +136,8 @@ class Login extends React.Component<
             />
           </FormControl>
           <Button
+            disabled={this.isButtonDisabled()}
+            onClick={this.callLoginApi}
             className={classes.marginTop}
             variant="contained"
             color="primary"

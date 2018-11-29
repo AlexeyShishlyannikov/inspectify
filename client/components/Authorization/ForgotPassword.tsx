@@ -1,14 +1,12 @@
+import Button from '@material-ui/core/Button';
+import FormControl from '@material-ui/core/FormControl';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import { StyleRulesCallback, withStyles } from '@material-ui/core/styles';
+import classNames from 'classnames';
 import * as React from 'react';
-import {
-  StyleRulesCallback,
-  FormControl,
-  InputLabel,
-  Input,
-  Button,
-  withStyles
-} from '@material-ui/core';
-import classNames = require('classnames');
 import { Link } from 'react-router-dom';
+import { IForgotPassword } from './models/AccontModels';
 
 const styles: StyleRulesCallback = theme => ({
   container: {
@@ -34,12 +32,9 @@ const styles: StyleRulesCallback = theme => ({
   }
 });
 
-class ForgotPassword extends React.Component<
-  any,
-  {
-    email: string;
-  }
-> {
+type IForgotPasswordState = IForgotPassword;
+
+class ForgotPassword extends React.Component<any, IForgotPasswordState> {
   constructor(props) {
     super(props);
     this.handleChange.bind(this);
@@ -47,7 +42,7 @@ class ForgotPassword extends React.Component<
 
   componentWillMount() {
     this.setState({
-      email: ''
+      userName: ''
     });
   }
 
@@ -61,6 +56,10 @@ class ForgotPassword extends React.Component<
     }));
   };
 
+  isButtonDisabled = () => {
+    return !this.state.userName;
+  };
+
   render() {
     const { classes } = this.props;
 
@@ -72,12 +71,13 @@ class ForgotPassword extends React.Component<
           >
             <InputLabel htmlFor="email">Email</InputLabel>
             <Input
-              type='email'
-              value={this.state.email}
-              onChange={this.handleChange('email')}
+              type="email"
+              value={this.state.userName}
+              onChange={this.handleChange('userName')}
             />
           </FormControl>
           <Button
+            disabled={this.isButtonDisabled()}
             className={classes.marginTop}
             variant="contained"
             color="primary"

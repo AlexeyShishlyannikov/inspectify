@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Logistics.Models
@@ -13,10 +13,18 @@ namespace Logistics.Models
         [Required]
         public int CompanyId { get; set; }
         public Company Company { get; set; }
-        public List<Person> Members{ get; set; }
+
+        public List<Person> Members { get; set; }
+        public List<Vehicle> Vehicles { get; set; }
+        public List<VehicleReport> VehicleReports { get; set; }
+        public List<ReportForm> ReportForms { get; set; }
+
         public Team()
         {
             Members = new List<Person>();
+            Vehicles = new List<Vehicle>();
+            VehicleReports = new List<VehicleReport>();
+            ReportForms = new List<ReportForm>();
         }
     }
 }
