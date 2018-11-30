@@ -1,13 +1,13 @@
-import * as React from "react";
-import NavMenu from "./NavMenu";
+import * as React from 'react';
+import NavMenu from './NavMenu';
 
 export class Layout extends React.Component<{}, {}> {
-  public render() {
-    return (
-    <div>
-      <NavMenu />
-      {this.props.children}
-    </div>
-    );
-  }
+    public render() {
+        return (
+            <div>
+                <NavMenu />
+                {this.props.children}
+            </div>
+        );
+    }
 }

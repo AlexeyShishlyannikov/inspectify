@@ -18,24 +18,24 @@ const initialState = (window as any).initialReduxState as ApplicationState;
 const store = configureStore(history, initialState);
 
 const renderApp = () => {
-  // This code starts up the React app when it runs in a browser. It sets up the routing configuration
-  // and injects the app into a DOM element.
-  ReactDOM.render(
-    <AppContainer>
-      <Provider store={store}>
-        <ConnectedRouter history={history} children={routes} />
-      </Provider>
-    </AppContainer>,
-    ROOT
-  );
-}
+    // This code starts up the React app when it runs in a browser. It sets up the routing configuration
+    // and injects the app into a DOM element.
+    ReactDOM.render(
+        <AppContainer>
+            <Provider store={store}>
+                <ConnectedRouter history={history} children={routes} />
+            </Provider>
+        </AppContainer>,
+        ROOT
+    );
+};
 
 renderApp();
 
 // Allow Hot Module Replacement
 if (module.hot) {
-  module.hot.accept('./routes', () => {
-    routes = require<typeof RoutesModule>('./routes').routes;
-    renderApp();
-  });
+    module.hot.accept('./routes', () => {
+        routes = require<typeof RoutesModule>('./routes').routes;
+        renderApp();
+    });
 }
