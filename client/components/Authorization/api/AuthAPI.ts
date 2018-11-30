@@ -56,7 +56,7 @@ export namespace AuthAPI {
         forgotPassword: IForgotPassword
     ): Promise<any> => {
         const response = await fetch(
-            window.location.origin + '/api/account/login/user',
+            window.location.origin + '/api/account/forgot',
             {
                 body: JSON.stringify(forgotPassword),
                 method: 'POST'
@@ -69,7 +69,7 @@ export namespace AuthAPI {
         changePassword: IChangePassword
     ): Promise<any> => {
         const response = await fetch(
-            window.location.origin + '/api/account/login/user',
+            window.location.origin + '/api/account/change',
             {
                 body: JSON.stringify(changePassword),
                 method: 'POST'
@@ -82,7 +82,7 @@ export namespace AuthAPI {
         resetPassword: IResetPassword
     ): Promise<any> => {
         const response = await fetch(
-            window.location.origin + '/api/account/login/user',
+            window.location.origin + '/api/account/reset',
             {
                 body: JSON.stringify(resetPassword),
                 method: 'POST'
@@ -96,7 +96,7 @@ export namespace AuthAPI {
     ): Promise<any> => {
         const response = await fetch(
             window.location.origin +
-                `/api/account/login/user?provider=${
+                `/api/account/external?provider=${
                     externalLogin.provider
                 }&token=${externalLogin.token}`,
             {
