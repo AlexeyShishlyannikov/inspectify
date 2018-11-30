@@ -1,15 +1,17 @@
-import InputAdornment from '@material-ui/core/InputAdornment';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
 import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
+import IconButton from '@material-ui/core/IconButton';
 import Input from '@material-ui/core/Input';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import InputLabel from '@material-ui/core/InputLabel';
 import { StyleRulesCallback, withStyles } from '@material-ui/core/styles';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import classNames from 'classnames';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
+
+import { AuthAPI } from './api/AuthAPI';
 import { ILogin } from './models/AccontModels';
 
 const styles: StyleRulesCallback = theme => ({
@@ -36,7 +38,8 @@ const styles: StyleRulesCallback = theme => ({
     }
 });
 
-interface ILoginState extends ILogin {
+interface ILoginState {
+    login: ILogin;
     showPassword: boolean;
 }
 
@@ -50,8 +53,10 @@ class Login extends React.Component<any, ILoginState> {
 
     componentWillMount() {
         this.setState({
-            userName: '',
-            password: '',
+            login: {
+                userName: '',
+                password: ''
+            },
             showPassword: false
         });
     }
@@ -74,27 +79,10 @@ class Login extends React.Component<any, ILoginState> {
     };
 
     callLoginApi = () => {
-        fetch(window.location.origin + '/api/account/login/user', {
-            body: JSON.stringify({
-                userName: this.state.userName,
-                password: this.state.password
-            }),
-            method: 'POST',
-            cache: 'default',
-            mode: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(res => res.json())
-            .then((response: string) => {
-                localStorage.setItem('authToken', response);
-                console.log(response);
-            })
-            .catch(res => console.log(res));
+        AuthAPI.login(this.state.login, false).catch(res => console.log(res));
     };
 
-    isButtonDisabled = () => !this.state.userName || !this.state.password;
+    isButtonDisabled = () => !this.state.login.userName || !this.state.login.password;
 
     render(): JSX.Element {
         const { classes } = this.props;
@@ -110,7 +98,7 @@ class Login extends React.Component<any, ILoginState> {
                         <InputLabel htmlFor="email">Email</InputLabel>
                         <Input
                             type={this.state.showPassword ? 'text' : 'email'}
-                            value={this.state.userName}
+                            value={this.state.login.userName}
                             onChange={this.handleChange('userName')}
                         />
                     </FormControl>
@@ -123,7 +111,7 @@ class Login extends React.Component<any, ILoginState> {
                         <InputLabel htmlFor="password">Password</InputLabel>
                         <Input
                             type={this.state.showPassword ? 'text' : 'password'}
-                            value={this.state.password}
+                            value={this.state.login.password}
                             onChange={this.handleChange('password')}
                             endAdornment={
                                 <InputAdornment position="end">
