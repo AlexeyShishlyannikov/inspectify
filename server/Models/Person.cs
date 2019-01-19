@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using server.Models;
 
 namespace Logistics.Models
 {
@@ -9,16 +10,11 @@ namespace Logistics.Models
         public int Id { get; set; }
         [Required]
         public string ApplicationUserId { get; set; }
-        public ApplicationUser ApplicationUser { get; set; }
-        [Required]
         public string FirstName { get; set; }
-        [Required]
         public string LastName { get; set; }
-        public List<VehicleReport> Reports { get; set; }
-
-        public Person()
-        {
-            Reports = new List<VehicleReport>();
-        }
+        public int CompanyId { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
+        public ICollection<Report> Reports { get; set; }
+        public ICollection<PersonTeam> PersonTeams { get; set; }
     }
 }

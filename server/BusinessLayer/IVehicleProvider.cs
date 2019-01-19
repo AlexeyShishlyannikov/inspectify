@@ -4,8 +4,8 @@ using Logistics.Models;
 
 namespace Logistics.BusinessLayer {
     public interface IVehicleProvider {
-        Task<List<VehicleMark>> GetMakes (string searchTerm);
-        Task<VehicleMark> GetMake (int makeId);
+        Task<List<VehicleMake>> GetMakes (string searchTerm);
+        Task<VehicleMake> GetMake (int makeId);
         Task<List<VehicleModel>> GetModels (int makeId, string searchTerm);
         Task<VehicleModel> GetModel (int modelId);
         Task<List<Vehicle>> GetVehicles (int teamId, string searchTerm);

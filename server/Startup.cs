@@ -49,7 +49,7 @@ namespace Server
             services.AddScoped<IFormProvider, FormProvider>();
 
             // Database
-            services.AddDbContext<LogisticsDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LogisticsDb")));
+            services.AddDbContext<LogisticsDbContext>(options => options.UseMySql(Configuration.GetConnectionString("LogisticsDb")));
 
             // Identity
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>

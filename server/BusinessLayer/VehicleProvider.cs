@@ -43,7 +43,7 @@ namespace Logistics.BusinessLayer
             return null;
         }
 
-        public async Task<VehicleMark> GetMake(int makeId)
+        public async Task<VehicleMake> GetMake(int makeId)
         {
             var make = await dbContext.VehicleMarks
                 .Where(m => m.Id == makeId)
@@ -52,7 +52,7 @@ namespace Logistics.BusinessLayer
             return make;
         }
 
-        public async Task<List<VehicleMark>> GetMakes(string searchTerm)
+        public async Task<List<VehicleMake>> GetMakes(string searchTerm)
         {
             var dbMakes = dbContext.VehicleMarks.AsQueryable();
             if (!String.IsNullOrEmpty(searchTerm))
@@ -69,18 +69,18 @@ namespace Logistics.BusinessLayer
         {
             return await dbContext.VehicleModels
                 .Where(m => m.Id == modelId)
-                .Include(m => m.Mark)
+                .Include(m => m.Make)
                 .FirstOrDefaultAsync();
         }
 
         public async Task<List<VehicleModel>> GetModels(int makeId, string searchTerm)
         {
-            var dbModels = dbContext.VehicleModels.Where(m => m.MarkId == makeId);
+            var dbModels = dbContext.VehicleModels.Where(m => m.MakeId == makeId);
             if (!String.IsNullOrEmpty(searchTerm))
             {
                 dbModels = dbModels.Where(m => m.Name.Contains(searchTerm));
             }
-            return await dbModels.Include(m => m.Mark).ToListAsync();
+            return await dbModels.Include(m => m.Make).ToListAsync();
         }
 
         public async Task<Vehicle> GetVehicle(int id)
@@ -88,7 +88,7 @@ namespace Logistics.BusinessLayer
             return await dbContext.Vehicles
                 .Where(v => v.Id == id)
                 .Include(v => v.Model)
-                    .ThenInclude(v => v.Mark)
+                    .ThenInclude(v => v.Make)
                 .FirstOrDefaultAsync();
         }
 
@@ -101,7 +101,7 @@ namespace Logistics.BusinessLayer
             }
             return await dbVehicles
                 .Include(v => v.Model)
-                    .ThenInclude(v => v.Mark)
+                    .ThenInclude(v => v.Make)
                 .ToListAsync();
         }
     }

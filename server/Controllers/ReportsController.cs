@@ -20,7 +20,7 @@ namespace Logistics.Controllers
 
         [HttpPost]
         [Route("add")]
-        public async Task<IActionResult> AddReport([FromBody] VehicleReport report)
+        public async Task<IActionResult> AddReport([FromBody] Report report)
         {
             return Ok(await reportsProvider.AddReport(report));
         }
@@ -55,7 +55,7 @@ namespace Logistics.Controllers
 
         [HttpPut]
         [Route("update")]
-        public async Task<IActionResult> UpdateReport([FromBody] VehicleReport report)
+        public async Task<IActionResult> UpdateReport([FromBody] Report report)
         {
             return Ok(await reportsProvider.UpdateReport(report));
         }

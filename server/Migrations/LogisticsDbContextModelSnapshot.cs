@@ -3,10 +3,9 @@ using System;
 using Logistics.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Logistics.Migrations
+namespace server.Migrations
 {
     [DbContext(typeof(LogisticsDbContext))]
     partial class LogisticsDbContextModelSnapshot : ModelSnapshot
@@ -15,9 +14,8 @@ namespace Logistics.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Logistics.Models.ApplicationUser", b =>
                 {
@@ -64,8 +62,7 @@ namespace Logistics.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+                        .HasName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -73,9 +70,9 @@ namespace Logistics.Migrations
             modelBuilder.Entity("Logistics.Models.Company", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(256)
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("CompanyLogoUrl");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -86,55 +83,38 @@ namespace Logistics.Migrations
                     b.ToTable("Companies");
                 });
 
-            modelBuilder.Entity("Logistics.Models.Person", b =>
+            modelBuilder.Entity("Logistics.Models.Form", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
-                    b.Property<string>("ApplicationUserId")
-                        .IsRequired();
-
-                    b.Property<string>("FirstName")
-                        .IsRequired();
-
-                    b.Property<string>("LastName")
-                        .IsRequired();
-
-                    b.Property<int?>("TeamId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.HasIndex("TeamId");
-
-                    b.ToTable("Persons");
-                });
-
-            modelBuilder.Entity("Logistics.Models.ReportForm", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Description");
 
                     b.Property<string>("Name")
                         .IsRequired();
 
-                    b.Property<int>("TeamId");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("TeamId");
 
                     b.ToTable("Forms");
                 });
 
-            modelBuilder.Entity("Logistics.Models.ReportFormInput", b =>
+            modelBuilder.Entity("Logistics.Models.FormFormInput", b =>
+                {
+                    b.Property<int>("FormId");
+
+                    b.Property<int>("FormInputId");
+
+                    b.HasKey("FormId", "FormInputId");
+
+                    b.HasIndex("FormInputId");
+
+                    b.ToTable("FormFormInputs");
+                });
+
+            modelBuilder.Entity("Logistics.Models.FormInput", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int>("FormId");
 
@@ -152,33 +132,103 @@ namespace Logistics.Migrations
                     b.ToTable("FormInputs");
                 });
 
-            modelBuilder.Entity("Logistics.Models.ReportFormInputValue", b =>
+            modelBuilder.Entity("Logistics.Models.FormInputValue", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
-                    b.Property<int>("InputId");
+                    b.Property<int>("FormInputId");
 
                     b.Property<double?>("NumberValue");
+
+                    b.Property<string>("PhotoUrl");
 
                     b.Property<string>("TextValue");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("InputId")
+                    b.HasIndex("FormInputId")
                         .IsUnique();
 
                     b.ToTable("FormInputValues");
                 });
 
+            modelBuilder.Entity("Logistics.Models.Person", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired();
+
+                    b.Property<int>("CompanyId");
+
+                    b.Property<string>("FirstName");
+
+                    b.Property<string>("LastName");
+
+                    b.Property<int?>("TeamId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("TeamId");
+
+                    b.ToTable("Persons");
+                });
+
+            modelBuilder.Entity("Logistics.Models.PersonTeam", b =>
+                {
+                    b.Property<int>("PersonId");
+
+                    b.Property<int>("TeamId");
+
+                    b.HasKey("PersonId", "TeamId");
+
+                    b.HasIndex("TeamId");
+
+                    b.ToTable("PersonTeams");
+                });
+
+            modelBuilder.Entity("Logistics.Models.Report", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<DateTime>("DateUpdated");
+
+                    b.Property<int>("DriverId");
+
+                    b.Property<int>("FormId");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256);
+
+                    b.Property<int>("VehicleId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DriverId");
+
+                    b.HasIndex("FormId");
+
+                    b.HasIndex("VehicleId");
+
+                    b.ToTable("Reports");
+                });
+
             modelBuilder.Entity("Logistics.Models.Team", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int>("CompanyId");
+
+                    b.Property<string>("Description");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -194,8 +244,7 @@ namespace Logistics.Migrations
             modelBuilder.Entity("Logistics.Models.Vehicle", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("LicensePlate");
 
@@ -220,15 +269,17 @@ namespace Logistics.Migrations
                     b.ToTable("Vehicles");
                 });
 
-            modelBuilder.Entity("Logistics.Models.VehicleMark", b =>
+            modelBuilder.Entity("Logistics.Models.VehicleMake", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(256);
+
+                    b.Property<string>("PhotoUrl")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -238,10 +289,9 @@ namespace Logistics.Migrations
             modelBuilder.Entity("Logistics.Models.VehicleModel", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
-                    b.Property<int>("MarkId");
+                    b.Property<int>("MakeId");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -249,44 +299,9 @@ namespace Logistics.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MarkId");
+                    b.HasIndex("MakeId");
 
                     b.ToTable("VehicleModels");
-                });
-
-            modelBuilder.Entity("Logistics.Models.VehicleReport", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("DateCreated");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(256);
-
-                    b.Property<int?>("PersonId");
-
-                    b.Property<int>("Rate");
-
-                    b.Property<int>("ReportFormId");
-
-                    b.Property<int>("TeamId");
-
-                    b.Property<int>("VehicleId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PersonId");
-
-                    b.HasIndex("ReportFormId");
-
-                    b.HasIndex("TeamId");
-
-                    b.HasIndex("VehicleId");
-
-                    b.ToTable("Reports");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -307,8 +322,7 @@ namespace Logistics.Migrations
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
+                        .HasName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles");
                 });
@@ -316,8 +330,7 @@ namespace Logistics.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("ClaimType");
 
@@ -336,8 +349,7 @@ namespace Logistics.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("ClaimType");
 
@@ -399,6 +411,113 @@ namespace Logistics.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("server.Models.FormCompany", b =>
+                {
+                    b.Property<int>("FormId");
+
+                    b.Property<int>("CompanyId");
+
+                    b.HasKey("FormId", "CompanyId");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("FormCompanies");
+                });
+
+            modelBuilder.Entity("server.Models.FormInputValueReport", b =>
+                {
+                    b.Property<int>("ReportId");
+
+                    b.Property<int>("FormInputValueId");
+
+                    b.HasKey("ReportId", "FormInputValueId");
+
+                    b.HasIndex("FormInputValueId");
+
+                    b.ToTable("FormInputValueReports");
+                });
+
+            modelBuilder.Entity("server.Models.FormTeam", b =>
+                {
+                    b.Property<int>("FormId");
+
+                    b.Property<int>("TeamId");
+
+                    b.HasKey("FormId", "TeamId");
+
+                    b.HasIndex("TeamId");
+
+                    b.ToTable("FormTeams");
+                });
+
+            modelBuilder.Entity("server.Models.ReportCompany", b =>
+                {
+                    b.Property<int>("ReportId");
+
+                    b.Property<int>("CompanyId");
+
+                    b.HasKey("ReportId", "CompanyId");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("ReportCompanies");
+                });
+
+            modelBuilder.Entity("server.Models.ReportTeam", b =>
+                {
+                    b.Property<int>("ReportId");
+
+                    b.Property<int>("TeamId");
+
+                    b.HasKey("ReportId", "TeamId");
+
+                    b.HasIndex("TeamId");
+
+                    b.ToTable("ReportTeams");
+                });
+
+            modelBuilder.Entity("server.Models.VehicleCompany", b =>
+                {
+                    b.Property<int>("VehicleId");
+
+                    b.Property<int>("CompanyId");
+
+                    b.HasKey("VehicleId", "CompanyId");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("VehicleCompanies");
+                });
+
+            modelBuilder.Entity("Logistics.Models.FormFormInput", b =>
+                {
+                    b.HasOne("Logistics.Models.Form", "Form")
+                        .WithMany("FormFormInputs")
+                        .HasForeignKey("FormId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Logistics.Models.FormInput", "FormInput")
+                        .WithMany("FormFormInputs")
+                        .HasForeignKey("FormInputId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Logistics.Models.FormInput", b =>
+                {
+                    b.HasOne("Logistics.Models.Form", "Form")
+                        .WithMany()
+                        .HasForeignKey("FormId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Logistics.Models.FormInputValue", b =>
+                {
+                    b.HasOne("Logistics.Models.FormInput", "FormInput")
+                        .WithOne("Value")
+                        .HasForeignKey("Logistics.Models.FormInputValue", "FormInputId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("Logistics.Models.Person", b =>
                 {
                     b.HasOne("Logistics.Models.ApplicationUser", "ApplicationUser")
@@ -411,27 +530,34 @@ namespace Logistics.Migrations
                         .HasForeignKey("TeamId");
                 });
 
-            modelBuilder.Entity("Logistics.Models.ReportForm", b =>
+            modelBuilder.Entity("Logistics.Models.PersonTeam", b =>
                 {
+                    b.HasOne("Logistics.Models.Person", "Person")
+                        .WithMany("PersonTeams")
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("Logistics.Models.Team", "Team")
-                        .WithMany("ReportForms")
+                        .WithMany("PersonTeams")
                         .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Logistics.Models.ReportFormInput", b =>
+            modelBuilder.Entity("Logistics.Models.Report", b =>
                 {
-                    b.HasOne("Logistics.Models.ReportForm", "Form")
-                        .WithMany("Inputs")
+                    b.HasOne("Logistics.Models.Person", "Driver")
+                        .WithMany("Reports")
+                        .HasForeignKey("DriverId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Logistics.Models.Form", "Form")
+                        .WithMany("Reports")
                         .HasForeignKey("FormId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
 
-            modelBuilder.Entity("Logistics.Models.ReportFormInputValue", b =>
-                {
-                    b.HasOne("Logistics.Models.ReportFormInput", "Input")
-                        .WithOne("Value")
-                        .HasForeignKey("Logistics.Models.ReportFormInputValue", "InputId")
+                    b.HasOne("Logistics.Models.Vehicle", "Vehicle")
+                        .WithMany("Reports")
+                        .HasForeignKey("VehicleId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -458,31 +584,9 @@ namespace Logistics.Migrations
 
             modelBuilder.Entity("Logistics.Models.VehicleModel", b =>
                 {
-                    b.HasOne("Logistics.Models.VehicleMark", "Mark")
+                    b.HasOne("Logistics.Models.VehicleMake", "Make")
                         .WithMany("Models")
-                        .HasForeignKey("MarkId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Logistics.Models.VehicleReport", b =>
-                {
-                    b.HasOne("Logistics.Models.Person")
-                        .WithMany("Reports")
-                        .HasForeignKey("PersonId");
-
-                    b.HasOne("Logistics.Models.ReportForm", "ReportForm")
-                        .WithMany("Reports")
-                        .HasForeignKey("ReportFormId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Logistics.Models.Team", "Team")
-                        .WithMany("VehicleReports")
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Logistics.Models.Vehicle", "Vehicle")
-                        .WithMany("Reports")
-                        .HasForeignKey("VehicleId")
+                        .HasForeignKey("MakeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -528,6 +632,84 @@ namespace Logistics.Migrations
                     b.HasOne("Logistics.Models.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("server.Models.FormCompany", b =>
+                {
+                    b.HasOne("Logistics.Models.Company", "Company")
+                        .WithMany("FormCompanies")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Logistics.Models.Form", "Form")
+                        .WithMany("FormCompanies")
+                        .HasForeignKey("FormId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("server.Models.FormInputValueReport", b =>
+                {
+                    b.HasOne("Logistics.Models.FormInputValue", "FormInputValue")
+                        .WithMany("FormInputValueReports")
+                        .HasForeignKey("FormInputValueId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Logistics.Models.Report", "Report")
+                        .WithMany("FormInputValueReports")
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("server.Models.FormTeam", b =>
+                {
+                    b.HasOne("Logistics.Models.Form", "Form")
+                        .WithMany("FormTeams")
+                        .HasForeignKey("FormId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Logistics.Models.Team", "Team")
+                        .WithMany("FormTeams")
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("server.Models.ReportCompany", b =>
+                {
+                    b.HasOne("Logistics.Models.Company", "Company")
+                        .WithMany("ReportCompanies")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Logistics.Models.Report", "Report")
+                        .WithMany("ReportCompanies")
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("server.Models.ReportTeam", b =>
+                {
+                    b.HasOne("Logistics.Models.Team", "Team")
+                        .WithMany("ReportTeams")
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Logistics.Models.Report", "Report")
+                        .WithMany("ReportTeams")
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("server.Models.VehicleCompany", b =>
+                {
+                    b.HasOne("Logistics.Models.Company", "Company")
+                        .WithMany("VehicleCompanies")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Logistics.Models.Vehicle", "Vehicle")
+                        .WithMany("VehicleCompanies")
+                        .HasForeignKey("VehicleId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

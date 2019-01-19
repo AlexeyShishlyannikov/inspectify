@@ -20,7 +20,7 @@ namespace Logistics.Controllers
 
         [HttpPost]
         [Route("add")]
-        public async Task<IActionResult> AddForm([FromBody] ReportForm form)
+        public async Task<IActionResult> AddForm([FromBody] Form form)
         {
             form = await formProvider.AddForm(form);
             return Ok(form);
@@ -28,7 +28,7 @@ namespace Logistics.Controllers
 
         [HttpPost]
         [Route("input/add")]
-        public async Task<IActionResult> AddFormInput([FromBody] ReportFormInput input)
+        public async Task<IActionResult> AddFormInput([FromBody] FormInput input)
         {
             input = await formProvider.AddFormInput(input);
             return Ok(input);
@@ -79,7 +79,7 @@ namespace Logistics.Controllers
 
         [HttpPost]
         [Route("update")]
-        public async Task<IActionResult> UpdateForm([FromBody] ReportForm form)
+        public async Task<IActionResult> UpdateForm([FromBody] Form form)
         {
             form = await formProvider.UpdateForm(form);
             if (form != null)
@@ -91,7 +91,7 @@ namespace Logistics.Controllers
 
         [HttpPost]
         [Route("input/update")]
-        public async Task<IActionResult> UpdateFormInput([FromBody] ReportFormInput input)
+        public async Task<IActionResult> UpdateFormInput([FromBody] FormInput input)
         {
             input = await formProvider.UpdateFormInput(input);
             if (input != null)

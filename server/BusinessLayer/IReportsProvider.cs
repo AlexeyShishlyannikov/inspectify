@@ -8,10 +8,10 @@ namespace Logistics.BusinessLayer
 {
     public interface IReportsProvider
     {
-        Task<VehicleReport> AddReport(VehicleReport report);
-        Task<VehicleReport> UpdateReport(VehicleReport report);
+        Task<Report> AddReport(Report report);
+        Task<Report> UpdateReport(Report report);
         Task DeleteReport(int id);
-        Task<VehicleReport> GetReport(int id);
-        Task<List<VehicleReport>> GetReports(int teamId, int? vehicleId, DateTime? since, DateTime? to);
+        Task<Report> GetReport(int id);
+        Task<List<Report>> GetReports(int teamId, int? vehicleId, DateTime? since, DateTime? to);
     }
 }

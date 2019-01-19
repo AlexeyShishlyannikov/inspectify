@@ -8,16 +8,16 @@ namespace Logistics.BusinessLayer
 {
     public interface IFormProvider
     {
-        Task<ReportForm> AddForm(ReportForm form);
-        Task<ReportForm> UpdateForm(ReportForm form);
-        Task<ReportForm> GetForm(int id);
-        Task<List<ReportForm>> GetForms(int teamId, string searchTerm);
+        Task<Form> AddForm(Form form);
+        Task<Form> UpdateForm(Form form);
+        Task<Form> GetForm(int id);
+        Task<List<Form>> GetForms(int teamId, string searchTerm);
         Task DeleteForm(int id);
 
-        Task<ReportFormInput> AddFormInput(ReportFormInput input);
-        Task<ReportFormInput> UpdateFormInput(ReportFormInput input);
-        Task<ReportFormInput> GetFormInput(int id);
-        Task<List<ReportFormInput>> GetFormInputs(int formId);
+        Task<FormInput> AddFormInput(FormInput input);
+        Task<FormInput> UpdateFormInput(FormInput input);
+        Task<FormInput> GetFormInput(int id);
+        Task<List<FormInput>> GetFormInputs(int formId);
         Task DeleteFormInput(int id);
     }
 }

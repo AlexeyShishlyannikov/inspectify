@@ -17,7 +17,7 @@ namespace Logistics.BusinessLayer
             this.dbContext = dbContext;
         }
 
-        public async Task<VehicleReport> AddReport(VehicleReport report)
+        public async Task<Report> AddReport(Report report)
         {
             await dbContext.Reports.AddAsync(report);
             await dbContext.SaveChangesAsync();
@@ -34,17 +34,18 @@ namespace Logistics.BusinessLayer
             }
         }
 
-        public async Task<VehicleReport> GetReport(int id)
+        public async Task<Report> GetReport(int id)
         {
             return await dbContext.Reports
                 .Where(r => r.Id == id)
-                .Include(r => r.ReportForm)
+                .Include(r => r.Form)
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<List<VehicleReport>> GetReports(int teamId, int? vehicleId, DateTime? since, DateTime? to)
+        public async Task<List<Report>> GetReports(int teamId, int? vehicleId, DateTime? since, DateTime? to)
         {
-            var reports = dbContext.Reports.Where(r => r.TeamId == teamId);
+            var teamReports = dbContext.ReportTeams.Where(tr => tr.TeamId == teamId);
+            var reports = dbContext.Reports.Where(r => teamReports.FirstOrDefault(tr => tr.ReportId == r.Id) != null);
             if (vehicleId != null) reports.Where(r => r.VehicleId == vehicleId);
             if (since != null) reports.Where(r => r.DateCreated > since);
             if (to != null) reports.Where(r => r.DateCreated < to);
@@ -52,7 +53,7 @@ namespace Logistics.BusinessLayer
             return await reports.ToListAsync();
         }
 
-        public async Task<VehicleReport> UpdateReport(VehicleReport report)
+        public async Task<Report> UpdateReport(Report report)
         {
             var dbReport = await dbContext.Reports.FirstOrDefaultAsync(r => report.Id == r.Id);
             if (dbReport != null)

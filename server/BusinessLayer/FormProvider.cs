@@ -17,13 +17,13 @@ namespace Logistics.BusinessLayer
             this.dbContext = dbContext;
         }
 
-        public async Task<ReportForm> AddForm(ReportForm form)
+        public async Task<Form> AddForm(Form form)
         {
             await dbContext.Forms.AddAsync(form);
             return form;
         }
 
-        public async Task<ReportFormInput> AddFormInput(ReportFormInput input)
+        public async Task<FormInput> AddFormInput(FormInput input)
         {
             await dbContext.FormInputs.AddAsync(input);
             return input;
@@ -49,17 +49,16 @@ namespace Logistics.BusinessLayer
             }
         }
 
-        public async Task<ReportForm> GetForm(int id)
+        public async Task<Form> GetForm(int id)
         {
             var form = await dbContext.Forms
                 .Where(f => f.Id == id)
-                .Include(f => f.Inputs)
-                    .ThenInclude(i => i.Value)
+                .Include(f => f.FormFormInputs)
                 .FirstOrDefaultAsync();
             return form;
         }
 
-        public async Task<ReportFormInput> GetFormInput(int id)
+        public async Task<FormInput> GetFormInput(int id)
         {
             return await dbContext.FormInputs
                 .Where(i => i.Id == id)
@@ -67,7 +66,7 @@ namespace Logistics.BusinessLayer
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<List<ReportFormInput>> GetFormInputs(int formId)
+        public async Task<List<FormInput>> GetFormInputs(int formId)
         {
             return await dbContext.FormInputs
                 .Where(i => i.FormId == formId)
@@ -75,17 +74,18 @@ namespace Logistics.BusinessLayer
                 .ToListAsync();
         }
 
-        public async Task<List<ReportForm>> GetForms(int teamId, string searchTerm)
+        public async Task<List<Form>> GetForms(int teamId, string searchTerm)
         {
-            var form = dbContext.Forms.Where(f => f.TeamId == teamId);
+            var formTeams = dbContext.FormTeams.Where(ft => ft.TeamId == teamId);
+            var forms = dbContext.Forms.Where(f => formTeams.FirstOrDefault(ft => ft.FormId == f.Id) != null);
             if (!String.IsNullOrEmpty(searchTerm))
             {
-                form = form.Where(f => f.Name == searchTerm);
+                forms = forms.Where(f => f.Name == searchTerm);
             }
-            return await form.ToListAsync();
+            return await forms.ToListAsync();
         }
 
-        public async Task<ReportForm> UpdateForm(ReportForm form)
+        public async Task<Form> UpdateForm(Form form)
         {
             var dbForm = dbContext.Forms.FirstOrDefaultAsync(f => f.Id == form.Id);
             if (dbForm != null)
@@ -96,7 +96,7 @@ namespace Logistics.BusinessLayer
             return null;
         }
 
-        public async Task<ReportFormInput> UpdateFormInput(ReportFormInput input)
+        public async Task<FormInput> UpdateFormInput(FormInput input)
         {
             var dbFormInput = dbContext.FormInputs.FirstOrDefaultAsync(f => f.Id == input.Id);
             if (dbFormInput != null)
