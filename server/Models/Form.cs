@@ -23,6 +23,7 @@ namespace Logistics.Models
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }
+        public string Description { get; set; }
         [Required]
         public int FormId { get; set; }
         public Form Form { get; set; }

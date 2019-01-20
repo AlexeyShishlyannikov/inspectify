@@ -108,12 +108,6 @@ namespace Server
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-              .AddGoogle("google", options =>
-              {
-                  options.ClientId = "846686545523-guirihpdu402n01gk8egp6k42c71u4fb.apps.googleusercontent.com";
-                  options.ClientSecret = "8qhdcQCQfJYIay4v5xQBoISA";
-                  options.SignInScheme = IdentityConstants.ExternalScheme;
-              })
               .AddJwtBearer(configureOptions =>
               {
                   configureOptions.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
@@ -163,9 +157,9 @@ namespace Server
                 name: "default",
                 template: "{controller=Home}/{action=Index}/{id?}");
 
-                    routes.MapSpaFallbackRoute(
-                name: "spa-fallback",
-                defaults: new { controller = "Home", action = "Index" });
+                routes.MapSpaFallbackRoute(
+            name: "spa-fallback",
+            defaults: new { controller = "Home", action = "Index" });
             });
         }
     }

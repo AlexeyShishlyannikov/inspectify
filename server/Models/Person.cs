@@ -12,7 +12,9 @@ namespace Logistics.Models
         public string ApplicationUserId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        [Required]
         public int CompanyId { get; set; }
+        public Company Company { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
         public ICollection<Report> Reports { get; set; }
         public ICollection<PersonTeam> PersonTeams { get; set; }
