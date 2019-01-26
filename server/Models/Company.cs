@@ -11,7 +11,7 @@ namespace Logistics.Models
         [Required]
         [MaxLength(256)]
         public string Name { get; set; }
-        public string CompanyLogoUrl { get; set; }
+        public string LogoUrl { get; set; }
         public ICollection<Team> Teams { get; set; }
         public ICollection<FormCompany> FormCompanies { get; set; }
         public ICollection<VehicleCompany> VehicleCompanies { get; set; }

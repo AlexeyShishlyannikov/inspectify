@@ -15,8 +15,6 @@ namespace Logistics.Models
         [Required]
         public int CompanyId { get; set; }
         public Company Company { get; set; }
-
-        public ICollection<Person> Members { get; set; }
         public ICollection<Vehicle> Vehicles { get; set; }
         public ICollection<ReportTeam> ReportTeams { get; set; }
         public ICollection<FormTeam> FormTeams { get; set; }
