@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using Logistics.BusinessLayer;
 using Logistics.DAL;
 using Logistics.Filters;
@@ -35,11 +36,6 @@ namespace Server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(config =>
-            {
-                config.Filters.Add(new ValidateModelStateFilter());
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
             // Providers
             services.AddScoped<IAccountProvider, AccountProvider>();
             services.AddScoped<ICompaniesProvider, CompaniesProvider>();
@@ -123,6 +119,13 @@ namespace Server
             {
                 configuration.RootPath = "client/build";
             });
+
+            services.AddAutoMapper();
+
+            services.AddMvc(config =>
+            {
+                config.Filters.Add(new ValidateModelStateFilter());
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
