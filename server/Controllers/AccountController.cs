@@ -130,12 +130,5 @@ namespace Logistics.Controllers
             }
             return BadRequest();
         }
-
-        [HttpGet]
-        [Route("external")]
-        public async Task<IActionResult> ExternalLogin([FromQuery] string provider, [FromQuery] string token)
-        {
-            return Ok(await accountProvider.ExternalLogin(provider, token));
-        }
     }
 }

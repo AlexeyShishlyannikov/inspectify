@@ -195,39 +195,5 @@ namespace Logistics.BusinessLayer
             // email not found
             return IdentityResult.Failed(new IdentityError { Description = "User was not found" });
         }
-
-        public async Task<IdentityResult> ExternalLogin(string provider, string token)
-        {
-            //var handler = new JwtSecurityTokenHandler();
-            //var decodedToken = handler.ReadJwtToken(token);
-
-            //var externalUserId = result.Principal.FindFirstValue("sub")
-            //    ?? result.Principal.FindFirstValue(ClaimTypes.NameIdentifier)
-            //    ?? throw new Exception("Cannot find external user id");
-
-            //var user = await userManager.FindByLoginAsync(provider, externalUserId);
-
-            //if (user != null)
-            //{
-            //    var email = result.Principal.FindFirstValue("email")
-            //                ?? result.Principal.FindFirstValue(ClaimTypes.Email);
-            //    if (email != null)
-            //    {
-            //        user = await userManager.FindByEmailAsync(email);
-            //        if (user == null)
-            //        {
-            //            user = new ApplicationUser { UserName = email, Email = email };
-            //            await userManager.CreateAsync(user);
-            //        }
-
-            //        await userManager.AddLoginAsync(user,
-            //            new UserLoginInfo(provider, externalUserId, provider));
-            //    }
-            //}
-
-            //if (user == null) return IdentityResult.Failed(new IdentityError { Description = "No user record" });
-
-            return IdentityResult.Success;
-        }
     }
 }

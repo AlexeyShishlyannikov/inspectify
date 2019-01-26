@@ -15,6 +15,5 @@ namespace Logistics.BusinessLayer
         Task ForgotPassword(ForgotPasswordModel model);
         Task<IdentityResult> ChangePassword(ChangePasswordModel model);
         Task<IdentityResult> ResetPassword(ResetPasswordModel model);
-        Task<IdentityResult> ExternalLogin(string provider, string token);
     }
 }
