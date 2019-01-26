@@ -68,9 +68,10 @@ namespace Logistics.BusinessLayer
 
         public async Task<List<FormInput>> GetFormInputs(int formId)
         {
+            var formFormInputs = await dbContext.FormFormInputs
+                .Where(ffi => ffi.FormId == formId).ToListAsync();
             return await dbContext.FormInputs
-                .Where(i => i.FormId == formId)
-                .Include(i => i.Value)
+                .Where(fi => formFormInputs.Find(ffi => fi.Id == ffi.FormInputId) != null)
                 .ToListAsync();
         }
 
