@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Logistics.BusinessLayer;
 using Logistics.Models;
 using Microsoft.AspNetCore.Mvc;
+using server.ViewModels;
 
 namespace Logistics.Controllers
 {
@@ -12,17 +14,22 @@ namespace Logistics.Controllers
     public class ReportsController : Controller
     {
         private readonly IReportsProvider reportsProvider;
+        private readonly IMapper mapper;
 
-        public ReportsController(IReportsProvider reportsProvider)
+        public ReportsController(IReportsProvider reportsProvider, IMapper mapper)
         {
             this.reportsProvider = reportsProvider;
+            this.mapper = mapper;
         }
 
         [HttpPost]
         [Route("add")]
-        public async Task<IActionResult> AddReport([FromBody] Report report)
+        public async Task<IActionResult> AddReport([FromBody] ReportViewModel reportViewModel)
         {
-            return Ok(await reportsProvider.AddReport(report));
+            var report = mapper.Map<ReportViewModel, Report>(reportViewModel);
+            report = await reportsProvider.AddReport(report);
+            reportViewModel = mapper.Map<ReportViewModel>(report);
+            return Ok(reportViewModel);
         }
 
         [HttpDelete]
@@ -40,7 +47,8 @@ namespace Logistics.Controllers
             var report = await reportsProvider.GetReport(id);
             if (report != null)
             {
-                return Ok(report);
+                var reportViewModel = mapper.Map<ReportViewModel>(report);
+                return Ok(reportViewModel);
             }
             return NotFound();
         }
@@ -50,14 +58,18 @@ namespace Logistics.Controllers
         public async Task<IActionResult> GetReports([FromQuery] int teamId, [FromQuery] int? vehicleId, [FromQuery] DateTime? since, [FromQuery] DateTime? to)
         {
             var reports = await reportsProvider.GetReports(teamId, vehicleId, since, to);
-            return Ok(reports);
+            var reportViewModelList = reports.Select(r => mapper.Map<ReportViewModel>(r)).ToList();
+            return Ok(reportViewModelList);
         }
 
         [HttpPut]
         [Route("update")]
-        public async Task<IActionResult> UpdateReport([FromBody] Report report)
+        public async Task<IActionResult> UpdateReport([FromBody] ReportViewModel reportViewModel)
         {
-            return Ok(await reportsProvider.UpdateReport(report));
+            var report = mapper.Map<Report>(reportViewModel);
+            report = await reportsProvider.UpdateReport(report);
+            reportViewModel = mapper.Map<ReportViewModel>(report);
+            return Ok(reportViewModel);
         }
     }
 }

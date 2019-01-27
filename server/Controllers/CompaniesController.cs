@@ -4,10 +4,12 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AutoMapper;
 using Logistics.BusinessLayer;
 using Logistics.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using server.ViewModels;
 
 namespace Logistics.Controllers
 {
@@ -16,11 +18,16 @@ namespace Logistics.Controllers
     {
         private readonly ICompaniesProvider companiesProvider;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly IMapper mapper;
 
-        public CompaniesController(ICompaniesProvider companiesProvider, UserManager<ApplicationUser> userManager)
+        public CompaniesController(
+            ICompaniesProvider companiesProvider, 
+            UserManager<ApplicationUser> userManager, 
+            IMapper mapper)
         {
             this.companiesProvider = companiesProvider;
             this.userManager = userManager;
+            this.mapper = mapper;
         }
 
         [HttpGet]
@@ -38,7 +45,8 @@ namespace Logistics.Controllers
             var company = await companiesProvider.GetCompany(companyName);
             if (company != null)
             {
-                return Ok(company);
+                var companyViewModel = mapper.Map<Company, CompanyViewModel>(company);
+                return Ok(companyViewModel);
             }
             return NotFound();
         }

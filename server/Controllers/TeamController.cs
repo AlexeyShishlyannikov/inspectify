@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Logistics.BusinessLayer;
 using Logistics.Models;
 using Microsoft.AspNetCore.Mvc;
+using server.ViewModels;
 
 namespace Logistics.Controllers
 {
@@ -12,17 +14,22 @@ namespace Logistics.Controllers
     public class TeamController : Controller
     {
         private readonly ITeamProvider teamProvider;
+        private readonly IMapper mapper;
 
-        public TeamController(ITeamProvider teamProvider)
+        public TeamController(ITeamProvider teamProvider, IMapper mapper)
         {
+            this.mapper = mapper;
             this.teamProvider = teamProvider;
         }
 
         [HttpPost]
         [Route("Add")]
-        public async Task<IActionResult> AddTeam(Team team)
+        public async Task<IActionResult> AddTeam(TeamViewModel teamViewModel)
         {
-            return Ok(await teamProvider.AddTeam(team));
+            var team = mapper.Map<Team>(teamViewModel);
+            team = await teamProvider.AddTeam(team);
+            teamViewModel = mapper.Map<TeamViewModel>(team);
+            return Ok(teamViewModel);
         }
 
         [HttpDelete]
@@ -40,7 +47,8 @@ namespace Logistics.Controllers
             var team = await teamProvider.GetTeam(teamId);
             if (team != null)
             {
-                Ok(team);
+                var teamViewModel = mapper.Map<TeamViewModel>(team);
+                Ok(teamViewModel);
             }
             return NotFound();
         }
@@ -49,7 +57,9 @@ namespace Logistics.Controllers
         [Route("getTeams")]
         public async Task<IActionResult> GetTeams(string companyName, string searchTerm)
         {
-            return Ok(await teamProvider.GetTeams(companyName, searchTerm));
+            var teams = await teamProvider.GetTeams(companyName, searchTerm);
+            var teamViewModelList = teams.Select(t => mapper.Map<TeamViewModel>(t)).ToList();
+            return Ok(teamViewModelList);
         }
 
         [HttpPut]
@@ -59,7 +69,8 @@ namespace Logistics.Controllers
             var dbTeam = await teamProvider.UpdateTeam(team);
             if (dbTeam != null)
             {
-                return Ok(dbTeam);
+                var dbTeamViewModel = mapper.Map<TeamViewModel>(dbTeam);
+                return Ok(dbTeamViewModel);
             }
             return NotFound();
         }
