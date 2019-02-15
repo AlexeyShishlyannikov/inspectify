@@ -21,8 +21,10 @@ namespace server.MappingProfiles
             CreateMap<Vehicle, VehicleViewModel>();
             CreateMap<VehicleViewModel, Vehicle>()
                 .ForMember(model => model.ModelId, opt => opt.MapFrom(viewModel => viewModel.Model.Id));
+
             CreateMap<VehicleMake, VehicleMakeViewModel>();
             CreateMap<VehicleMakeViewModel, VehicleMake>();
+
             CreateMap<VehicleModel, VehicleModelViewModel>();
             CreateMap<VehicleModelViewModel, VehicleModel>();
         }
