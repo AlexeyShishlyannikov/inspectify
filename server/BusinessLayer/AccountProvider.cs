@@ -26,13 +26,13 @@ namespace Logistics.BusinessLayer
             this.companiesProvider = companiesProvider;
         }
 
-        public async Task<IdentityResult> RegisterUser(RegisterUserModel model)
+        public async Task<IdentityResult> RegisterUser(RegisterModel model)
         {
             var identityResult = await RegisterIdentity(model);
             if (identityResult.Succeeded)
             {
-                var user = await userManager.FindByNameAsync(model.UserName);
-                await dbContext.Persons.AddAsync(new Person { ApplicationUserId = user.Id, FirstName = model.FirstName, LastName = model.LastName });
+                var user = await userManager.FindByEmailAsync(model.Email);
+                await dbContext.Persons.AddAsync(new Person { ApplicationUserId = user.Id });
                 await dbContext.SaveChangesAsync();
                 return identityResult;
             }
@@ -53,13 +53,12 @@ namespace Logistics.BusinessLayer
 
         private async Task<IdentityResult> RegisterIdentity(RegisterModel model)
         {
-            var user = await userManager.FindByNameAsync(model.UserName);
+            var user = await userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
                 user = new ApplicationUser
                 {
                     Id = Guid.NewGuid().ToString(),
-                    UserName = model.UserName,
                     Email = model.Email
                 };
 
@@ -114,7 +113,7 @@ namespace Logistics.BusinessLayer
 
         public async Task<ApplicationUser> LoginUser(LoginModel model)
         {
-            var user = await userManager.FindByNameAsync(model.UserName);
+            var user = await userManager.FindByEmailAsync(model.Email);
             if (user != null && !await userManager.IsLockedOutAsync(user))
             {
                 if (await userManager.CheckPasswordAsync(user, model.Password))
@@ -164,7 +163,7 @@ namespace Logistics.BusinessLayer
 
         public async Task<IdentityResult> ChangePassword(ChangePasswordModel model)
         {
-            var user = await userManager.FindByEmailAsync(model.UserName);
+            var user = await userManager.FindByEmailAsync(model.Email);
 
             if (user != null)
             {

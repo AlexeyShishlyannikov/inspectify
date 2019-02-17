@@ -33,8 +33,8 @@ namespace Logistics.Controllers
         }
 
         [HttpDelete]
-        [Route("delete")]
-        public async Task<IActionResult> DeleteTeam(int id)
+        [Route("delete/{{id}}")]
+        public async Task<IActionResult> DeleteTeam([FromQuery]int id)
         {
             await teamProvider.DeleteTeam(id);
             return Ok(id);

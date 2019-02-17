@@ -31,6 +31,16 @@ namespace Logistics.Controllers
             reportViewModel = mapper.Map<ReportViewModel>(report);
             return Ok(reportViewModel);
         }
+        
+        [HttpPut]
+        [Route("update")]
+        public async Task<IActionResult> UpdateReport([FromBody] ReportViewModel reportViewModel)
+        {
+            var report = mapper.Map<Report>(reportViewModel);
+            report = await reportsProvider.UpdateReport(report);
+            reportViewModel = mapper.Map<ReportViewModel>(report);
+            return Ok(reportViewModel);
+        }
 
         [HttpDelete]
         [Route("delete")]
@@ -60,16 +70,6 @@ namespace Logistics.Controllers
             var reports = await reportsProvider.GetReports(teamId, vehicleId, since, to);
             var reportViewModelList = reports.Select(r => mapper.Map<ReportViewModel>(r)).ToList();
             return Ok(reportViewModelList);
-        }
-
-        [HttpPut]
-        [Route("update")]
-        public async Task<IActionResult> UpdateReport([FromBody] ReportViewModel reportViewModel)
-        {
-            var report = mapper.Map<Report>(reportViewModel);
-            report = await reportsProvider.UpdateReport(report);
-            reportViewModel = mapper.Map<ReportViewModel>(report);
-            return Ok(reportViewModel);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Logistics.BusinessLayer
 {
     public interface IAccountProvider
     {
-        Task<IdentityResult> RegisterUser(RegisterUserModel model);
+        Task<IdentityResult> RegisterUser(RegisterModel model);
         Task<IdentityResult> RegisterCompany(RegisterCompanyModel model);
         Task<IdentityResult> ConfirmEmailAddress(string token, string email);
         Task<ApplicationUser> LoginUser(LoginModel model);

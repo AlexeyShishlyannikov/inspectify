@@ -4,7 +4,6 @@ namespace Logistics.Models.Identity
 {
     public class RegisterModel
     {
-        public string UserName { get; set; }
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
         [DataType(DataType.Password)]
@@ -14,12 +13,6 @@ namespace Logistics.Models.Identity
         public string ConfirmPassword { get; set; }
     }
 
-    public class RegisterUserModel : RegisterModel
-    {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-    }
-
     public class RegisterCompanyModel : RegisterModel
     {
         public string CompanyName { get; set; }
@@ -27,7 +20,7 @@ namespace Logistics.Models.Identity
 
     public class LoginModel
     {
-        public string UserName { get; set; }
+        public string Email { get; set; }
         [DataType(DataType.Password)]
         public string Password { get; set; }
     }
@@ -52,7 +45,7 @@ namespace Logistics.Models.Identity
 
     public class ChangePasswordModel
     {
-        public string UserName { get; set; }
+        public string Email { get; set; }
         [DataType(DataType.Password)]
         public string Password { get; set; }
         [Compare("Password")]

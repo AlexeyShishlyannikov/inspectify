@@ -21,7 +21,7 @@ namespace Logistics.Controllers
 
         [HttpPost]
         [Route("register/user")]
-        public async Task<IActionResult> RegisterUser([FromBody] RegisterUserModel model)
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterModel model)
         {
             if (ModelState.IsValid)
             {
@@ -57,20 +57,8 @@ namespace Logistics.Controllers
             return BadRequest();
         }
 
-        [HttpGet]
-        [Route("confirm")]
-        public async Task<IActionResult> ConfirmEmailAddress([FromQuery] string token, [FromQuery] string email)
-        {
-            var result = await accountProvider.ConfirmEmailAddress(token, email);
-            if (result.Succeeded)
-            {
-                return Ok();
-            }
-            return BadRequest();
-        }
-
         [HttpPost]
-        [Route("login/user")]
+        [Route("login")]
         public async Task<IActionResult> LoginUser([FromBody] LoginModel model)
         {
             if (ModelState.IsValid)
@@ -83,17 +71,15 @@ namespace Logistics.Controllers
             return BadRequest();
         }
 
-        [HttpPost]
-        [Route("login/company")]
-        public async Task<IActionResult> LoginCompany([FromBody] LoginModel model)
+        [HttpGet]
+        [Route("confirm")]
+        public async Task<IActionResult> ConfirmEmailAddress([FromQuery] string token, [FromQuery] string email)
         {
-            if (ModelState.IsValid)
+            var result = await accountProvider.ConfirmEmailAddress(token, email);
+            if (result.Succeeded)
             {
-                var user = await accountProvider.LoginCompany(model);
-                return Ok(await jwtFactory.GenerateEncodedToken(user));
+                return Ok();
             }
-
-            ModelState.AddModelError("", "Invalid Model State Or Password");
             return BadRequest();
         }
 
