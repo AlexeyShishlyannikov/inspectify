@@ -34,7 +34,7 @@ namespace Logistics.Controllers
 
         [HttpDelete]
         [Route("delete")]
-        public async Task<IActionResult> DeleteVehicle(int id)
+        public async Task<IActionResult> DeleteVehicle(string id)
         {
             await vehicleProvider.DeleteVehicle(id);
             return Ok(id);
@@ -56,7 +56,7 @@ namespace Logistics.Controllers
 
         [HttpGet]
         [Route("make/get")]
-        public async Task<IActionResult> GetMake(int makeId)
+        public async Task<IActionResult> GetMake(string makeId)
         {
             var make = await vehicleProvider.GetMake(makeId);
             if (make != null)
@@ -78,7 +78,7 @@ namespace Logistics.Controllers
 
         [HttpGet]
         [Route("model/get")]
-        public async Task<IActionResult> GetModel(int modelId)
+        public async Task<IActionResult> GetModel(string modelId)
         {
             var model = await vehicleProvider.GetModel(modelId);
             if (model != null)
@@ -91,7 +91,7 @@ namespace Logistics.Controllers
 
         [HttpGet]
         [Route("model/getModels")]
-        public async Task<IActionResult> GetModels(int makeId, string searchTerm)
+        public async Task<IActionResult> GetModels(string makeId, string searchTerm)
         {
             var models = await vehicleProvider.GetModels(makeId, searchTerm);
             var modelViewModelList = models.Select(m => mapper.Map<VehicleModelViewModel>(m)).ToList();
@@ -100,7 +100,7 @@ namespace Logistics.Controllers
 
         [HttpGet]
         [Route("get")]
-        public async Task<IActionResult> GetVehicle(int id)
+        public async Task<IActionResult> GetVehicle(string id)
         {
             var vehicle = await vehicleProvider.GetVehicle(id);
             if (vehicle != null)
@@ -113,7 +113,7 @@ namespace Logistics.Controllers
 
         [HttpGet]
         [Route("getVehicles")]
-        public async Task<IActionResult> GetVehicles(int teamId, string searchTerm)
+        public async Task<IActionResult> GetVehicles(string teamId, string searchTerm)
         {
             var vehicles = await vehicleProvider.GetVehicles(teamId, searchTerm);
             var vehiclesViewModelList = vehicles.Select(v => mapper.Map<VehicleViewModel>(v)).ToList();

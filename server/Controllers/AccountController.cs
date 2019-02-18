@@ -35,7 +35,7 @@ namespace Logistics.Controllers
 
         [HttpPost]
         [Route("register/user")]
-        public async Task<IActionResult> RegisterUser([FromBody] RegisterModel model)
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterUserModel model)
         {
             if (await userManager.FindByEmailAsync(model.Email) != null)
             {
@@ -45,7 +45,7 @@ namespace Logistics.Controllers
             if (identityResult.Succeeded)
             {
                 var user = await userManager.FindByEmailAsync(model.Email);
-                await dbContext.Persons.AddAsync(new Person { ApplicationUserId = user.Id });
+                await dbContext.Persons.AddAsync(new Person { ApplicationUserId = user.Id, CompanyId = model.CompanyId });
                 await dbContext.SaveChangesAsync();
                 // var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
                 // var link = "http://localhost:4199/confirmation";

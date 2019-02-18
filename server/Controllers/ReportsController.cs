@@ -31,7 +31,7 @@ namespace Logistics.Controllers
             reportViewModel = mapper.Map<ReportViewModel>(report);
             return Ok(reportViewModel);
         }
-        
+
         [HttpPut]
         [Route("update")]
         public async Task<IActionResult> UpdateReport([FromBody] ReportViewModel reportViewModel)
@@ -44,7 +44,7 @@ namespace Logistics.Controllers
 
         [HttpDelete]
         [Route("delete")]
-        public async Task<IActionResult> DeleteReport([FromQuery] int id)
+        public async Task<IActionResult> DeleteReport([FromQuery] string id)
         {
             await reportsProvider.DeleteReport(id);
             return Ok(id);
@@ -52,7 +52,7 @@ namespace Logistics.Controllers
 
         [HttpGet]
         [Route("get")]
-        public async Task<IActionResult> GetReport([FromQuery] int id)
+        public async Task<IActionResult> GetReport([FromQuery] string id)
         {
             var report = await reportsProvider.GetReport(id);
             if (report != null)
@@ -65,9 +65,9 @@ namespace Logistics.Controllers
 
         [HttpGet]
         [Route("getReports")]
-        public async Task<IActionResult> GetReports([FromQuery] int teamId, [FromQuery] int? vehicleId, [FromQuery] DateTime? since, [FromQuery] DateTime? to)
+        public async Task<IActionResult> GetReports([FromQuery] string teamId, [FromQuery] string vehicleId, [FromQuery] DateTime? since, [FromQuery] DateTime? to)
         {
-            var reports = await reportsProvider.GetReports(teamId, vehicleId, since, to);
+            var reports = await reportsProvider.GetReports(teamId, since, to, vehicleId);
             var reportViewModelList = reports.Select(r => mapper.Map<ReportViewModel>(r)).ToList();
             return Ok(reportViewModelList);
         }

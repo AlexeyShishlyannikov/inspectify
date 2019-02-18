@@ -69,7 +69,7 @@ namespace server.Migrations
 
             modelBuilder.Entity("Logistics.Models.Company", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("ApplicationUserId")
@@ -90,7 +90,7 @@ namespace server.Migrations
 
             modelBuilder.Entity("Logistics.Models.Form", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("Created");
@@ -111,9 +111,9 @@ namespace server.Migrations
 
             modelBuilder.Entity("Logistics.Models.FormFormInput", b =>
                 {
-                    b.Property<int>("FormId");
+                    b.Property<string>("FormId");
 
-                    b.Property<int>("FormInputId");
+                    b.Property<string>("FormInputId");
 
                     b.HasKey("FormId", "FormInputId");
 
@@ -124,7 +124,7 @@ namespace server.Migrations
 
             modelBuilder.Entity("Logistics.Models.FormInput", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Description");
@@ -143,10 +143,11 @@ namespace server.Migrations
 
             modelBuilder.Entity("Logistics.Models.FormInputValue", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("FormInputId");
+                    b.Property<string>("FormInputId")
+                        .IsRequired();
 
                     b.Property<double?>("NumberValue");
 
@@ -164,13 +165,14 @@ namespace server.Migrations
 
             modelBuilder.Entity("Logistics.Models.Person", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("ApplicationUserId")
                         .IsRequired();
 
-                    b.Property<int>("CompanyId");
+                    b.Property<string>("CompanyId")
+                        .IsRequired();
 
                     b.Property<string>("FirstName");
 
@@ -187,9 +189,9 @@ namespace server.Migrations
 
             modelBuilder.Entity("Logistics.Models.PersonTeam", b =>
                 {
-                    b.Property<int>("PersonId");
+                    b.Property<string>("PersonId");
 
-                    b.Property<int>("TeamId");
+                    b.Property<string>("TeamId");
 
                     b.HasKey("PersonId", "TeamId");
 
@@ -200,22 +202,25 @@ namespace server.Migrations
 
             modelBuilder.Entity("Logistics.Models.Report", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("DateCreated");
 
                     b.Property<DateTime>("DateUpdated");
 
-                    b.Property<int>("DriverId");
+                    b.Property<string>("DriverId")
+                        .IsRequired();
 
-                    b.Property<int>("FormId");
+                    b.Property<string>("FormId")
+                        .IsRequired();
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(256);
 
-                    b.Property<int>("VehicleId");
+                    b.Property<string>("VehicleId")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -230,10 +235,11 @@ namespace server.Migrations
 
             modelBuilder.Entity("Logistics.Models.Team", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("CompanyId");
+                    b.Property<string>("CompanyId")
+                        .IsRequired();
 
                     b.Property<string>("Description");
 
@@ -250,20 +256,18 @@ namespace server.Migrations
 
             modelBuilder.Entity("Logistics.Models.Vehicle", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("LicensePlate");
 
-                    b.Property<int>("ModelId");
+                    b.Property<string>("ModelId");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(256);
 
-                    b.Property<int>("TeamId");
-
-                    b.Property<string>("VIN");
+                    b.Property<string>("TeamId");
 
                     b.Property<int?>("Year");
 
@@ -278,7 +282,7 @@ namespace server.Migrations
 
             modelBuilder.Entity("Logistics.Models.VehicleMake", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name")
@@ -295,10 +299,11 @@ namespace server.Migrations
 
             modelBuilder.Entity("Logistics.Models.VehicleModel", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("MakeId");
+                    b.Property<string>("MakeId")
+                        .IsRequired();
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -420,9 +425,9 @@ namespace server.Migrations
 
             modelBuilder.Entity("server.Models.FormCompany", b =>
                 {
-                    b.Property<int>("FormId");
+                    b.Property<string>("FormId");
 
-                    b.Property<int>("CompanyId");
+                    b.Property<string>("CompanyId");
 
                     b.HasKey("FormId", "CompanyId");
 
@@ -433,9 +438,9 @@ namespace server.Migrations
 
             modelBuilder.Entity("server.Models.FormInputValueReport", b =>
                 {
-                    b.Property<int>("ReportId");
+                    b.Property<string>("ReportId");
 
-                    b.Property<int>("FormInputValueId");
+                    b.Property<string>("FormInputValueId");
 
                     b.HasKey("ReportId", "FormInputValueId");
 
@@ -446,9 +451,9 @@ namespace server.Migrations
 
             modelBuilder.Entity("server.Models.FormTeam", b =>
                 {
-                    b.Property<int>("FormId");
+                    b.Property<string>("FormId");
 
-                    b.Property<int>("TeamId");
+                    b.Property<string>("TeamId");
 
                     b.HasKey("FormId", "TeamId");
 
@@ -459,9 +464,9 @@ namespace server.Migrations
 
             modelBuilder.Entity("server.Models.ReportCompany", b =>
                 {
-                    b.Property<int>("ReportId");
+                    b.Property<string>("ReportId");
 
-                    b.Property<int>("CompanyId");
+                    b.Property<string>("CompanyId");
 
                     b.HasKey("ReportId", "CompanyId");
 
@@ -472,9 +477,9 @@ namespace server.Migrations
 
             modelBuilder.Entity("server.Models.ReportTeam", b =>
                 {
-                    b.Property<int>("ReportId");
+                    b.Property<string>("ReportId");
 
-                    b.Property<int>("TeamId");
+                    b.Property<string>("TeamId");
 
                     b.HasKey("ReportId", "TeamId");
 
@@ -485,9 +490,9 @@ namespace server.Migrations
 
             modelBuilder.Entity("server.Models.VehicleCompany", b =>
                 {
-                    b.Property<int>("VehicleId");
+                    b.Property<string>("VehicleId");
 
-                    b.Property<int>("CompanyId");
+                    b.Property<string>("CompanyId");
 
                     b.HasKey("VehicleId", "CompanyId");
 
@@ -581,13 +586,11 @@ namespace server.Migrations
                 {
                     b.HasOne("Logistics.Models.VehicleModel", "Model")
                         .WithMany()
-                        .HasForeignKey("ModelId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ModelId");
 
                     b.HasOne("Logistics.Models.Team", "Team")
                         .WithMany("Vehicles")
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("TeamId");
                 });
 
             modelBuilder.Entity("Logistics.Models.VehicleModel", b =>

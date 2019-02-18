@@ -24,7 +24,7 @@ namespace Logistics.BusinessLayer
             return report;
         }
 
-        public async Task DeleteReport(int id)
+        public async Task DeleteReport(string id)
         {
             var report = await dbContext.Reports.FindAsync(id);
             if (report != null)
@@ -34,7 +34,7 @@ namespace Logistics.BusinessLayer
             }
         }
 
-        public async Task<Report> GetReport(int id)
+        public async Task<Report> GetReport(string id)
         {
             return await dbContext.Reports
                 .Where(r => r.Id == id)
@@ -42,7 +42,7 @@ namespace Logistics.BusinessLayer
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<List<Report>> GetReports(int teamId, int? vehicleId, DateTime? since, DateTime? to)
+        public async Task<List<Report>> GetReports(string teamId, DateTime? since, DateTime? to, string vehicleId = null)
         {
             var teamReports = dbContext.ReportTeams.Where(tr => tr.TeamId == teamId);
             var reports = dbContext.Reports.Where(r => teamReports.FirstOrDefault(tr => tr.ReportId == r.Id) != null);

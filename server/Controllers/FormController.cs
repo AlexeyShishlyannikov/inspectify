@@ -43,7 +43,7 @@ namespace Logistics.Controllers
         }
         [HttpDelete]
         [Route("delete")]
-        public async Task<IActionResult> DeleteForm([FromQuery] int id)
+        public async Task<IActionResult> DeleteForm([FromQuery] string id)
         {
             await formProvider.DeleteForm(id);
             return Ok(id + "Deleted");
@@ -51,7 +51,7 @@ namespace Logistics.Controllers
 
         [HttpDelete]
         [Route("input/delete")]
-        public async Task<IActionResult> DeleteFormInput([FromQuery] int id)
+        public async Task<IActionResult> DeleteFormInput([FromQuery] string id)
         {
             await formProvider.DeleteFormInput(id);
             return Ok(id + "Deleted");
@@ -59,7 +59,7 @@ namespace Logistics.Controllers
 
         [HttpGet]
         [Route("get")]
-        public async Task<IActionResult> GetForm([FromQuery] int id)
+        public async Task<IActionResult> GetForm([FromQuery] string id)
         {
             var form = await formProvider.GetForm(id);
             var formViewModel = mapper.Map<Form, FormViewModel>(form);
@@ -68,7 +68,7 @@ namespace Logistics.Controllers
 
         [HttpGet]
         [Route("input/get")]
-        public async Task<IActionResult> GetFormInput([FromQuery] int id)
+        public async Task<IActionResult> GetFormInput([FromQuery] string id)
         {
             var formInput = await formProvider.GetFormInput(id);
             var formInputViewModel = mapper.Map<FormInput, FormInputViewModel>(formInput);
@@ -77,7 +77,7 @@ namespace Logistics.Controllers
 
         [HttpGet]
         [Route("input/getForForm")]
-        public async Task<IActionResult> GetFormInputs([FromQuery] int formId)
+        public async Task<IActionResult> GetFormInputs([FromQuery] string formId)
         {
             var formInputs = await formProvider.GetFormInputs(formId);
             var formInputViewModelList = formInputs.Select(fi => mapper.Map<FormInput, FormInputViewModel>(fi)).ToList();
@@ -86,7 +86,7 @@ namespace Logistics.Controllers
 
         [HttpGet]
         [Route("getForTeam")]
-        public async Task<IActionResult> GetForms([FromQuery] int teamId, [FromQuery] string searchTerm)
+        public async Task<IActionResult> GetForms([FromQuery] string teamId, [FromQuery] string searchTerm)
         {
             var forms = await formProvider.GetForms(teamId, searchTerm);
             var formViewModelList = forms.Select(f => mapper.Map<Form, FormViewModel>(f));

@@ -6,7 +6,7 @@ namespace Logistics.Models
 {
     public class Company
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         [Required]
         [MaxLength(256)]
         public string Name { get; set; }

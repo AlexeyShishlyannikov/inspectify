@@ -13,6 +13,11 @@ namespace Logistics.Models.Identity
         public string ConfirmPassword { get; set; }
     }
 
+    public class RegisterUserModel : RegisterModel
+    {
+        public string CompanyId { get; set; }
+    }
+
     public class RegisterCompanyModel : RegisterModel
     {
         public string CompanyName { get; set; }

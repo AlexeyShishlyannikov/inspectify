@@ -34,7 +34,7 @@ namespace Logistics.Controllers
 
         [HttpDelete]
         [Route("delete/{{id}}")]
-        public async Task<IActionResult> DeleteTeam([FromQuery]int id)
+        public async Task<IActionResult> DeleteTeam([FromQuery]string id)
         {
             await teamProvider.DeleteTeam(id);
             return Ok(id);
@@ -42,7 +42,7 @@ namespace Logistics.Controllers
 
         [HttpGet]
         [Route("get")]
-        public async Task<IActionResult> GetTeam(int teamId)
+        public async Task<IActionResult> GetTeam(string teamId)
         {
             var team = await teamProvider.GetTeam(teamId);
             if (team != null)

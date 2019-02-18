@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace server.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class Initialdatabasemigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -48,27 +48,30 @@ namespace server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Companies",
+                name: "FormInputs",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(maxLength: 256, nullable: false),
-                    CompanyLogoUrl = table.Column<string>(nullable: true)
+                    Id = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
+                    Description = table.Column<string>(nullable: true),
+                    IsRequired = table.Column<bool>(nullable: false),
+                    InputType = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Companies", x => x.Id);
+                    table.PrimaryKey("PK_FormInputs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Forms",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<string>(nullable: false),
                     Name = table.Column<string>(nullable: false),
-                    Description = table.Column<string>(nullable: true)
+                    Description = table.Column<string>(nullable: true),
+                    IsArchived = table.Column<bool>(nullable: false),
+                    Created = table.Column<DateTime>(nullable: false),
+                    Updated = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -79,8 +82,7 @@ namespace server.Migrations
                 name: "VehicleMarks",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<string>(nullable: false),
                     Name = table.Column<string>(maxLength: 256, nullable: false),
                     PhotoUrl = table.Column<string>(nullable: false)
                 },
@@ -196,151 +198,52 @@ namespace server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Teams",
+                name: "Companies",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<string>(nullable: false),
                     Name = table.Column<string>(maxLength: 256, nullable: false),
-                    Description = table.Column<string>(nullable: true),
-                    CompanyId = table.Column<int>(nullable: false)
+                    LogoUrl = table.Column<string>(nullable: true),
+                    ApplicationUserId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Teams", x => x.Id);
+                    table.PrimaryKey("PK_Companies", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Teams_Companies_CompanyId",
-                        column: x => x.CompanyId,
-                        principalTable: "Companies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "FormCompanies",
-                columns: table => new
-                {
-                    FormId = table.Column<int>(nullable: false),
-                    CompanyId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FormCompanies", x => new { x.FormId, x.CompanyId });
-                    table.ForeignKey(
-                        name: "FK_FormCompanies_Companies_CompanyId",
-                        column: x => x.CompanyId,
-                        principalTable: "Companies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_FormCompanies_Forms_FormId",
-                        column: x => x.FormId,
-                        principalTable: "Forms",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "FormInputs",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: false),
-                    FormId = table.Column<int>(nullable: false),
-                    IsRequired = table.Column<bool>(nullable: false),
-                    InputType = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FormInputs", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_FormInputs_Forms_FormId",
-                        column: x => x.FormId,
-                        principalTable: "Forms",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "VehicleModels",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(maxLength: 256, nullable: false),
-                    MakeId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_VehicleModels", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_VehicleModels_VehicleMarks_MakeId",
-                        column: x => x.MakeId,
-                        principalTable: "VehicleMarks",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "FormTeams",
-                columns: table => new
-                {
-                    FormId = table.Column<int>(nullable: false),
-                    TeamId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FormTeams", x => new { x.FormId, x.TeamId });
-                    table.ForeignKey(
-                        name: "FK_FormTeams_Forms_FormId",
-                        column: x => x.FormId,
-                        principalTable: "Forms",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_FormTeams_Teams_TeamId",
-                        column: x => x.TeamId,
-                        principalTable: "Teams",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Persons",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ApplicationUserId = table.Column<string>(nullable: false),
-                    FirstName = table.Column<string>(nullable: true),
-                    LastName = table.Column<string>(nullable: true),
-                    CompanyId = table.Column<int>(nullable: false),
-                    TeamId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Persons", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Persons_AspNetUsers_ApplicationUserId",
+                        name: "FK_Companies_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FormInputValues",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    FormInputId = table.Column<string>(nullable: false),
+                    TextValue = table.Column<string>(nullable: true),
+                    NumberValue = table.Column<double>(nullable: true),
+                    PhotoUrl = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FormInputValues", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Persons_Teams_TeamId",
-                        column: x => x.TeamId,
-                        principalTable: "Teams",
+                        name: "FK_FormInputValues_FormInputs_FormInputId",
+                        column: x => x.FormInputId,
+                        principalTable: "FormInputs",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "FormFormInputs",
                 columns: table => new
                 {
-                    FormId = table.Column<int>(nullable: false),
-                    FormInputId = table.Column<int>(nullable: false)
+                    FormId = table.Column<string>(nullable: false),
+                    FormInputId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -360,51 +263,113 @@ namespace server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FormInputValues",
+                name: "VehicleModels",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    FormInputId = table.Column<int>(nullable: false),
-                    TextValue = table.Column<string>(nullable: true),
-                    NumberValue = table.Column<double>(nullable: true),
-                    PhotoUrl = table.Column<string>(nullable: true)
+                    Id = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(maxLength: 256, nullable: false),
+                    MakeId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FormInputValues", x => x.Id);
+                    table.PrimaryKey("PK_VehicleModels", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FormInputValues_FormInputs_FormInputId",
-                        column: x => x.FormInputId,
-                        principalTable: "FormInputs",
+                        name: "FK_VehicleModels_VehicleMarks_MakeId",
+                        column: x => x.MakeId,
+                        principalTable: "VehicleMarks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Vehicles",
+                name: "FormCompanies",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(maxLength: 256, nullable: false),
-                    Year = table.Column<int>(nullable: true),
-                    LicensePlate = table.Column<string>(nullable: true),
-                    VIN = table.Column<string>(nullable: true),
-                    ModelId = table.Column<int>(nullable: false),
-                    TeamId = table.Column<int>(nullable: false)
+                    FormId = table.Column<string>(nullable: false),
+                    CompanyId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Vehicles", x => x.Id);
+                    table.PrimaryKey("PK_FormCompanies", x => new { x.FormId, x.CompanyId });
                     table.ForeignKey(
-                        name: "FK_Vehicles_VehicleModels_ModelId",
-                        column: x => x.ModelId,
-                        principalTable: "VehicleModels",
+                        name: "FK_FormCompanies_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Vehicles_Teams_TeamId",
+                        name: "FK_FormCompanies_Forms_FormId",
+                        column: x => x.FormId,
+                        principalTable: "Forms",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Persons",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    ApplicationUserId = table.Column<string>(nullable: false),
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
+                    CompanyId = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Persons", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Persons_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Persons_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Teams",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(maxLength: 256, nullable: false),
+                    Description = table.Column<string>(nullable: true),
+                    CompanyId = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Teams", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Teams_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FormTeams",
+                columns: table => new
+                {
+                    FormId = table.Column<string>(nullable: false),
+                    TeamId = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FormTeams", x => new { x.FormId, x.TeamId });
+                    table.ForeignKey(
+                        name: "FK_FormTeams_Forms_FormId",
+                        column: x => x.FormId,
+                        principalTable: "Forms",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FormTeams_Teams_TeamId",
                         column: x => x.TeamId,
                         principalTable: "Teams",
                         principalColumn: "Id",
@@ -415,8 +380,8 @@ namespace server.Migrations
                 name: "PersonTeams",
                 columns: table => new
                 {
-                    PersonId = table.Column<int>(nullable: false),
-                    TeamId = table.Column<int>(nullable: false)
+                    PersonId = table.Column<string>(nullable: false),
+                    TeamId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -436,15 +401,42 @@ namespace server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Vehicles",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(maxLength: 256, nullable: false),
+                    Year = table.Column<int>(nullable: true),
+                    LicensePlate = table.Column<string>(nullable: true),
+                    ModelId = table.Column<string>(nullable: true),
+                    TeamId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Vehicles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Vehicles_VehicleModels_ModelId",
+                        column: x => x.ModelId,
+                        principalTable: "VehicleModels",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Vehicles_Teams_TeamId",
+                        column: x => x.TeamId,
+                        principalTable: "Teams",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Reports",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<string>(nullable: false),
                     Name = table.Column<string>(maxLength: 256, nullable: false),
-                    VehicleId = table.Column<int>(nullable: false),
-                    FormId = table.Column<int>(nullable: false),
-                    DriverId = table.Column<int>(nullable: false),
+                    VehicleId = table.Column<string>(nullable: false),
+                    FormId = table.Column<string>(nullable: false),
+                    DriverId = table.Column<string>(nullable: false),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DateUpdated = table.Column<DateTime>(nullable: false)
                 },
@@ -475,8 +467,8 @@ namespace server.Migrations
                 name: "VehicleCompanies",
                 columns: table => new
                 {
-                    VehicleId = table.Column<int>(nullable: false),
-                    CompanyId = table.Column<int>(nullable: false)
+                    VehicleId = table.Column<string>(nullable: false),
+                    CompanyId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -499,8 +491,8 @@ namespace server.Migrations
                 name: "FormInputValueReports",
                 columns: table => new
                 {
-                    FormInputValueId = table.Column<int>(nullable: false),
-                    ReportId = table.Column<int>(nullable: false)
+                    FormInputValueId = table.Column<string>(nullable: false),
+                    ReportId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -523,8 +515,8 @@ namespace server.Migrations
                 name: "ReportCompanies",
                 columns: table => new
                 {
-                    CompanyId = table.Column<int>(nullable: false),
-                    ReportId = table.Column<int>(nullable: false)
+                    CompanyId = table.Column<string>(nullable: false),
+                    ReportId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -547,8 +539,8 @@ namespace server.Migrations
                 name: "ReportTeams",
                 columns: table => new
                 {
-                    ReportId = table.Column<int>(nullable: false),
-                    TeamId = table.Column<int>(nullable: false)
+                    ReportId = table.Column<string>(nullable: false),
+                    TeamId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -605,6 +597,11 @@ namespace server.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Companies_ApplicationUserId",
+                table: "Companies",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FormCompanies_CompanyId",
                 table: "FormCompanies",
                 column: "CompanyId");
@@ -613,11 +610,6 @@ namespace server.Migrations
                 name: "IX_FormFormInputs_FormInputId",
                 table: "FormFormInputs",
                 column: "FormInputId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FormInputs_FormId",
-                table: "FormInputs",
-                column: "FormId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FormInputValueReports_FormInputValueId",
@@ -641,9 +633,9 @@ namespace server.Migrations
                 column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Persons_TeamId",
+                name: "IX_Persons_CompanyId",
                 table: "Persons",
-                column: "TeamId");
+                column: "CompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PersonTeams_TeamId",
@@ -758,13 +750,10 @@ namespace server.Migrations
                 name: "Persons");
 
             migrationBuilder.DropTable(
-                name: "Vehicles");
-
-            migrationBuilder.DropTable(
                 name: "Forms");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Vehicles");
 
             migrationBuilder.DropTable(
                 name: "VehicleModels");
@@ -777,6 +766,9 @@ namespace server.Migrations
 
             migrationBuilder.DropTable(
                 name: "Companies");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }

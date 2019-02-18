@@ -7,8 +7,7 @@ namespace Logistics.Models
 {
     public class Form
     {
-        [Required]
-        public int Id { get; set; }
+        public string Id { get; set; }
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
@@ -23,8 +22,7 @@ namespace Logistics.Models
 
     public class FormInput
     {
-        [Required]
-        public int Id { get; set; }
+        public string Id { get; set; }
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
@@ -37,10 +35,9 @@ namespace Logistics.Models
 
     public class FormInputValue
     {
+        public string Id { get; set; }
         [Required]
-        public int Id { get; set; }
-        [Required]
-        public int FormInputId { get; set; }
+        public string FormInputId { get; set; }
         public FormInput FormInput { get; set; }
         public string TextValue { get; set; }
         public double? NumberValue { get; set; }

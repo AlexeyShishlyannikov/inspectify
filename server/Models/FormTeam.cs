@@ -7,10 +7,10 @@ namespace server.Models
     public class FormTeam
     {
         [Required]
-        public int FormId { get; set; }
+        public string FormId { get; set; }
         public Form Form { get; set; }
         [Required]
-        public int TeamId { get; set; }
+        public string TeamId { get; set; }
         public Team Team { get; set; }
     }
 }

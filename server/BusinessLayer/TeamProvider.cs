@@ -24,7 +24,7 @@ namespace Logistics.BusinessLayer
             return team;
         }
 
-        public async Task DeleteTeam(int id)
+        public async Task DeleteTeam(string id)
         {
             var team = await dbContext.Teams.FirstOrDefaultAsync(t => t.Id == id);
             if (team != null)
@@ -34,7 +34,7 @@ namespace Logistics.BusinessLayer
             }
         }
 
-        public async Task<Team> GetTeam(int teamId)
+        public async Task<Team> GetTeam(string teamId)
         {
             return await dbContext.Teams.FindAsync(teamId);
         }
