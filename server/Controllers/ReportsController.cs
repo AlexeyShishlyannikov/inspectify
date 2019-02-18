@@ -10,7 +10,7 @@ using server.ViewModels;
 
 namespace Logistics.Controllers
 {
-    [Route("report")]
+    [Route("api/report")]
     public class ReportsController : Controller
     {
         private readonly IReportsProvider reportsProvider;

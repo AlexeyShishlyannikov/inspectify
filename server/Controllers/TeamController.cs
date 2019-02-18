@@ -10,7 +10,7 @@ using server.ViewModels;
 
 namespace Logistics.Controllers
 {
-    [Route("team")]
+    [Route("api/team")]
     public class TeamController : Controller
     {
         private readonly ITeamProvider teamProvider;

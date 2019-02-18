@@ -37,13 +37,18 @@ namespace Server
         public void ConfigureServices(IServiceCollection services)
         {
             // Providers
-            services.AddScoped<IAccountProvider, AccountProvider>();
             services.AddScoped<ICompaniesProvider, CompaniesProvider>();
             services.AddScoped<ITeamProvider, TeamProvider>();
             services.AddScoped<IVehicleProvider, VehicleProvider>();
             services.AddScoped<IReportsProvider, ReportProvider>();
             services.AddScoped<IFormProvider, FormProvider>();
-
+            // Cors policy
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                }));
             // Database
             services.AddDbContext<LogisticsDbContext>(options => options.UseMySql(Configuration.GetConnectionString("LogisticsDb")));
 
@@ -151,7 +156,7 @@ namespace Server
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
+            app.UseCors("MyPolicy");
             app.UseStaticFiles();
 
             app.UseMvc(routes =>

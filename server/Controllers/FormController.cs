@@ -10,7 +10,7 @@ using server.ViewModels;
 
 namespace Logistics.Controllers
 {
-    [Route("form")]
+    [Route("api/form")]
     public class FormController : Controller
     {
         private readonly IFormProvider formProvider;
