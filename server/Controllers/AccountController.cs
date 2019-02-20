@@ -41,16 +41,23 @@ namespace Logistics.Controllers
             {
                 return BadRequest("User already exists");
             }
+            if (await companiesProvider.GetCompany(model.CompanyId) == null) {
+                return BadRequest("Company not found");
+            }
             var identityResult = await userManager.CreateAsync(new ApplicationUser { UserName = model.Email, Email = model.Email }, model.Password);
             if (identityResult.Succeeded)
             {
                 var user = await userManager.FindByEmailAsync(model.Email);
-                await dbContext.Persons.AddAsync(new Person { ApplicationUserId = user.Id, CompanyId = model.CompanyId });
+                await dbContext.Persons.AddAsync(new Person { 
+                    Id = user.Id, 
+                    ApplicationUserId = user.Id, 
+                    CompanyId = model.CompanyId 
+                });
                 await dbContext.SaveChangesAsync();
-                // var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
-                // var link = "http://localhost:4199/confirmation";
-                // var confirmationLink = $"{link}{ new { token, email = user.Email }}";
-                // await SendConfirationEmail(user, confirmationLink);
+                var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                var link = "http://localhost:4199/confirmation";
+                var confirmationLink = $"{link}{ new { token, email = user.Email }}";
+                await SendConfirationEmail(user, confirmationLink);
                 return Ok(await jwtFactory.GenerateEncodedToken(user));
             }
             return BadRequest("Something went wrong!");
@@ -74,10 +81,10 @@ namespace Logistics.Controllers
                     Name = model.CompanyName,
                     ApplicationUserId = user.Id
                 });
-                // var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
-                // var link = "http://localhost:4199/confirmation";
-                // var confirmationLink = $"{link}{ new { token, email = user.Email }}";
-                // await SendConfirationEmail(user, confirmationLink);
+                var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                var link = "http://localhost:4199/confirmation";
+                var confirmationLink = $"{link}{ new { token, email = user.Email }}";
+                await SendConfirationEmail(user, confirmationLink);
                 return Ok(await jwtFactory.GenerateEncodedToken(user));
             }
             return BadRequest("Something went wrong!");
@@ -192,6 +199,7 @@ namespace Logistics.Controllers
             client.Credentials = myCreds;
             try
             {
+                client.Credentials = new System.Net.NetworkCredential("shishlyannikov.dev@gmail.com", "Alexey1h2usf31"); ;
                 await client.SendMailAsync(message);
             }
             catch (Exception ex)
