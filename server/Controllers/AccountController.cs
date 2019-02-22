@@ -41,17 +41,19 @@ namespace Logistics.Controllers
             {
                 return BadRequest("User already exists");
             }
-            if (await companiesProvider.GetCompany(model.CompanyId) == null) {
+            if (await companiesProvider.GetCompany(model.CompanyId) == null)
+            {
                 return BadRequest("Company not found");
             }
             var identityResult = await userManager.CreateAsync(new ApplicationUser { UserName = model.Email, Email = model.Email }, model.Password);
             if (identityResult.Succeeded)
             {
                 var user = await userManager.FindByEmailAsync(model.Email);
-                await dbContext.Persons.AddAsync(new Person { 
-                    Id = user.Id, 
-                    ApplicationUserId = user.Id, 
-                    CompanyId = model.CompanyId 
+                await dbContext.Persons.AddAsync(new Person
+                {
+                    Id = user.Id,
+                    ApplicationUserId = user.Id,
+                    CompanyId = model.CompanyId
                 });
                 await dbContext.SaveChangesAsync();
                 var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -76,7 +78,7 @@ namespace Logistics.Controllers
             if (identityResult.Succeeded)
             {
                 var user = await userManager.FindByEmailAsync(model.Email);
-                await companiesProvider.AddCompany(new Company()
+                await companiesProvider.AddCompany(new Company
                 {
                     Name = model.CompanyName,
                     ApplicationUserId = user.Id
@@ -145,7 +147,7 @@ namespace Logistics.Controllers
             var token = await userManager.GeneratePasswordResetTokenAsync(user);
             var resetUrl = $"localhost:4199/resetpassword{new { token = token, email = user.Email }}";
             // send email
-            return Ok("Email not sent");
+            return Ok("Email not sent, not implemented");
         }
 
         [HttpPost]
