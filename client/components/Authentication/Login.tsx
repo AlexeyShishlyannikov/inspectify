@@ -12,7 +12,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 import { AuthThunks } from '../../store/authentication/authenticationThunks';
-import { ILogin } from '../../store/authentication/authenticationActions';
+import { ILoginAction } from '../../store/authentication/authenticationActions';
 
 const styles: StyleRulesCallback = theme => ({
     container: {
@@ -39,7 +39,7 @@ const styles: StyleRulesCallback = theme => ({
 });
 
 interface ILoginState {
-    login: ILogin;
+    login: ILoginAction;
     showPassword: boolean;
 }
 
@@ -54,8 +54,9 @@ class Login extends React.Component<any, ILoginState> {
     componentWillMount() {
         this.setState({
             login: {
-                userName: '',
-                password: ''
+                email: '',
+                password: '',
+                type: 'LOGIN_ACTION'
             },
             showPassword: false
         });
@@ -79,10 +80,10 @@ class Login extends React.Component<any, ILoginState> {
     };
 
     callLoginApi = () => {
-        AuthThunks.login(this.state.login, false).catch(res => console.log(res));
+        AuthThunks.login(this.state.login);
     };
 
-    isButtonDisabled = () => !this.state.login.userName || !this.state.login.password;
+    isButtonDisabled = () => !this.state.login.email || !this.state.login.password;
 
     render(): JSX.Element {
         const { classes } = this.props;
@@ -98,8 +99,8 @@ class Login extends React.Component<any, ILoginState> {
                         <InputLabel htmlFor="email">Email</InputLabel>
                         <Input
                             type={this.state.showPassword ? 'text' : 'email'}
-                            value={this.state.login.userName}
-                            onChange={this.handleChange('userName')}
+                            value={this.state.login.email}
+                            onChange={this.handleChange('email')}
                         />
                     </FormControl>
                     <FormControl
@@ -122,8 +123,8 @@ class Login extends React.Component<any, ILoginState> {
                                         {this.state.showPassword ? (
                                             <Visibility />
                                         ) : (
-                                            <VisibilityOff />
-                                        )}
+                                                <VisibilityOff />
+                                            )}
                                     </IconButton>
                                 </InputAdornment>
                             }

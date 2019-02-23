@@ -11,7 +11,8 @@ import classNames from 'classnames';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { Link } from 'react-router-dom';
-import { IRegister } from './models/AccontModels';
+import { IRegisterUserAction } from '../../store/authentication/authenticationActions';
+import { AuthThunks } from '../../store/authentication/authenticationThunks';
 
 const styles: StyleRulesCallback = theme => ({
     container: {
@@ -32,11 +33,11 @@ const styles: StyleRulesCallback = theme => ({
     }
 });
 
-interface IRegisterState extends IRegister {
+interface IRegisterState {
     showPassword: boolean;
 }
 
-class Register extends React.Component<any, IRegisterState> {
+class Register extends React.Component<any, IRegisterState & IRegisterUserAction> {
     constructor(props) {
         super(props);
         this.handleChange.bind(this);
@@ -45,7 +46,7 @@ class Register extends React.Component<any, IRegisterState> {
 
     componentWillMount() {
         this.setState({
-            userName: '',
+            email: '',
             password: '',
             confirmPassword: '',
             showPassword: false
@@ -69,9 +70,13 @@ class Register extends React.Component<any, IRegisterState> {
         }));
     };
 
+    registerUser = () => {
+        AuthThunks.registerUser(this.state);
+    } 
+
     isButtonDisabled = () => {
         return (
-            !this.state.userName ||
+            !this.state.email ||
             !this.state.password ||
             !this.state.confirmPassword
         );
@@ -91,8 +96,8 @@ class Register extends React.Component<any, IRegisterState> {
                         <InputLabel htmlFor="email">Email</InputLabel>
                         <Input
                             type={this.state.showPassword ? 'text' : 'email'}
-                            value={this.state.userName}
-                            onChange={this.handleChange('userName')}
+                            value={this.state.email}
+                            onChange={this.handleChange('email')}
                         />
                     </FormControl>
                     <FormControl
@@ -115,8 +120,8 @@ class Register extends React.Component<any, IRegisterState> {
                                         {this.state.showPassword ? (
                                             <Visibility />
                                         ) : (
-                                            <VisibilityOff />
-                                        )}
+                                                <VisibilityOff />
+                                            )}
                                     </IconButton>
                                 </InputAdornment>
                             }
@@ -144,8 +149,8 @@ class Register extends React.Component<any, IRegisterState> {
                                         {this.state.showPassword ? (
                                             <Visibility />
                                         ) : (
-                                            <VisibilityOff />
-                                        )}
+                                                <VisibilityOff />
+                                            )}
                                     </IconButton>
                                 </InputAdornment>
                             }
@@ -156,6 +161,7 @@ class Register extends React.Component<any, IRegisterState> {
                         className={classes.marginTop}
                         variant="contained"
                         color="primary"
+                        onClick={this.registerUser}
                     >
                         Register
                     </Button>

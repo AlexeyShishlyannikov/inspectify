@@ -10,7 +10,7 @@ import classNames from 'classnames';
 
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import { IResetPassword } from './models/AccontModels';
+import { IResetPasswordAction } from 'client/store/authentication/authenticationActions';
 
 const styles: StyleRulesCallback = theme => ({
     container: {
@@ -36,11 +36,11 @@ const styles: StyleRulesCallback = theme => ({
     }
 });
 
-interface IResetPasswordState extends IResetPassword {
+interface IResetPasswordState {
     showPassword: boolean;
 }
 
-class ResetPassword extends React.Component<any, IResetPasswordState> {
+class ResetPassword extends React.Component<any, IResetPasswordState & IResetPasswordAction> {
     constructor(props) {
         super(props);
         this.handleChange.bind(this);

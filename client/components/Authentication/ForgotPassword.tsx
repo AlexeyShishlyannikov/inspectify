@@ -6,7 +6,7 @@ import { StyleRulesCallback, withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import { IForgotPassword } from './models/AccontModels';
+import { IForgotPasswordAction } from 'client/store/authentication/authenticationActions';
 
 const styles: StyleRulesCallback = theme => ({
     container: {
@@ -32,7 +32,7 @@ const styles: StyleRulesCallback = theme => ({
     }
 });
 
-type IForgotPasswordState = IForgotPassword;
+type IForgotPasswordState = IForgotPasswordAction;
 
 class ForgotPassword extends React.Component<any, IForgotPasswordState> {
     constructor(props) {
@@ -42,7 +42,7 @@ class ForgotPassword extends React.Component<any, IForgotPasswordState> {
 
     componentWillMount() {
         this.setState({
-            userName: ''
+            email: ''
         });
     }
 
@@ -57,7 +57,7 @@ class ForgotPassword extends React.Component<any, IForgotPasswordState> {
     };
 
     isButtonDisabled = () => {
-        return !this.state.userName;
+        return !this.state.email;
     };
 
     render() {
@@ -75,8 +75,8 @@ class ForgotPassword extends React.Component<any, IForgotPasswordState> {
                         <InputLabel htmlFor="email">Email</InputLabel>
                         <Input
                             type="email"
-                            value={this.state.userName}
-                            onChange={this.handleChange('userName')}
+                            value={this.state.email}
+                            onChange={this.handleChange('email')}
                         />
                     </FormControl>
                     <Button

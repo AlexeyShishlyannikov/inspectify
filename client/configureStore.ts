@@ -16,7 +16,7 @@ import { History } from 'history';
 
 export default function configureStore(
     history: History,
-    initialState?: ApplicationState
+    initialState: ApplicationState = StoreModule.getInitialState()
 ) {
     // Build middleware. These are functions that can process the actions before they reach the store.
     const windowIfDefined =
@@ -34,9 +34,7 @@ export default function configureStore(
 
     // Combine all reducers and instantiate the app-wide store instance
     const allReducers = buildRootReducer(reducers);
-    const store = createStoreWithMiddleware(allReducers, initialState) as Store<
-        ApplicationState
-    >;
+    const store = createStoreWithMiddleware(allReducers, initialState) as Store<ApplicationState>;
 
     // Enable Webpack hot module replacement for reducers
     if (module.hot) {

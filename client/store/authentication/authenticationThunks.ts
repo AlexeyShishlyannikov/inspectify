@@ -1,123 +1,180 @@
 import {
-    ILogin,
-    IRegisterUser,
-    IForgotPassword,
-    IChangePassword,
-    IResetPassword,
-    IExternalLogin,
-    IRegisterCompany,
-    IConfirmEmail
+    ILoginAction,
+    IRegisterUserAction,
+    IForgotPasswordAction,
+    IChangePasswordAction,
+    IResetPasswordAction,
+    IRegisterCompanyAction,
+    IConfirmEmailAction,
+    ILoadedTokenAction,
+    IReceivedErrorAction,
+    IChangeIsLoadingAction
 } from './authenticationActions';
+import { AppThunkAction, ApplicationState } from '..';
 
 export namespace AuthThunks {
-    export const login = async (
-        login: ILogin,
-        isCompany: boolean
-    ): Promise<string> => {
-        const response = await fetch(
-            window.location.origin + '/api/account/login/' + isCompany
-                ? 'company'
-                : 'user',
+    export const login = (
+        login: ILoginAction
+    ): AppThunkAction<ILoadedTokenAction | IReceivedErrorAction | IChangeIsLoadingAction> => (dispatch, getState: () => ApplicationState) => {
+        dispatch({
+            type: "CHANGE_IS_LOADING_ACTION",
+            status: true
+        });
+        fetch(
+            window.location.origin + '/api/account/login',
             {
                 body: JSON.stringify(login),
                 method: 'POST'
             }
-        );
-        return response.json();
+        ).then(res => {
+            const token = JSON.stringify(res.body);
+            dispatch({
+                type: "LOADED_USER_ACTION",
+                token: token
+            });
+        }).catch(err => dispatch({
+            type: "RECEIVED_ERROR_ACTION",
+            message: err.message
+        }));
     };
 
-    export const registerUser = async (
-        register: IRegisterUser
-    ): Promise<string> => {
-        const response = await fetch(
+    export const registerUser = (
+        register: IRegisterUserAction
+    ): AppThunkAction<ILoadedTokenAction | IReceivedErrorAction | IChangeIsLoadingAction> => (dispatch, getState) => {
+        dispatch({
+            type: "CHANGE_IS_LOADING_ACTION",
+            status: true
+        });
+        fetch(
             window.location.origin + '/api/account/register/user',
             {
                 body: JSON.stringify(register),
                 method: 'POST'
             }
-        );
-        return response.json();
+        ).then(res => {
+            const token = JSON.stringify(res.body);
+            dispatch({
+                type: "LOADED_USER_ACTION",
+                token: token
+            });
+        }).catch(err => dispatch({
+            type: "RECEIVED_ERROR_ACTION",
+            message: err.message
+        }));
     };
 
-    export const registerCompany = async (
-        register: IRegisterCompany
-    ): Promise<string> => {
-        const response = await fetch(
+    export const registerCompany = (
+        register: IRegisterCompanyAction
+    ): AppThunkAction<ILoadedTokenAction | IReceivedErrorAction | IChangeIsLoadingAction> => (dispatch, getState) => {
+        dispatch({
+            type: "CHANGE_IS_LOADING_ACTION",
+            status: true
+        });
+        fetch(
             window.location.origin + '/api/account/register/company',
             {
                 body: JSON.stringify(register),
                 method: 'POST'
             }
-        );
-        return response.json();
+        ).then(res => {
+            const token = JSON.stringify(res.body);
+            dispatch({
+                type: "LOADED_USER_ACTION",
+                token: token
+            });
+        }).catch(err => dispatch({
+            type: "RECEIVED_ERROR_ACTION",
+            message: err.message
+        }));
     };
 
-    export const forgotPassword = async (
-        forgotPassword: IForgotPassword
-    ): Promise<any> => {
-        const response = await fetch(
+    export const forgotPassword = (
+        forgotPassword: IForgotPasswordAction
+    ): AppThunkAction<IChangeIsLoadingAction> => (dispatch, getState) => {
+        dispatch({
+            type: "CHANGE_IS_LOADING_ACTION",
+            status: true
+        });
+        fetch(
             window.location.origin + '/api/account/forgot',
             {
                 body: JSON.stringify(forgotPassword),
                 method: 'POST'
             }
-        );
-        return response.json();
+        ).then(() => {
+            dispatch({
+                type: "CHANGE_IS_LOADING_ACTION",
+                status: false
+            });
+        });
     };
 
-    export const changePassword = async (
-        changePassword: IChangePassword
-    ): Promise<any> => {
-        const response = await fetch(
+    export const changePassword = (
+        changePassword: IChangePasswordAction
+    ): AppThunkAction<IChangeIsLoadingAction> => (dispatch, getState) => {
+        dispatch({
+            type: "CHANGE_IS_LOADING_ACTION",
+            status: true
+        });
+        fetch(
             window.location.origin + '/api/account/change',
             {
                 body: JSON.stringify(changePassword),
                 method: 'POST'
             }
-        );
-        return response.json();
+        ).then(() => {
+            dispatch({
+                type: "CHANGE_IS_LOADING_ACTION",
+                status: false
+            });
+        });
     };
 
-    export const resetPassword = async (
-        resetPassword: IResetPassword
-    ): Promise<any> => {
-        const response = await fetch(
+    export const resetPassword = (
+        resetPassword: IResetPasswordAction
+    ): AppThunkAction<IChangeIsLoadingAction> => (dispatch, getState) => {
+        dispatch({
+            type: "CHANGE_IS_LOADING_ACTION",
+            status: true
+        });
+        fetch(
             window.location.origin + '/api/account/reset',
             {
                 body: JSON.stringify(resetPassword),
                 method: 'POST'
             }
-        );
-        return response.json();
+        ).then(() => {
+            dispatch({
+                type: "CHANGE_IS_LOADING_ACTION",
+                status: true
+            });
+        });
     };
 
-    export const externalLogin = async (
-        externalLogin: IExternalLogin
-    ): Promise<any> => {
-        const response = await fetch(
+    export const confirmEmailAddress = (
+        confirmEmail: IConfirmEmailAction
+    ): AppThunkAction<IChangeIsLoadingAction | ILoadedTokenAction | IReceivedErrorAction> => (dispatch, getState) => {
+        dispatch({
+            type: "CHANGE_IS_LOADING_ACTION",
+            status: true
+        });
+        fetch(
             window.location.origin +
-                `/api/account/external?provider=${
-                    externalLogin.provider
-                }&token=${externalLogin.token}`,
+            `/api/account/confirm?token=${confirmEmail.token}&email=${
+            confirmEmail.email
+            }`,
             {
                 method: 'GET'
             }
-        );
-        return response.json();
-    };
-
-    export const confirmEmailAddress = async (
-        confirmEmail: IConfirmEmail
-    ): Promise<any> => {
-        const response = await fetch(
-            window.location.origin +
-                `/api/account/confirm?token=${confirmEmail.token}&email=${
-                    confirmEmail.email
-                }`,
-            {
-                method: 'GET'
-            }
-        );
-        return response.json();
+        ).then(res => {
+            const token = JSON.stringify(res.body);
+            dispatch({
+                type: "LOADED_USER_ACTION",
+                token: token
+            });
+        }).catch(err => dispatch({
+            type: "RECEIVED_ERROR_ACTION",
+            message: err.message
+        }));
     };
 }
