@@ -41,7 +41,13 @@ namespace Logistics.BusinessLayer
 
         public async Task<Team> GetTeamByPerson(string personId)
         {
-            var personTeam = await dbContext.PersonTeams.Where(pt => pt.PersonId == personId).Include(pt => pt.Team).SingleOrDefaultAsync();
+            var personTeam = await dbContext.PersonTeams
+                .Where(pt => pt.PersonId == personId)
+                .Include(pt => pt.Team)
+                .SingleOrDefaultAsync();
+            if (personTeam == null) {
+                return null;
+            }
             return personTeam.Team;
         }
 

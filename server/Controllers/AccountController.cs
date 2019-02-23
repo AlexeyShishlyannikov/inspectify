@@ -99,11 +99,12 @@ namespace Logistics.Controllers
             var user = await userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
-                if (await userManager.IsLockedOutAsync(user))
-                {
-                    // add email logic to notify user
-                    return BadRequest("User has been locked out for 10 minutes");
-                }
+                return NotFound("User not found");
+            }
+            if (await userManager.IsLockedOutAsync(user))
+            {
+                // add email logic to notify user
+                return BadRequest("User has been locked out for 10 minutes");
             }
             else if (!await userManager.CheckPasswordAsync(user, model.Password))
             {

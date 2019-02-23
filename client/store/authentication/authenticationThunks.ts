@@ -24,17 +24,17 @@ export namespace AuthThunks {
             window.location.origin + '/api/account/login',
             {
                 body: JSON.stringify(login),
-                method: 'POST'
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'Application/json'
+                }
             }
-        ).then(res => {
-            const token = JSON.stringify(res.body);
-            dispatch({
-                type: "LOADED_USER_ACTION",
-                token: token
-            });
-        }).catch(err => dispatch({
-            type: "RECEIVED_ERROR_ACTION",
-            message: err.message
+        ).then(res => res.text().then(result => {
+            if (!res.ok) {
+                dispatch({ type: "RECEIVED_ERROR_ACTION", message: result });
+            } else {
+                dispatch({ type: "LOADED_USER_ACTION", token: result });
+            }
         }));
     };
 
@@ -51,15 +51,12 @@ export namespace AuthThunks {
                 body: JSON.stringify(register),
                 method: 'POST'
             }
-        ).then(res => {
-            const token = JSON.stringify(res.body);
-            dispatch({
-                type: "LOADED_USER_ACTION",
-                token: token
-            });
-        }).catch(err => dispatch({
-            type: "RECEIVED_ERROR_ACTION",
-            message: err.message
+        ).then(res => res.text().then(result => {
+            if (!res.ok) {
+                dispatch({ type: "RECEIVED_ERROR_ACTION", message: result });
+            } else {
+                dispatch({ type: "LOADED_USER_ACTION", token: result });
+            }
         }));
     };
 
@@ -76,15 +73,12 @@ export namespace AuthThunks {
                 body: JSON.stringify(register),
                 method: 'POST'
             }
-        ).then(res => {
-            const token = JSON.stringify(res.body);
-            dispatch({
-                type: "LOADED_USER_ACTION",
-                token: token
-            });
-        }).catch(err => dispatch({
-            type: "RECEIVED_ERROR_ACTION",
-            message: err.message
+        ).then(res => res.text().then(result => {
+            if (!res.ok) {
+                dispatch({ type: "RECEIVED_ERROR_ACTION", message: result });
+            } else {
+                dispatch({ type: "LOADED_USER_ACTION", token: result });
+            }
         }));
     };
 
@@ -101,7 +95,7 @@ export namespace AuthThunks {
                 body: JSON.stringify(forgotPassword),
                 method: 'POST'
             }
-        ).then(() => {
+        ).then(res => res.text()).then(() => {
             dispatch({
                 type: "CHANGE_IS_LOADING_ACTION",
                 status: false
@@ -122,7 +116,7 @@ export namespace AuthThunks {
                 body: JSON.stringify(changePassword),
                 method: 'POST'
             }
-        ).then(() => {
+        ).then(res => res.text()).then(() => {
             dispatch({
                 type: "CHANGE_IS_LOADING_ACTION",
                 status: false
@@ -143,7 +137,7 @@ export namespace AuthThunks {
                 body: JSON.stringify(resetPassword),
                 method: 'POST'
             }
-        ).then(() => {
+        ).then(res => res.text()).then(() => {
             dispatch({
                 type: "CHANGE_IS_LOADING_ACTION",
                 status: true
@@ -166,8 +160,7 @@ export namespace AuthThunks {
             {
                 method: 'GET'
             }
-        ).then(res => {
-            const token = JSON.stringify(res.body);
+        ).then(res => res.text()).then(token => {
             dispatch({
                 type: "LOADED_USER_ACTION",
                 token: token

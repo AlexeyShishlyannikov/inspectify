@@ -72,7 +72,7 @@ class Register extends React.Component<any, IRegisterState & IRegisterUserAction
 
     registerUser = () => {
         AuthThunks.registerUser(this.state);
-    } 
+    }
 
     isButtonDisabled = () => {
         return (
@@ -165,9 +165,7 @@ class Register extends React.Component<any, IRegisterState & IRegisterUserAction
                     >
                         Register
                     </Button>
-                    <Link className={classes.marginTop} to="login">
-                        Sign in
-                    </Link>
+                    <Link className={classes.marginTop} to="login"> Sign in </Link>
                 </div>
             </div>
         );

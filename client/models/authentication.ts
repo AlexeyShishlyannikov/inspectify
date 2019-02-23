@@ -1,4 +1,4 @@
-import { jwt_decode } from "jwt-decode";
+let jwtDecode = require('jwt-decode');
 
 export class User {
     readonly email: string;
@@ -8,7 +8,7 @@ export class User {
     readonly isCompany: boolean;
 
     constructor(token: string) {
-        const decodedToken = jwt_decode(token);
+        const decodedToken = jwtDecode(token);
         this.email = decodedToken.email;
         this.expirationDate = decodedToken.expirationDate;
         this.teamId = decodedToken.teamId;
