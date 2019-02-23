@@ -1,5 +1,6 @@
 import { AuthenticationState } from "./authentication/authenticationState";
 import { authReducer } from "./authentication/authenticationReducers";
+import { load } from "redux-localstorage-simple";
 
 // The top-level state object
 export interface ApplicationState {
@@ -28,9 +29,9 @@ export interface AppThunkAction<TAction> {
 }
 
 export function getInitialState(): ApplicationState {
-    const storedState = JSON.parse(localStorage.getItem('state') as string);
+    const storedState = load();
     if (storedState) {
-        return storedState;
+        return storedState as ApplicationState;
     }
     return {
         authentication: AuthenticationState.initialState()

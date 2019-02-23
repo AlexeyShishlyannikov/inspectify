@@ -13,6 +13,7 @@ import { routerReducer, routerMiddleware } from 'react-router-redux';
 import * as StoreModule from './store';
 import { ApplicationState, reducers } from './store';
 import { History } from 'history';
+import { save } from 'redux-localstorage-simple';
 
 export default function configureStore(
     history: History,
@@ -26,7 +27,7 @@ export default function configureStore(
         windowIfDefined &&
         (windowIfDefined.__REDUX_DEVTOOLS_EXTENSION__ as () => StoreEnhancer);
     const createStoreWithMiddleware = compose<StoreEnhancerStoreCreator<any>>(
-        applyMiddleware(thunk, routerMiddleware(history)),
+        applyMiddleware(thunk, routerMiddleware(history), save()),
         devToolsExtension
             ? devToolsExtension()
             : <S>(next: StoreEnhancerStoreCreator<S>) => next

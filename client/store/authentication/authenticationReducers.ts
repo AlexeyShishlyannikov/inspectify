@@ -33,7 +33,7 @@ export const authReducer: Reducer<AuthenticationState> = (
             });
         case 'LOGOUT_ACTION':
             return new AuthenticationState({
-                isAuthenticated: state.isAuthenticated,
+                isAuthenticated: false,
                 isLoading: state.isLoading,
                 user: undefined,
                 errorMessage: undefined

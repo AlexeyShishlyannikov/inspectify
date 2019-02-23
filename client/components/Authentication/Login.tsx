@@ -1,21 +1,21 @@
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import FormControl from '@material-ui/core/FormControl';
 import IconButton from '@material-ui/core/IconButton';
 import Input from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import InputLabel from '@material-ui/core/InputLabel';
-import { StyleRulesCallback, withStyles, StyledComponentProps } from '@material-ui/core/styles';
+import { StyleRulesCallback, withStyles } from '@material-ui/core/styles';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import classNames from 'classnames';
-import * as React from 'react';
-import { Link } from 'react-router-dom';
-import CircularProgress from '@material-ui/core/CircularProgress';
-
-import { AuthThunks } from '../../store/authentication/authenticationThunks';
-import { ILoginAction } from '../../store/authentication/authenticationActions';
-import { connect } from 'react-redux';
 import { ApplicationState } from 'client/store';
+import * as React from 'react';
+import { connect } from 'react-redux';
+import { Link, Redirect } from 'react-router-dom';
+
+import { ILoginAction } from '../../store/authentication/authenticationActions';
+import { AuthThunks } from '../../store/authentication/authenticationThunks';
 
 const styles: StyleRulesCallback = theme => ({
     container: {
@@ -87,35 +87,32 @@ class Login extends React.Component<ILoginProps & { classes }, ILoginState> {
         }));
     };
 
-    callLoginApi = () => this.props.login(this.state);
-
-    isButtonDisabled = () => {
-        return !this.state.email || !this.state.password;
+    callLoginApi = (event: React.ChangeEvent<HTMLFormElement>) => {
+        event.preventDefault()
+        this.props.login(this.state);
     };
+
+    isButtonDisabled = () => !this.state.email || !this.state.password;
 
     getSubmitButton = () => {
         return <Button
             disabled={this.isButtonDisabled()}
-            onClick={this.callLoginApi}
+            type="submit"
             className={this.props.classes.marginTop}
             variant="contained"
             color="primary"
         >
-            {this.props.isLoading ? <CircularProgress /> : 'Login'}
+            {this.props.isLoading ? <CircularProgress size={30} /> : 'Login'}
         </Button>
     }
 
     render(): JSX.Element {
         const { classes } = this.props;
+        if (this.props.isAuthenticated) return <Redirect to='/' />;
         return (
             <div className={classes.container}>
-                <div className={classes.formContainer}>
-                    <FormControl
-                        className={classNames(
-                            classes.margin,
-                            classes.textField
-                        )}
-                    >
+                <form onSubmit={this.callLoginApi} className={classes.formContainer}>
+                    <FormControl className={classNames(classes.margin, classes.textField)}>
                         <InputLabel htmlFor="email">Email</InputLabel>
                         <Input
                             type={this.state.showPassword ? 'text' : 'email'}
@@ -123,12 +120,7 @@ class Login extends React.Component<ILoginProps & { classes }, ILoginState> {
                             onChange={this.handleChange('email')}
                         />
                     </FormControl>
-                    <FormControl
-                        className={classNames(
-                            classes.margin,
-                            classes.textField
-                        )}
-                    >
+                    <FormControl className={classNames(classes.margin, classes.textField)}>
                         <InputLabel htmlFor="password">Password</InputLabel>
                         <Input
                             type={this.state.showPassword ? 'text' : 'password'}
@@ -138,13 +130,8 @@ class Login extends React.Component<ILoginProps & { classes }, ILoginState> {
                                 <InputAdornment position="end">
                                     <IconButton
                                         aria-label="Toggle password visibility"
-                                        onClick={this.handleClickShowPassword}
-                                    >
-                                        {this.state.showPassword ? (
-                                            <Visibility />
-                                        ) : (
-                                                <VisibilityOff />
-                                            )}
+                                        onClick={this.handleClickShowPassword}>
+                                        {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
                                     </IconButton>
                                 </InputAdornment>
                             }
@@ -156,7 +143,7 @@ class Login extends React.Component<ILoginProps & { classes }, ILoginState> {
                         <Link to="register">Register</Link>
                         <Link to="resetPassword">Forgot Password</Link>
                     </div>
-                </div>
+                </form>
             </div>
         );
     }

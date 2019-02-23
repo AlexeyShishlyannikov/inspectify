@@ -8,13 +8,14 @@ import { ConnectedRouter } from 'react-router-redux';
 import { createBrowserHistory } from 'history';
 import { AppContainer } from 'react-hot-loader';
 import './css/site.css';
+import { load } from 'redux-localstorage-simple';
 
 const history = createBrowserHistory({ basename: '' });
 
 const ROOT = document.getElementById('react-app');
 // Get the application-wide store instance, prepopulating with state from the server where available.
-const initialState = (window as any).initialReduxState as ApplicationState;
-const store = configureStore(history, initialState);
+// const initialState = (window as any).initialReduxState as ApplicationState;
+const store = configureStore(history, load() as ApplicationState);
 let routes = RoutesModule.routes;
 
 const renderApp = () => {
