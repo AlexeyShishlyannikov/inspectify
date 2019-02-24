@@ -1,3 +1,5 @@
+import { Action } from "redux";
+
 export type AuthenticationAction =
     | ILoginAction
     | IRegisterUserAction
@@ -25,13 +27,13 @@ export type LOGOUT_ACTION = 'LOGOUT_ACTION';
 export type CHANGE_IS_LOADING_ACTION = 'CHANGE_IS_LOADING_ACTION';
 export type REFRESH_TOKEN_ACTION = 'REFRESH_TOKEN_ACTION';
 
-export interface ILoginAction {
+export interface ILoginAction extends Action {
     type: LOGIN_ACTION;
     email: string;
     password: string;
 }
 
-export interface IRegisterUserAction {
+export interface IRegisterUserAction extends Action {
     type: REGISTER_USER_ACTION;
     email: string;
     password: string;
@@ -40,7 +42,7 @@ export interface IRegisterUserAction {
     lastName: string;
 }
 
-export interface IRegisterCompanyAction {
+export interface IRegisterCompanyAction extends Action {
     type: REGISTER_COMPANY_ACTION;
     email: string;
     password: string;
@@ -48,48 +50,48 @@ export interface IRegisterCompanyAction {
     companyName: string;
 }
 
-export interface IChangePasswordAction {
+export interface IChangePasswordAction extends Action {
     type: CHANGE_PASSWORD_ACTION;
     password: string;
     oldPassword: string;
 }
 
-export interface IResetPasswordAction {
+export interface IResetPasswordAction extends Action {
     type: RESET_PASSWORD_ACTION;
     password: string;
     confirmPassword: string;
 }
 
-export interface IForgotPasswordAction {
+export interface IForgotPasswordAction extends Action {
     type: FORGOT_PASSWORD_ACTION;
     email: string;
 }
 
-export interface IConfirmEmailAction {
+export interface IConfirmEmailAction extends Action {
     type: CONFIRM_EMAIL_ACTION;
     token: string;
     email: string;
 }
 
-export interface IRefreshTokenAction {
+export interface IRefreshTokenAction extends Action {
     type: REFRESH_TOKEN_ACTION;
 }
 
-export interface ILogoutAction {
+export interface ILogoutAction extends Action {
     type: LOGOUT_ACTION;
 }
 
-export interface IChangeIsLoadingAction {
+export interface IChangeIsLoadingAction extends Action {
     type: CHANGE_IS_LOADING_ACTION;
     status: boolean;
 }
 
-export interface ILoadedTokenAction {
+export interface ILoadedTokenAction extends Action {
     type: LOADED_TOKEN_ACTION;
     token: string;
 }
 
-export interface IReceivedErrorAction {
+export interface IReceivedErrorAction extends Action {
     type: RECEIVED_ERROR_ACTION;
     message: string;
 }

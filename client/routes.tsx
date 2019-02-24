@@ -1,13 +1,14 @@
 import * as React from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Redirect, Route } from 'react-router-dom';
+import { Store } from 'redux';
 
 import ForgotPassword from './components/Authentication/ForgotPassword';
 import Login from './components/Authentication/Login';
 import Register from './components/Authentication/Register';
 import ResetPassword from './components/Authentication/ResetPassword';
+import { DashboardRoutes } from './components/Dashboard/dashboardRoutes';
 import Home from './components/Home';
 import { Layout } from './components/Layout';
-import { Store } from 'redux';
 import { ApplicationState } from './store';
 
 export const routes = (store: Store<ApplicationState>) => (
@@ -15,6 +16,7 @@ export const routes = (store: Store<ApplicationState>) => (
         <Route exact path="/" component={Home} />
         <UnauthenenticatedRoute store={store} exact path="/login" component={Login} />
         <UnauthenenticatedRoute store={store} exact path="/register" component={Register} />
+        <Route path="/dashboard" component={() => DashboardRoutes('/dashboard')} />
         <Route exact path="/forgotPassword" component={ForgotPassword} />
         <Route exact path="/resetPassword" component={ResetPassword} />
     </Layout>
@@ -37,7 +39,7 @@ export const UnauthenenticatedRoute = ({ component: Component, store, ...rest })
         <Route {...rest} render={(props) => (
             !storeRef.getState().authentication.isAuthenticated
                 ? <Component {...props} />
-                : <Redirect to='/' />
+                : <Redirect to='/dashboard/home' />
         )} />
     );
 }

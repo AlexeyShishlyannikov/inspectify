@@ -1,29 +1,33 @@
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import MenuIcon from '@material-ui/icons/Menu';
-import * as React from 'react';
-import { NavLink } from 'react-router-dom';
-import { connect } from 'react-redux';
 import { ApplicationState } from 'client/store';
-import { ILogoutAction } from '../store/authentication/authenticationActions';
+import * as React from 'react';
+import { connect } from 'react-redux';
+import { NavLink } from 'react-router-dom';
 
-const styles = {
+import { ILogoutAction } from '../store/authentication/authenticationActions';
+import ProfileDropdown from './Authentication/Profile/ProfileDropdown';
+
+const styles: { [string: string]: React.CSSProperties } = {
     root: {
         flexGrow: 1
     },
     grow: {
         flexGrow: 1
     },
-    menuButton: {
-        marginLeft: -12,
-        marginRight: 20
+    toolbar: {
+        justifyContent: 'space-between'
     },
     navButton: {
-        color: 'white'
+        color: 'white',
+        textDecoration: 'none'
+    },
+    rightPanel: {
+        display: 'flex',
+        flexDirection: 'row'
     }
 };
 
@@ -38,44 +42,33 @@ const NavMenu = (props: INavProps) => {
     return (
         <div className={classes.root}>
             <AppBar position="static">
-                <Toolbar>
-                    <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h6" color="inherit" className={classes.grow}>Inspectify</Typography>
-                    <NavLink to="/">
-                        <Button className={classes.navButton} color="inherit">Home</Button>
-                    </NavLink>
-                    {
-                        !props.isAuthenticated &&
-                        [
-                            <NavLink key="1" to="login">
-                                <Button className={classes.navButton} color="inherit">Login</Button>
+                <Toolbar className={classes.toolbar}>
+                    <div className={classes.leftPanel}>
+                        <NavLink to="/">
+                            <Button className={classes.navButton} color="inherit">
+                                <Typography variant="h6" color="inherit">Inspectify</Typography>
+                            </Button>
+                        </NavLink>
+                    </div>
+                    <div className={classes.rightPanel}>
+                        {
+                            !props.isAuthenticated &&
+                            [
+                                <NavLink key="1" to="login">
+                                    <Button className={classes.navButton} color="inherit">Login</Button>
+                                </NavLink>,
+                                <NavLink key="2" to="register">
+                                    <Button className={classes.navButton} color="inherit">Register</Button>
+                                </NavLink>
+                            ]
+                        }
+                        {props.isAuthenticated && [
+                            <NavLink key="3" to="/dashboard">
+                                <Button className={classes.navButton} color="inherit">Dashboard</Button>
                             </NavLink>,
-                            <NavLink key="2" to="register">
-                                <Button className={classes.navButton} color="inherit">Register</Button>
-                            </NavLink>
-                        ]
-                    }
-                    {
-                        props.isAuthenticated &&
-                        <Button onClick={props.logout} className={classes.navButton} color="inherit">Logout</Button>
-                    }
-                    <NavLink to="teams">
-                        <Button className={classes.navButton} color="inherit">Teams</Button>
-                    </NavLink>
-                    <NavLink to="company">
-                        <Button className={classes.navButton} color="inherit">Company</Button>
-                    </NavLink>
-                    <NavLink to="vehicle">
-                        <Button className={classes.navButton} color="inherit">Vehicle</Button>
-                    </NavLink>
-                    <NavLink to="reports">
-                        <Button className={classes.navButton} color="inherit">Reports</Button>
-                    </NavLink>
-                    <NavLink to="forms">
-                        <Button className={classes.navButton} color="inherit">Forms</Button>
-                    </NavLink>
+                            <ProfileDropdown key="4" />
+                        ]}
+                    </div>
                 </Toolbar>
             </AppBar>
         </div>
@@ -97,4 +90,4 @@ const dispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, dispatchToProps)(withStyles(styles)(NavMenu));
+export default connect(mapStateToProps, dispatchToProps)(withStyles(styles as any)(NavMenu));

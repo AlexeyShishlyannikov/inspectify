@@ -14,7 +14,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 
-import { ILoginAction } from '../../store/authentication/authenticationActions';
 import { AuthThunks } from '../../store/authentication/authenticationThunks';
 
 const styles: StyleRulesCallback = theme => ({
@@ -41,34 +40,25 @@ const styles: StyleRulesCallback = theme => ({
     }
 });
 
-type ILoginState = ILoginAction & {
+interface ILoginState {
+    email: string;
+    password: string;
     showPassword: boolean;
 }
 
 interface ILoginProps {
     isLoading: boolean;
     isAuthenticated: boolean;
-    errorMessage: string;
-    login: (loginModel: ILoginAction) => void;
+    errorMessage?: string;
+    login: (loginModel: ILoginState) => void;
 }
 
 class Login extends React.Component<ILoginProps & { classes }, ILoginState> {
-    constructor(props) {
-        super(props);
-        this.handleChange.bind(this);
-        this.handleClickShowPassword.bind(this);
-        this.callLoginApi.bind(this);
-        this.getSubmitButton.bind(this)
-    }
-
-    componentWillMount() {
-        this.setState({
-            email: '',
-            password: '',
-            type: 'LOGIN_ACTION',
-            showPassword: false
-        });
-    }
+    state = {
+        email: '',
+        password: '',
+        showPassword: false
+    };
 
     handleChange = (prop: string) => (
         event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -108,7 +98,7 @@ class Login extends React.Component<ILoginProps & { classes }, ILoginState> {
 
     render(): JSX.Element {
         const { classes } = this.props;
-        if (this.props.isAuthenticated) return <Redirect to='/' />;
+        if (this.props.isAuthenticated) return <Redirect to='/dashboard' />;
         return (
             <div className={classes.container}>
                 <form onSubmit={this.callLoginApi} className={classes.formContainer}>
@@ -159,7 +149,13 @@ const mapStateToProps = (state: ApplicationState) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        login: (loginModel: ILoginAction) => dispatch(AuthThunks.login(loginModel)),
+        login: (loginModel: ILoginState) => {
+            dispatch(AuthThunks.login({
+                type: "LOGIN_ACTION",
+                email: loginModel.email,
+                password: loginModel.password
+            }))
+        },
     };
 };
 
