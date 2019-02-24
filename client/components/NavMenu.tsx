@@ -1,6 +1,6 @@
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, StyleRules } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { ApplicationState } from 'client/store';
@@ -11,7 +11,7 @@ import { NavLink } from 'react-router-dom';
 import { ILogoutAction } from '../store/authentication/authenticationActions';
 import ProfileDropdown from './Authentication/Profile/ProfileDropdown';
 
-const styles: { [string: string]: React.CSSProperties } = {
+const styles: StyleRules = {
     root: {
         flexGrow: 1
     },
@@ -34,7 +34,7 @@ const styles: { [string: string]: React.CSSProperties } = {
 interface INavProps {
     isAuthenticated: boolean;
     logout: () => void;
-    classes: any;
+    classes: Record<string, string>;
 }
 
 const NavMenu = (props: INavProps) => {

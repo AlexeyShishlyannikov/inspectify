@@ -1,3 +1,6 @@
+import * as React from 'react';
+import { connect } from 'react-redux';
+import { Link, Redirect } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import FormControl from '@material-ui/core/FormControl';
@@ -5,14 +8,11 @@ import IconButton from '@material-ui/core/IconButton';
 import Input from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import InputLabel from '@material-ui/core/InputLabel';
-import { StyleRulesCallback, withStyles } from '@material-ui/core/styles';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import { StyleRulesCallback, withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import { ApplicationState } from 'client/store';
-import * as React from 'react';
-import { connect } from 'react-redux';
-import { Link, Redirect } from 'react-router-dom';
 
 import { AuthThunks } from '../../store/authentication/authenticationThunks';
 
