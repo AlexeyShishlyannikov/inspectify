@@ -6,6 +6,8 @@ import { ILogoutAction } from 'client/store/authentication/authenticationActions
 import * as React from 'react';
 import { connect } from 'react-redux';
 import './ProfileDropdown.scss';
+import { Redirect } from 'react-router';
+import { Link } from 'react-router-dom';
 
 interface IProfileDropdownProps {
     email?: string;
@@ -57,7 +59,9 @@ class ProfileDropdown extends React.Component<IProfileDropdownProps, IProfileDro
                                 </ListItem>
                                 <Divider light />
                                 <MenuList>
-                                    <MenuItem onClick={this.handleClose}>Profile</MenuItem>
+                                    <Link to="/dashboard/profile" style={{ textDecoration: 'none' }}>
+                                        <MenuItem>Profile</MenuItem>
+                                    </Link>
                                     <MenuItem onClick={this.props.logout}>Logout</MenuItem>
                                 </MenuList>
                             </ClickAwayListener>

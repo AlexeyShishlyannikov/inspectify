@@ -6,7 +6,7 @@ import ForgotPassword from './components/Authentication/ForgotPassword';
 import Login from './components/Authentication/Login';
 import Register from './components/Authentication/Register';
 import ResetPassword from './components/Authentication/ResetPassword';
-import { DashboardRoutes } from './components/Dashboard/dashboardRoutes';
+import { DashboardRoutes } from './components/Dashboard/DashboardRoutes';
 import Home from './components/Home';
 import { Layout } from './components/Layout';
 import { ApplicationState } from './store';
@@ -16,9 +16,9 @@ export const routes = (store: Store<ApplicationState>) => (
         <Route exact path="/" component={Home} />
         <UnauthenenticatedRoute store={store} exact path="/login" component={Login} />
         <UnauthenenticatedRoute store={store} exact path="/register" component={Register} />
+        <UnauthenenticatedRoute store={store} exact path="/forgotPassword" component={ForgotPassword} />
+        <PrivateRoute store={store} exact path="/resetPassword" component={ResetPassword} />
         <Route path="/dashboard" component={() => DashboardRoutes('/dashboard')} />
-        <Route exact path="/forgotPassword" component={ForgotPassword} />
-        <Route exact path="/resetPassword" component={ResetPassword} />
     </Layout>
 );
 

@@ -10,4 +10,10 @@
     .dashboard-link {
         text-decoration: none;
     }
+    .dashboard-children {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: 15px;
+    }
 }
