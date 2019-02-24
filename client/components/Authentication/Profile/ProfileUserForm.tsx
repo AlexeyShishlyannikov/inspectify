@@ -41,7 +41,7 @@ class ProfileUserForm extends React.Component<IProfileUserFormProps, IProfileUse
 
     updateUser = (event: React.ChangeEvent<HTMLFormElement>) => {
         event.preventDefault()
-        this.props.logout();
+        // this.props.logout();
     };
 
     handleChange = (prop: string) => (
@@ -61,7 +61,7 @@ class ProfileUserForm extends React.Component<IProfileUserFormProps, IProfileUse
             disabled={this.isButtonDisabled()}
             type="submit"
             className=""
-            variant={this.isButtonDisabled() ? 'flat' : 'contained'}
+            variant={this.isButtonDisabled() ? 'text' : 'contained'}
             color="primary"
         >
             {this.props.isLoading ? <CircularProgress size={30} /> : 'Save'}
@@ -78,7 +78,7 @@ class ProfileUserForm extends React.Component<IProfileUserFormProps, IProfileUse
                     <CardHeader
                         title={'Profile'}
                         action={
-                            <Button onClick={this.props.logout} variant="flat" color="secondary">
+                            <Button onClick={this.props.logout} variant="text" color="secondary">
                                 Logout
                         </Button>
                         } />

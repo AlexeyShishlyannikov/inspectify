@@ -36,40 +36,44 @@ class ProfileDropdown extends React.Component<IProfileDropdownProps, IProfileDro
     };
 
     render() {
-        return <div>
-            <Button
-                buttonRef={node => this.anchorEl = node}
-                aria-owns={open ? 'menu-list-grow' : undefined}
-                aria-haspopup="true"
-                style={{color: 'white'}}
-                onClick={this.handleToggle}
-            >
-                <ProfileIcon />
-            </Button>
-            <Popper className="profile-dropdown" open={this.state.open} anchorEl={this.anchorEl} placement={'bottom-end'} transition disablePortal>
-                {({ TransitionProps, placement }) => (
-                    <Grow
-                        {...TransitionProps}
-                        style={{ transformOrigin: 'right top' }}
-                    >
-                        <Paper>
-                            <ClickAwayListener onClickAway={this.handleClose}>
-                                <ListItem>
-                                    <ListItemText primaryTypographyProps={{variant: 'h6'}} primary={this.props.email} secondary={this.props.email} />
-                                </ListItem>
-                                <Divider light />
-                                <MenuList>
-                                    <Link to="/dashboard/profile" style={{ textDecoration: 'none' }}>
-                                        <MenuItem>Profile</MenuItem>
-                                    </Link>
-                                    <MenuItem onClick={this.props.logout}>Logout</MenuItem>
-                                </MenuList>
-                            </ClickAwayListener>
-                        </Paper>
-                    </Grow>
-                )}
-            </Popper>
-        </div>
+        return (
+            <div>
+                <Button
+                    buttonRef={node => this.anchorEl = node}
+                    aria-owns={open ? 'menu-list-grow' : undefined}
+                    aria-haspopup="true"
+                    style={{ color: 'white' }}
+                    onClick={this.handleToggle}
+                >
+                    <ProfileIcon />
+                </Button>
+                <Popper className="profile-dropdown" open={this.state.open} anchorEl={this.anchorEl} placement={'bottom-end'} transition disablePortal>
+                    {({ TransitionProps, placement }) => (
+                        <Grow
+                            {...TransitionProps}
+                            style={{ transformOrigin: 'right top' }}
+                        >
+                            <Paper>
+                                <ClickAwayListener onClickAway={this.handleClose}>
+                                    <div>
+                                        <ListItem>
+                                            <ListItemText primaryTypographyProps={{ variant: 'h6' }} primary={this.props.email} secondary={this.props.email} />
+                                        </ListItem>
+                                        <Divider light />
+                                        <MenuList>
+                                            <Link to="/dashboard/profile" onClick={this.handleClose} style={{ textDecoration: 'none' }}>
+                                                <MenuItem>Profile</MenuItem>
+                                            </Link>
+                                            <MenuItem onClick={this.props.logout}>Logout</MenuItem>
+                                        </MenuList>
+                                    </div>
+                                </ClickAwayListener>
+                            </Paper>
+                        </Grow>
+                    )}
+                </Popper>
+            </div>
+        );
     }
 };
 
@@ -79,6 +83,7 @@ const mapStateToProps = (state: ApplicationState) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     logout: () => {
+        <Redirect to="/login"/>
         const action: ILogoutAction = {
             type: "LOGOUT_ACTION"
         };

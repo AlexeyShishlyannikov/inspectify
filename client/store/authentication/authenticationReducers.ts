@@ -32,6 +32,7 @@ export const authReducer: Reducer<AuthenticationState> = (
                 errorMessage: action.message
             });
         case 'LOGOUT_ACTION':
+            localStorage.removeItem('token');
             return new AuthenticationState({
                 isAuthenticated: false,
                 isLoading: state.isLoading,

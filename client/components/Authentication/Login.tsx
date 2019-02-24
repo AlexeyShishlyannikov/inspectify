@@ -92,7 +92,7 @@ class Login extends React.Component<ILoginProps & { classes }, ILoginState> {
             variant="contained"
             color="primary"
         >
-            {this.props.isLoading ? <CircularProgress size={30} /> : 'Login'}
+            {this.props.isLoading ? <CircularProgress size={30} color='secondary' /> : 'Login'}
         </Button>
     }
 

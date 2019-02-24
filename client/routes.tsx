@@ -18,7 +18,7 @@ export const routes = (store: Store<ApplicationState>) => (
         <UnauthenenticatedRoute store={store} exact path="/register" component={Register} />
         <UnauthenenticatedRoute store={store} exact path="/forgotPassword" component={ForgotPassword} />
         <PrivateRoute store={store} exact path="/resetPassword" component={ResetPassword} />
-        <Route path="/dashboard" component={() => DashboardRoutes('/dashboard')} />
+        <PrivateRoute store={store} path="/dashboard" component={() => DashboardRoutes('/dashboard')} />
     </Layout>
 );
 
