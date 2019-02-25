@@ -21,6 +21,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using server.BusinessLayer;
 
 namespace Server
 {
@@ -43,6 +44,7 @@ namespace Server
             services.AddScoped<IReportsProvider, ReportProvider>();
             services.AddScoped<IFormProvider, FormProvider>();
             services.AddScoped<IInvitationProvider, InvitationProvider>();
+            services.AddScoped<IEmailProvider, EmailProvider>();
             // Cors policy
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
                 {
