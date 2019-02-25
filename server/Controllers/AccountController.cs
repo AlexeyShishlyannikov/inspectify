@@ -9,6 +9,7 @@ using Logistics.Models;
 using Logistics.Models.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using server.BusinessLayer;
 using server.ViewModels;
 
 namespace Logistics.Controllers
@@ -18,6 +19,8 @@ namespace Logistics.Controllers
     {
         private readonly IJwtFactory jwtFactory;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly IEmailProvider emailProvider;
+        private readonly IInvitationProvider invitationProvider;
         private readonly LogisticsDbContext dbContext;
         private readonly ICompaniesProvider companiesProvider;
 
@@ -25,12 +28,16 @@ namespace Logistics.Controllers
             IJwtFactory jwtFactory,
             LogisticsDbContext dbContext,
             ICompaniesProvider companiesProvider,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IEmailProvider emailProvider,
+            IInvitationProvider invitationProvider)
         {
             this.jwtFactory = jwtFactory;
             this.dbContext = dbContext;
             this.companiesProvider = companiesProvider;
             this.userManager = userManager;
+            this.emailProvider = emailProvider;
+            this.invitationProvider = invitationProvider;
         }
 
         [HttpPost]
@@ -41,28 +48,34 @@ namespace Logistics.Controllers
             {
                 return BadRequest("User already exists");
             }
-            if (await companiesProvider.GetCompany(model.CompanyId) == null)
+            var invitation = await invitationProvider.GetInvitation(model.InvitationId);
+            if (invitation == null)
             {
-                return BadRequest("Company not found");
+                return BadRequest("Invitation not found");
             }
-            var identityResult = await userManager.CreateAsync(new ApplicationUser { UserName = model.Email, Email = model.Email }, model.Password);
-            if (identityResult.Succeeded)
+            var identityResult = await userManager.CreateAsync(new ApplicationUser
             {
-                var user = await userManager.FindByEmailAsync(model.Email);
-                await dbContext.Persons.AddAsync(new Person
-                {
-                    Id = user.Id,
-                    ApplicationUserId = user.Id,
-                    CompanyId = model.CompanyId
-                });
-                await dbContext.SaveChangesAsync();
-                var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
-                var link = "http://localhost:4199/confirmation";
-                var confirmationLink = $"{link}{ new { token, email = user.Email }}";
-                await SendConfirationEmail(user, confirmationLink);
-                return Ok(await jwtFactory.GenerateEncodedToken(user));
+                UserName = model.Email,
+                Email = model.Email,
+                PhoneNumber = invitation.PhoneNumber
+            }, model.Password);
+            if (!identityResult.Succeeded)
+            {
+                return BadRequest("Something went wrong!");
             }
-            return BadRequest("Something went wrong!");
+            var user = await userManager.FindByEmailAsync(model.Email);
+            await dbContext.Persons.AddAsync(new Person
+            {
+                Id = user.Id,
+                ApplicationUserId = user.Id,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                CompanyId = invitation.CompanyId
+            });
+            await dbContext.SaveChangesAsync();
+            var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+            await emailProvider.SendConfirmEmail(user, token);
+            return Ok(await jwtFactory.GenerateEncodedToken(user));
         }
 
 
@@ -84,9 +97,7 @@ namespace Logistics.Controllers
                     ApplicationUserId = user.Id
                 });
                 var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
-                var link = "http://localhost:4199/confirmation";
-                var confirmationLink = $"{link}{ new { token, email = user.Email }}";
-                await SendConfirationEmail(user, confirmationLink);
+                await emailProvider.SendConfirmEmail(user, token);
                 return Ok(await jwtFactory.GenerateEncodedToken(user));
             }
             return BadRequest("Something went wrong!");
@@ -111,10 +122,6 @@ namespace Logistics.Controllers
                 await userManager.AccessFailedAsync(user);
                 return BadRequest("Incorrect password");
             }
-            // else if (!await userManager.IsEmailConfirmedAsync(user))
-            // {
-            //     return BadRequest("Email is not yet confirmed");
-            // }
             await userManager.ResetAccessFailedCountAsync(user);
             return Ok(await jwtFactory.GenerateEncodedToken(user));
         }
@@ -185,30 +192,6 @@ namespace Logistics.Controllers
                 await userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
             }
             return Ok("Password was reset succesfully");
-        }
-
-        private async Task SendConfirationEmail(ApplicationUser user, string confirmationLink)
-        {
-            SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
-            string fromEmail = "shishlyannikov.dev@gmail.com";
-
-            client.EnableSsl = true;
-            MailAddress from = new MailAddress(fromEmail, $"Application name");
-            MailAddress to = new MailAddress(user.Email, $"{user.UserName}");
-            MailMessage message = new MailMessage(from, to);
-            message.Body = $"Go to confirmation link - {confirmationLink}";
-            message.Subject = $"Email Confirmation - {user.UserName}";
-            NetworkCredential myCreds = new NetworkCredential(fromEmail, "", "");
-            client.Credentials = myCreds;
-            try
-            {
-                client.Credentials = new System.Net.NetworkCredential("shishlyannikov.dev@gmail.com", "Alexey1h2usf31"); ;
-                await client.SendMailAsync(message);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
         }
     }
 }

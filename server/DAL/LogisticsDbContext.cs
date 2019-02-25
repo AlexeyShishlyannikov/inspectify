@@ -11,6 +11,7 @@ namespace Logistics.DAL
         public DbSet<Company> Companies { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<Person> Persons { get; set; }
+        public DbSet<Invitation> Invitations { get; set; }
         public DbSet<PersonTeam> PersonTeams { get; set; }
         // Vehicles
         public DbSet<Vehicle> Vehicles { get; set; }

@@ -15,7 +15,9 @@ namespace Logistics.Models.Identity
 
     public class RegisterUserModel : RegisterModel
     {
-        public string CompanyId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string InvitationId { get; set; }
     }
 
     public class RegisterCompanyModel : RegisterModel

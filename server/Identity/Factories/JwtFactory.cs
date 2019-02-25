@@ -32,18 +32,20 @@ namespace Logistics.Identity
         public async Task<string> GenerateEncodedToken(ApplicationUser user)
         {
             var userClaims = await userManager.GetClaimsAsync(user);
+            var isUserVerified = await userManager.IsEmailConfirmedAsync(user) ? "true" : "false";
             var company = await companyProvider.GetCompanyByPersonId(user.Id);
             var companyId = company != null ? company.Id : "";
             var team = await teamProvider.GetTeamByPerson(user.Id);
             var teamId = team != null ? team.Id : "";
-            var isCompany = company.ApplicationUserId == user.Id;
+            var isCompany = company.ApplicationUserId == user.Id ? "true" : "false";
             var customClaims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Jti, await jwtOptions.JtiGenerator()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim("isEmailVerified", isUserVerified),
                 new Claim("companyId", companyId),
                 new Claim("teamId", teamId),
-                new Claim("isCompany", isCompany ? "true" : "false")
+                new Claim("isCompany", isCompany)
             };
 
             // Create the JWT security token and encode it.

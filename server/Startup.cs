@@ -42,6 +42,7 @@ namespace Server
             services.AddScoped<IVehicleProvider, VehicleProvider>();
             services.AddScoped<IReportsProvider, ReportProvider>();
             services.AddScoped<IFormProvider, FormProvider>();
+            services.AddScoped<IInvitationProvider, InvitationProvider>();
             // Cors policy
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
                 {
