@@ -1,8 +1,8 @@
-﻿using Logistics.Models;
+﻿using server.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Logistics.BusinessLayer
+namespace server.BusinessLayer
 {
     public interface ITeamProvider
     {

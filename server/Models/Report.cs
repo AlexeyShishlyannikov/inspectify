@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using server.Models;
 
-namespace Logistics.Models
+namespace server.Models
 {
     public class Report
     {

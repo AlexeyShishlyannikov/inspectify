@@ -1,7 +1,7 @@
-﻿using Logistics.Models;
+﻿using server.Models;
 using System.Threading.Tasks;
 
-namespace Logistics.Identity
+namespace server.Identity
 {
     public interface IJwtFactory
     {

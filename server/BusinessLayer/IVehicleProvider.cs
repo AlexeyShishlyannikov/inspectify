@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Logistics.Models;
+using server.Models;
 
-namespace Logistics.BusinessLayer
+namespace server.BusinessLayer
 {
     public interface IVehicleProvider
     {

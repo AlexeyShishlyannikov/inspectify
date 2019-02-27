@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Logistics.Models;
+using server.Models;
 
 namespace server.ViewModels
 {

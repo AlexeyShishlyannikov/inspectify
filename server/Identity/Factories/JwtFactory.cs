@@ -1,6 +1,6 @@
-﻿using Logistics.BusinessLayer;
-using Logistics.Identity.Models;
-using Logistics.Models;
+﻿using server.BusinessLayer;
+using server.Identity.Models;
+using server.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using System.IdentityModel.Tokens.Jwt;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Logistics.Identity
+namespace server.Identity
 {
     public class JwtFactory : IJwtFactory
     {

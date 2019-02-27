@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Logistics.DAL;
-using Logistics.Models;
+using server.DAL;
+using server.Models;
 using Microsoft.EntityFrameworkCore;
 using server.BusinessLayer;
-using server.Models;
 
-namespace Logistics.BusinessLayer
+namespace server.BusinessLayer
 {
     public class InvitationProvider : IInvitationProvider
     {

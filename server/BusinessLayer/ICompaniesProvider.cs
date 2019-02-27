@@ -1,7 +1,7 @@
-﻿using Logistics.Models;
+﻿using server.Models;
 using System.Threading.Tasks;
 
-namespace Logistics.BusinessLayer
+namespace server.BusinessLayer
 {
     public interface ICompaniesProvider
     {

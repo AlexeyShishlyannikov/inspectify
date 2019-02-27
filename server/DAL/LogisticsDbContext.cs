@@ -1,9 +1,8 @@
-﻿using Logistics.Models;
+﻿using server.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using server.Models;
 
-namespace Logistics.DAL
+namespace server.DAL
 {
     public class LogisticsDbContext : IdentityDbContext<ApplicationUser>
     {

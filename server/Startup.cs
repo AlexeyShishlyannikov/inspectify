@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
-using Logistics.BusinessLayer;
-using Logistics.DAL;
-using Logistics.Filters;
-using Logistics.Identity;
-using Logistics.Identity.Models;
-using Logistics.Models;
-using Logistics.Models.Identity;
+using server.BusinessLayer;
+using server.DAL;
+using server.Filters;
+using server.Identity;
+using server.Identity.Models;
+using server.Models;
+using server.Models.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -21,9 +21,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using server.BusinessLayer;
 
-namespace Server
+namespace server
 {
     public class Startup
     {
@@ -53,7 +52,8 @@ namespace Server
                            .AllowAnyHeader();
                 }));
             // Database
-            services.AddDbContext<LogisticsDbContext>(options => options.UseMySql(Configuration.GetConnectionString("LogisticsDb")));
+            services.AddDbContext<LogisticsDbContext>(options => 
+                options.UseMySql(Configuration.GetConnectionString("LogisticsDb")));
 
             // Identity
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -161,6 +161,7 @@ namespace Server
             }
             app.UseCors("MyPolicy");
             app.UseStaticFiles();
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

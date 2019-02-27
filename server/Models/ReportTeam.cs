@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Logistics.Models;
+using server.Models;
 
 namespace server.Models
 {

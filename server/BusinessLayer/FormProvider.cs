@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Logistics.DAL;
-using Logistics.Models;
+using server.DAL;
+using server.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Logistics.BusinessLayer
+namespace server.BusinessLayer
 {
     public class FormProvider : IFormProvider
     {

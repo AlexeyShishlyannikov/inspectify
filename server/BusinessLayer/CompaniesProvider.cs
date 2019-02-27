@@ -1,10 +1,10 @@
-﻿using Logistics.DAL;
-using Logistics.Models;
+﻿using server.DAL;
+using server.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Logistics.BusinessLayer
+namespace server.BusinessLayer
 {
     public class CompaniesProvider : ICompaniesProvider
     {
@@ -46,14 +46,9 @@ namespace Logistics.BusinessLayer
 
         public async Task<Company> UpdateCompany(Company company)
         {
-            var dbCompany = await dbContext.Companies.SingleOrDefaultAsync(c => c.Id == company.Id);
-            if (dbCompany != null)
-            {
-                dbContext.Companies.Update(company);
-                await dbContext.SaveChangesAsync();
-                return company;
-            }
-            return null;
+            dbContext.Companies.Update(company);
+            await dbContext.SaveChangesAsync();
+            return company;
         }
     }
 }

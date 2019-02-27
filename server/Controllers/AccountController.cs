@@ -2,17 +2,16 @@
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
-using Logistics.BusinessLayer;
-using Logistics.DAL;
-using Logistics.Identity;
-using Logistics.Models;
-using Logistics.Models.Identity;
+using server.BusinessLayer;
+using server.DAL;
+using server.Identity;
+using server.Models;
+using server.Models.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using server.BusinessLayer;
 using server.ViewModels;
 
-namespace Logistics.Controllers
+namespace server.Controllers
 {
     [Route("api/account")]
     public class AccountController : Controller

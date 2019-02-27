@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Logistics.BusinessLayer;
-using Logistics.Models;
-using Microsoft.AspNetCore.Mvc;
 using server.BusinessLayer;
 using server.Models;
+using Microsoft.AspNetCore.Mvc;
 using server.ViewModels;
 
-namespace Logistics.Controllers
+namespace server.Controllers
 {
     [Route("api/invitations")]
     public class InvitationController : Controller

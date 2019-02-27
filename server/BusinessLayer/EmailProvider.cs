@@ -2,16 +2,16 @@ using System;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
-using Logistics.Models;
-using Microsoft.EntityFrameworkCore;
+using server.DAL;
 using server.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace server.BusinessLayer
 {
     public class EmailProvider : IEmailProvider
     {
-        private readonly DbContext context;
-        public EmailProvider(DbContext context)
+        private readonly LogisticsDbContext context;
+        public EmailProvider(LogisticsDbContext context)
         {
             this.context = context;
         }
@@ -39,7 +39,7 @@ namespace server.BusinessLayer
             try
             {
                 client.Credentials = new System.Net.NetworkCredential("shishlyannikov.dev@gmail.com", "Alexey1h2usf31");
-                // await client.SendMailAsync(message);
+                await client.SendMailAsync(message);
                 return true;
             }
             catch (Exception ex)

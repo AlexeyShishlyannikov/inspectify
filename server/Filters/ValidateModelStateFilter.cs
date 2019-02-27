@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Logistics.Filters
+namespace server.Filters
 {
     public sealed class ValidateModelStateFilter : IActionFilter
     {

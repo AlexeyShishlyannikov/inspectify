@@ -1,12 +1,12 @@
 using AutoMapper;
-using Logistics.Models;
+using server.Models;
 using server.ViewModels;
 
 namespace server.MappingProfiles
 {
-    public class ProfileSetup : Profile
+    public class MappingProfile : Profile
     {
-        public void MappingProfile()
+        public MappingProfile()
         {
             ConfigureVehicleMappings();
             ConfigureTeamMappings();
@@ -38,7 +38,13 @@ namespace server.MappingProfiles
         public void ConfigureCompanyMappings()
         {
             CreateMap<Company, CompanyViewModel>();
-            CreateMap<CompanyViewModel, Company>();
+            CreateMap<CompanyViewModel, Company>()
+                .ForMember(model => model.ApplicationUser, opt => opt.Ignore())
+                .ForMember(model => model.ApplicationUserId, opt => opt.Ignore())
+                .ForMember(model => model.Teams, opt => opt.Ignore())
+                .ForMember(model => model.FormCompanies, opt => opt.Ignore())
+                .ForMember(model => model.VehicleCompanies, opt => opt.Ignore())
+                .ForMember(model => model.ReportCompanies, opt => opt.Ignore());
         }
 
         public void ConfigurePersonMappings()

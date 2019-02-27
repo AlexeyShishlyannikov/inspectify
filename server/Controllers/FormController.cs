@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Logistics.BusinessLayer;
-using Logistics.Models;
+using server.BusinessLayer;
+using server.Models;
 using Microsoft.AspNetCore.Mvc;
 using server.ViewModels;
 
-namespace Logistics.Controllers
+namespace server.Controllers
 {
     [Route("api/form")]
     public class FormController : Controller

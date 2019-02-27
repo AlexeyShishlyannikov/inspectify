@@ -1,4 +1,4 @@
-namespace Logistics.Models
+namespace server.Models
 {
     public class PersonTeam
     {
