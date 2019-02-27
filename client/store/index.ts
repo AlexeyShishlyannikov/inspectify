@@ -1,14 +1,16 @@
 import { AuthenticationState } from "./authentication/authenticationState";
 import { authReducer } from "./authentication/authenticationReducers";
 import { load } from "redux-localstorage-simple";
+import { CompanyState } from "./company/companyState";
+import { companyReducer } from "./company/companyReducers";
 
 // The top-level state object
 export interface ApplicationState {
     authentication: AuthenticationState;
+    company: CompanyState;
     // vehicle:;
     // report:;
     // reportForm:;
-    // company:;
     // team:;
 }
 
@@ -16,7 +18,8 @@ export interface ApplicationState {
 // the reducer with the matching name. It's important that the names match exactly, and that the reducer
 // acts on the corresponding ApplicationState property type.
 export const reducers = {
-    authentication: authReducer
+    authentication: authReducer,
+    company: companyReducer
 };
 
 // This type can be used as a hint on action creators so that its 'dispatch' and 'getState' params are
@@ -34,6 +37,7 @@ export function getInitialState(): ApplicationState {
         return storedState as ApplicationState;
     }
     return {
-        authentication: AuthenticationState.initialState()
+        authentication: AuthenticationState.initialState(),
+        company: CompanyState.initialState()
     };
 }

@@ -1,6 +1,6 @@
 import './ProfileForm.scss';
 
-import { CardActions } from '@material-ui/core';
+import { Avatar, CardActions } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -9,39 +9,51 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
-import { User } from 'client/models/Authentication';
-import { ApplicationState } from 'client/store';
-import { ILogoutAction } from 'client/store/authentication/authenticationActions';
+import { User } from '../../../models/Authentication';
+import { ICompany } from '../../../models/company';
+import { ApplicationState } from '../../../store';
+import { ILogoutAction } from '../../../store/authentication/authenticationActions';
+import { CompanyThunks } from '../../../store/company/companyThunks';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 
-interface IProfileUserFormProps {
+interface IProfileCompanyFormProps {
     user?: User;
     isLoading: boolean;
     isAuthenticated: boolean;
     errorMessage?: string;
+    company?: ICompany;
+    isCompanyLoading: boolean;
     logout: () => void;
+    getCompany: () => void;
+    updateCompany: (company: ICompany) => void;
 }
 
-interface IProfileUserFormState {
+interface IProfileCompanyFormState {
     email: string;
-    firstName?: string;
-    lastName?: string;
-    phoneNumber?: number;
+    name: string;
+    photo?: string;
 }
 
-class ProfileUserForm extends React.Component<IProfileUserFormProps, IProfileUserFormState> {
-    state = {
+class ProfileUserForm extends React.Component<IProfileCompanyFormProps, IProfileCompanyFormState> {
+    state: IProfileCompanyFormState = {
         email: this.props.user ? this.props.user.email : '',
-        firstName: '',
-        lastName: '',
-        phoneNumber: undefined
+        name: this.props.company ? this.props.company.name : '',
+        photo: this.props.company ? this.props.company.logoUri : ''
     };
 
-    updateUser = (event: React.ChangeEvent<HTMLFormElement>) => {
+    componentWillMount() {
+        this.props.getCompany();
+    }
+
+    updateCompany = (event: React.ChangeEvent<HTMLFormElement>) => {
         event.preventDefault()
-        // this.props.logout();
+        this.props.updateCompany({
+            id: this.props.company ? this.props.company.id : '',
+            name: this.state.name,
+            logoUri: ''
+        });
     };
 
     handleChange = (prop: string) => (
@@ -54,7 +66,7 @@ class ProfileUserForm extends React.Component<IProfileUserFormProps, IProfileUse
         }));
     };
 
-    isButtonDisabled = () => !this.state.email || !this.state.firstName || !this.state.lastName || !this.state.phoneNumber;
+    isButtonDisabled = () => !this.state.email || !this.state.name;
 
     getSubmitButton = () => {
         return <Button
@@ -72,14 +84,26 @@ class ProfileUserForm extends React.Component<IProfileUserFormProps, IProfileUse
         if (!this.props.isAuthenticated) return <Redirect to="/login" />
         return (
             <Card className="profile-form-card">
-                <form className="profile-form" onSubmit={this.updateUser}>
+                <form className="profile-form" onSubmit={this.updateCompany}>
                     <CardHeader
-                        title={'Profile'}
+                        title={
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <Avatar style={{ transform: 'scale(0.75)' }} src={this.props.company ? this.props.company.logoUri : ''}>
+                                    {this.props.company ?
+                                        (this.props.company.logoUri ?
+                                            null
+                                            : this.props.company.name.substring(0, 2).toUpperCase())
+                                        : null}
+                                </Avatar>
+                                <div>Company</div>
+                            </div>
+                        }
                         action={
                             <Button onClick={this.props.logout} variant="text" color="secondary">
                                 Logout
                             </Button>
-                        } />
+                        }
+                    />
                     <CardContent className="profile-form-content">
                         <FormControl className="profile-form-input">
                             <InputLabel htmlFor="email">Email</InputLabel>
@@ -90,27 +114,19 @@ class ProfileUserForm extends React.Component<IProfileUserFormProps, IProfileUse
                             />
                         </FormControl>
                         <FormControl className="profile-form-input">
-                            <InputLabel htmlFor="firstName">First Name</InputLabel>
+                            <InputLabel htmlFor="name">Name</InputLabel>
                             <Input
                                 type="text"
-                                value={this.state.firstName}
-                                onChange={this.handleChange('firstName')}
+                                value={this.state.name}
+                                onChange={this.handleChange('name')}
                             />
                         </FormControl>
                         <FormControl className="profile-form-input">
-                            <InputLabel htmlFor="lastName">Last Name</InputLabel>
+                            <InputLabel htmlFor="photo">Photo</InputLabel>
                             <Input
                                 type="text"
-                                value={this.state.lastName}
-                                onChange={this.handleChange('lastName')}
-                            />
-                        </FormControl>
-                        <FormControl className="profile-form-input">
-                            <InputLabel htmlFor="phoneNumber">Phone Number</InputLabel>
-                            <Input
-                                type="number"
-                                value={this.state.phoneNumber}
-                                onChange={this.handleChange('phoneNumber')}
+                                value={this.state.photo}
+                                onChange={this.handleChange('photo')}
                             />
                         </FormControl>
                     </CardContent>
@@ -128,7 +144,9 @@ const mapStateToProps = (state: ApplicationState) => ({
     user: state.authentication.user,
     isLoading: state.authentication.isLoading,
     errorMessage: state.authentication.errorMessage,
-    isAuthenticated: state.authentication.isAuthenticated
+    isAuthenticated: state.authentication.isAuthenticated,
+    company: state.company.company,
+    isCompanyLoading: state.company.isLoading
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -137,7 +155,9 @@ const mapDispatchToProps = (dispatch) => ({
             type: "LOGOUT_ACTION"
         };
         dispatch(action);
-    }
+    },
+    getCompany: () => dispatch(CompanyThunks.getCompany()),
+    updateCompany: (company: ICompany) => dispatch(CompanyThunks.updateCompany(company))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProfileUserForm);
