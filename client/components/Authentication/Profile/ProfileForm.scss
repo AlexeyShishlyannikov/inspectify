@@ -1,0 +1,15 @@
+.profile-form-card {
+    display: flex;
+    width: 100%;
+    .profile-form {
+        width: 100%;
+        .profile-form-content {
+            display: flex;
+            flex-direction: column;
+            .profile-form-input {
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+        }
+    }
+}

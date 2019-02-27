@@ -2,32 +2,39 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Logistics.BusinessLayer;
-using Logistics.Models;
+using AutoMapper;
+using server.BusinessLayer;
+using server.Models;
 using Microsoft.AspNetCore.Mvc;
+using server.ViewModels;
 
-namespace Logistics.Controllers
+namespace server.Controllers
 {
-    [Route("vehicle")]
+    [Route("api/vehicle")]
     public class VehicleController : Controller
     {
         private readonly IVehicleProvider vehicleProvider;
+        private readonly IMapper mapper;
 
-        public VehicleController(IVehicleProvider vehicleProvider)
+        public VehicleController(IVehicleProvider vehicleProvider, IMapper mapper)
         {
+            this.mapper = mapper;
             this.vehicleProvider = vehicleProvider;
         }
 
         [HttpPost]
         [Route("add")]
-        public async Task<IActionResult> AddVehicle(Vehicle vehicle)
+        public async Task<IActionResult> AddVehicle(VehicleViewModel vehicleViewModel)
         {
-            return Ok(await vehicleProvider.AddVehicle(vehicle));
+            var vehicle = mapper.Map<Vehicle>(vehicleViewModel);
+            vehicle = await vehicleProvider.AddVehicle(vehicle);
+            vehicleViewModel = mapper.Map<VehicleViewModel>(vehicle);
+            return Ok(vehicleViewModel);
         }
 
         [HttpDelete]
         [Route("delete")]
-        public async Task<IActionResult> DeleteVehicle(int id)
+        public async Task<IActionResult> DeleteVehicle(string id)
         {
             await vehicleProvider.DeleteVehicle(id);
             return Ok(id);
@@ -35,24 +42,27 @@ namespace Logistics.Controllers
 
         [HttpPut]
         [Route("update")]
-        public async Task<IActionResult> EditVehicle(Vehicle vehicle)
+        public async Task<IActionResult> EditVehicle(VehicleViewModel vehicleViewModel)
         {
+            var vehicle = mapper.Map<Vehicle>(vehicleViewModel);
             var dbVehicle = await vehicleProvider.EditVehicle(vehicle);
             if (dbVehicle != null)
             {
-                return Ok(dbVehicle);
+                var dbVehicleViewModel = mapper.Map<Vehicle, VehicleViewModel>(dbVehicle);
+                return Ok(dbVehicleViewModel);
             }
             return NotFound();
         }
 
         [HttpGet]
         [Route("make/get")]
-        public async Task<IActionResult> GetMake(int makeId)
+        public async Task<IActionResult> GetMake(string makeId)
         {
             var make = await vehicleProvider.GetMake(makeId);
             if (make != null)
             {
-                return Ok(make);
+                var makeViewModel = mapper.Map<VehicleMakeViewModel>(make);
+                return Ok(makeViewModel);
             }
             return NotFound();
         }
@@ -61,45 +71,53 @@ namespace Logistics.Controllers
         [Route("make/getMakes")]
         public async Task<IActionResult> GetMakes(string searchTerm)
         {
-            return Ok(await vehicleProvider.GetMakes(searchTerm));
+            var makes = await vehicleProvider.GetMakes(searchTerm);
+            var makeViewModelList = makes.Select(m => mapper.Map<VehicleMakeViewModel>(m)).ToList();
+            return Ok(makeViewModelList);
         }
 
         [HttpGet]
         [Route("model/get")]
-        public async Task<IActionResult> GetModel(int modelId)
+        public async Task<IActionResult> GetModel(string modelId)
         {
             var model = await vehicleProvider.GetModel(modelId);
             if (model != null)
             {
-                return Ok(model);
+                var modelViewModel = mapper.Map<VehicleModelViewModel>(model);
+                return Ok(modelViewModel);
             }
             return NotFound();
         }
 
         [HttpGet]
         [Route("model/getModels")]
-        public async Task<IActionResult> GetModels(int makeId, string searchTerm)
+        public async Task<IActionResult> GetModels(string makeId, string searchTerm)
         {
-            return Ok(await vehicleProvider.GetModels(makeId, searchTerm));
+            var models = await vehicleProvider.GetModels(makeId, searchTerm);
+            var modelViewModelList = models.Select(m => mapper.Map<VehicleModelViewModel>(m)).ToList();
+            return Ok(modelViewModelList);
         }
 
         [HttpGet]
         [Route("get")]
-        public async Task<IActionResult> GetVehicle(int id)
+        public async Task<IActionResult> GetVehicle(string id)
         {
             var vehicle = await vehicleProvider.GetVehicle(id);
             if (vehicle != null)
             {
-                return Ok(vehicle);
+                var vehicleViewModel = mapper.Map<VehicleModelViewModel>(vehicle);
+                return Ok(vehicleViewModel);
             }
             return NotFound();
         }
 
         [HttpGet]
         [Route("getVehicles")]
-        public async Task<IActionResult> GetVehicles(int teamId, string searchTerm)
+        public async Task<IActionResult> GetVehicles(string teamId, string searchTerm)
         {
-            return Ok(await vehicleProvider.GetVehicles(teamId, searchTerm));
+            var vehicles = await vehicleProvider.GetVehicles(teamId, searchTerm);
+            var vehiclesViewModelList = vehicles.Select(v => mapper.Map<VehicleViewModel>(v)).ToList();
+            return Ok(vehiclesViewModelList);
         }
     }
 }

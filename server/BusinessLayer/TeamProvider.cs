@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Logistics.DAL;
-using Logistics.Models;
+using server.DAL;
+using server.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Logistics.BusinessLayer
+namespace server.BusinessLayer
 {
     public class TeamProvider : ITeamProvider
     {
@@ -24,7 +24,7 @@ namespace Logistics.BusinessLayer
             return team;
         }
 
-        public async Task DeleteTeam(int id)
+        public async Task DeleteTeam(string id)
         {
             var team = await dbContext.Teams.FirstOrDefaultAsync(t => t.Id == id);
             if (team != null)
@@ -34,9 +34,21 @@ namespace Logistics.BusinessLayer
             }
         }
 
-        public async Task<Team> GetTeam(int teamId)
+        public async Task<Team> GetTeam(string teamId)
         {
             return await dbContext.Teams.FindAsync(teamId);
+        }
+
+        public async Task<Team> GetTeamByPerson(string personId)
+        {
+            var personTeam = await dbContext.PersonTeams
+                .Where(pt => pt.PersonId == personId)
+                .Include(pt => pt.Team)
+                .SingleOrDefaultAsync();
+            if (personTeam == null) {
+                return null;
+            }
+            return personTeam.Team;
         }
 
         public async Task<List<Team>> GetTeams(string companyName, string searchTerm)

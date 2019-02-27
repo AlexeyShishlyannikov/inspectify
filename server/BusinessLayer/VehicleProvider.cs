@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Logistics.DAL;
-using Logistics.Models;
+using server.DAL;
+using server.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Logistics.BusinessLayer
+namespace server.BusinessLayer
 {
     public class VehicleProvider : IVehicleProvider
     {
@@ -24,7 +24,7 @@ namespace Logistics.BusinessLayer
             return vehicle;
         }
 
-        public async Task DeleteVehicle(int id)
+        public async Task DeleteVehicle(string id)
         {
             var vehicle = await dbContext.Vehicles.FirstOrDefaultAsync(v => v.Id == id);
             dbContext.Vehicles.Remove(vehicle);
@@ -43,7 +43,7 @@ namespace Logistics.BusinessLayer
             return null;
         }
 
-        public async Task<VehicleMake> GetMake(int makeId)
+        public async Task<VehicleMake> GetMake(string makeId)
         {
             var make = await dbContext.VehicleMarks
                 .Where(m => m.Id == makeId)
@@ -65,7 +65,7 @@ namespace Logistics.BusinessLayer
             return makes;
         }
 
-        public async Task<VehicleModel> GetModel(int modelId)
+        public async Task<VehicleModel> GetModel(string modelId)
         {
             return await dbContext.VehicleModels
                 .Where(m => m.Id == modelId)
@@ -73,7 +73,7 @@ namespace Logistics.BusinessLayer
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<List<VehicleModel>> GetModels(int makeId, string searchTerm)
+        public async Task<List<VehicleModel>> GetModels(string makeId, string searchTerm)
         {
             var dbModels = dbContext.VehicleModels.Where(m => m.MakeId == makeId);
             if (!String.IsNullOrEmpty(searchTerm))
@@ -83,7 +83,7 @@ namespace Logistics.BusinessLayer
             return await dbModels.Include(m => m.Make).ToListAsync();
         }
 
-        public async Task<Vehicle> GetVehicle(int id)
+        public async Task<Vehicle> GetVehicle(string id)
         {
             return await dbContext.Vehicles
                 .Where(v => v.Id == id)
@@ -92,7 +92,7 @@ namespace Logistics.BusinessLayer
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<List<Vehicle>> GetVehicles(int teamId, string searchTerm)
+        public async Task<List<Vehicle>> GetVehicles(string teamId, string searchTerm)
         {
             var dbVehicles = dbContext.Vehicles.Where(m => m.TeamId == teamId);
             if (!String.IsNullOrEmpty(searchTerm))

@@ -8,14 +8,15 @@ import { ConnectedRouter } from 'react-router-redux';
 import { createBrowserHistory } from 'history';
 import { AppContainer } from 'react-hot-loader';
 import './css/site.css';
-let routes = RoutesModule.routes;
+import { load } from 'redux-localstorage-simple';
 
 const history = createBrowserHistory({ basename: '' });
 
 const ROOT = document.getElementById('react-app');
 // Get the application-wide store instance, prepopulating with state from the server where available.
-const initialState = (window as any).initialReduxState as ApplicationState;
-const store = configureStore(history, initialState);
+// const initialState = (window as any).initialReduxState as ApplicationState;
+const store = configureStore(history, load() as ApplicationState);
+let routes = RoutesModule.routes;
 
 const renderApp = () => {
     // This code starts up the React app when it runs in a browser. It sets up the routing configuration
@@ -23,7 +24,7 @@ const renderApp = () => {
     ReactDOM.render(
         <AppContainer>
             <Provider store={store}>
-                <ConnectedRouter history={history} children={routes} />
+                <ConnectedRouter history={history} children={routes(store)} />
             </Provider>
         </AppContainer>,
         ROOT

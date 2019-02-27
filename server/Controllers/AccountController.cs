@@ -1,141 +1,196 @@
 ﻿using System;
+using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
-using Logistics.BusinessLayer;
-using Logistics.Identity;
-using Logistics.Models.Identity;
+using server.BusinessLayer;
+using server.DAL;
+using server.Identity;
+using server.Models;
+using server.Models.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using server.ViewModels;
 
-namespace Logistics.Controllers
+namespace server.Controllers
 {
     [Route("api/account")]
     public class AccountController : Controller
     {
-        private readonly IAccountProvider accountProvider;
         private readonly IJwtFactory jwtFactory;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly IEmailProvider emailProvider;
+        private readonly IInvitationProvider invitationProvider;
+        private readonly LogisticsDbContext dbContext;
+        private readonly ICompaniesProvider companiesProvider;
 
-        public AccountController(IAccountProvider accountProvider, IJwtFactory jwtFactory)
+        public AccountController(
+            IJwtFactory jwtFactory,
+            LogisticsDbContext dbContext,
+            ICompaniesProvider companiesProvider,
+            UserManager<ApplicationUser> userManager,
+            IEmailProvider emailProvider,
+            IInvitationProvider invitationProvider)
         {
-            this.accountProvider = accountProvider;
             this.jwtFactory = jwtFactory;
+            this.dbContext = dbContext;
+            this.companiesProvider = companiesProvider;
+            this.userManager = userManager;
+            this.emailProvider = emailProvider;
+            this.invitationProvider = invitationProvider;
         }
 
         [HttpPost]
         [Route("register/user")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterUserModel model)
         {
-            if (ModelState.IsValid)
+            if (await userManager.FindByEmailAsync(model.Email) != null)
             {
-                try
-                {
-                    var result = await accountProvider.RegisterUser(model);
-                    if (result.Succeeded) return Ok();
-                }
-                catch (Exception err)
-                {
-                    return BadRequest(err);
-                }
+                return BadRequest("User already exists");
             }
-            return BadRequest();
+            var invitation = await invitationProvider.GetInvitation(model.InvitationId);
+            if (invitation == null)
+            {
+                return BadRequest("Invitation not found");
+            }
+            var identityResult = await userManager.CreateAsync(new ApplicationUser
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                PhoneNumber = invitation.PhoneNumber
+            }, model.Password);
+            if (!identityResult.Succeeded)
+            {
+                return BadRequest("Something went wrong!");
+            }
+            var user = await userManager.FindByEmailAsync(model.Email);
+            await dbContext.Persons.AddAsync(new Person
+            {
+                Id = user.Id,
+                ApplicationUserId = user.Id,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                CompanyId = invitation.CompanyId
+            });
+            await dbContext.SaveChangesAsync();
+            var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+            await emailProvider.SendConfirmEmail(user, token);
+            return Ok(await jwtFactory.GenerateEncodedToken(user));
         }
+
 
         [HttpPost]
         [Route("register/company")]
         public async Task<IActionResult> RegisterCompany([FromBody] RegisterCompanyModel model)
         {
-            if (ModelState.IsValid)
+            if (await userManager.FindByEmailAsync(model.Email) != null)
             {
-                try
-                {
-                    var result = await accountProvider.RegisterCompany(model);
-                    if (result.Succeeded) return Ok();
-                }
-                catch (Exception err)
-                {
-                    return BadRequest(err);
-                }
+                return BadRequest("Company already exists!");
             }
-            return BadRequest();
+            var identityResult = await userManager.CreateAsync(new ApplicationUser { UserName = model.Email, Email = model.Email }, model.Password);
+            if (identityResult.Succeeded)
+            {
+                var user = await userManager.FindByEmailAsync(model.Email);
+                await companiesProvider.AddCompany(new Company
+                {
+                    Name = model.CompanyName,
+                    ApplicationUserId = user.Id
+                });
+                var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                await emailProvider.SendConfirmEmail(user, token);
+                return Ok(await jwtFactory.GenerateEncodedToken(user));
+            }
+            return BadRequest("Something went wrong!");
+        }
+
+        [HttpPost]
+        [Route("login")]
+        public async Task<IActionResult> LoginUser([FromBody] LoginModel model)
+        {
+            var user = await userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+            if (await userManager.IsLockedOutAsync(user))
+            {
+                // add email logic to notify user
+                return BadRequest("User has been locked out for 10 minutes");
+            }
+            else if (!await userManager.CheckPasswordAsync(user, model.Password))
+            {
+                await userManager.AccessFailedAsync(user);
+                return BadRequest("Incorrect password");
+            }
+            await userManager.ResetAccessFailedCountAsync(user);
+            return Ok(await jwtFactory.GenerateEncodedToken(user));
         }
 
         [HttpGet]
         [Route("confirm")]
         public async Task<IActionResult> ConfirmEmailAddress([FromQuery] string token, [FromQuery] string email)
         {
-            var result = await accountProvider.ConfirmEmailAddress(token, email);
-            if (result.Succeeded)
+            var user = await userManager.FindByEmailAsync(email);
+            if (user != null)
             {
-                return Ok();
+                var identityResult = await userManager.ConfirmEmailAsync(user, token);
+                if (identityResult.Succeeded)
+                {
+                    return Ok("Email confirmed");
+                }
+                return BadRequest("Wrong token");
             }
-            return BadRequest();
-        }
-
-        [HttpPost]
-        [Route("login/user")]
-        public async Task<IActionResult> LoginUser([FromBody] LoginModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = await accountProvider.LoginUser(model);
-                return Ok(await jwtFactory.GenerateEncodedToken(user));
-            }
-
-            ModelState.AddModelError("", "Invalid Model State Or Password");
-            return BadRequest();
-        }
-
-        [HttpPost]
-        [Route("login/company")]
-        public async Task<IActionResult> LoginCompany([FromBody] LoginModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = await accountProvider.LoginCompany(model);
-                return Ok(await jwtFactory.GenerateEncodedToken(user));
-            }
-
-            ModelState.AddModelError("", "Invalid Model State Or Password");
-            return BadRequest();
+            return NotFound("User not found");
         }
 
         [HttpPost]
         [Route("forgot")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordModel model)
         {
-            if (!ModelState.IsValid) return BadRequest();
-
-            await accountProvider.ForgotPassword(model);
-            return Ok();
+            var user = await userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return BadRequest("User was not found");
+            }
+            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+            var resetUrl = $"localhost:4199/resetpassword{new { token = token, email = user.Email }}";
+            // send email
+            return Ok("Email not sent, not implemented");
         }
 
         [HttpPost]
         [Route("change")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
         {
-            if (!ModelState.IsValid) return BadRequest();
-
-            await accountProvider.ChangePassword(model);
-            return Ok();
+            var user = await userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return BadRequest("User was not found");
+            }
+            var identityResult = await userManager.ChangePasswordAsync(user, model.OldPassword, model.Password);
+            if (!identityResult.Succeeded)
+            {
+                return BadRequest("Failed password change");
+            }
+            return Ok("Password changed");
         }
 
         [HttpPost]
         [Route("reset")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel model)
         {
-            if (!ModelState.IsValid) return BadRequest();
+            var user = await userManager.FindByEmailAsync(model.Email);
+            if (user == null) return BadRequest("User was not found");
 
-            var result = await accountProvider.ResetPassword(model);
-            if (result.Succeeded)
+            var result = await userManager.ResetPasswordAsync(user, model.ResetToken, model.Password);
+            if (!result.Succeeded)
             {
-                return Ok();
+                return BadRequest("Something went wrong!");
             }
-            return BadRequest();
-        }
-
-        [HttpGet]
-        [Route("external")]
-        public async Task<IActionResult> ExternalLogin([FromQuery] string provider, [FromQuery] string token)
-        {
-            return Ok(await accountProvider.ExternalLogin(provider, token));
+            if (await userManager.IsLockedOutAsync(user))
+            {
+                await userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
+            }
+            return Ok("Password was reset succesfully");
         }
     }
 }

@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Logistics.DAL;
-using Logistics.Models;
+using server.DAL;
+using server.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Logistics.BusinessLayer
+namespace server.BusinessLayer
 {
     public class FormProvider : IFormProvider
     {
@@ -29,7 +29,7 @@ namespace Logistics.BusinessLayer
             return input;
         }
 
-        public async Task DeleteForm(int id)
+        public async Task DeleteForm(string id)
         {
             var form = await dbContext.Forms.FirstOrDefaultAsync(f => f.Id == id);
             if (form != null)
@@ -39,7 +39,7 @@ namespace Logistics.BusinessLayer
             }
         }
 
-        public async Task DeleteFormInput(int id)
+        public async Task DeleteFormInput(string id)
         {
             var formInput = await dbContext.FormInputs.FirstOrDefaultAsync(f => f.Id == id);
             if (formInput != null)
@@ -49,7 +49,7 @@ namespace Logistics.BusinessLayer
             }
         }
 
-        public async Task<Form> GetForm(int id)
+        public async Task<Form> GetForm(string id)
         {
             var form = await dbContext.Forms
                 .Where(f => f.Id == id)
@@ -58,7 +58,7 @@ namespace Logistics.BusinessLayer
             return form;
         }
 
-        public async Task<FormInput> GetFormInput(int id)
+        public async Task<FormInput> GetFormInput(string id)
         {
             return await dbContext.FormInputs
                 .Where(i => i.Id == id)
@@ -66,7 +66,7 @@ namespace Logistics.BusinessLayer
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<List<FormInput>> GetFormInputs(int formId)
+        public async Task<List<FormInput>> GetFormInputs(string formId)
         {
             var formFormInputs = await dbContext.FormFormInputs
                 .Where(ffi => ffi.FormId == formId).ToListAsync();
@@ -75,7 +75,7 @@ namespace Logistics.BusinessLayer
                 .ToListAsync();
         }
 
-        public async Task<List<Form>> GetForms(int teamId, string searchTerm)
+        public async Task<List<Form>> GetForms(string teamId, string searchTerm)
         {
             var formTeams = dbContext.FormTeams.Where(ft => ft.TeamId == teamId);
             var forms = dbContext.Forms.Where(f => formTeams.FirstOrDefault(ft => ft.FormId == f.Id) != null);

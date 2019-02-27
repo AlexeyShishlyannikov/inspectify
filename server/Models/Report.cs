@@ -3,23 +3,22 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using server.Models;
 
-namespace Logistics.Models
+namespace server.Models
 {
     public class Report
     {
-        [Required]
-        public int Id { get; set; }
+        public string Id { get; set; }
         [Required]
         [MaxLength(256)]
         public string Name { get; set; }
         [Required]
-        public int VehicleId { get; set; }
+        public string VehicleId { get; set; }
         public Vehicle Vehicle { get; set; }
         [Required]
-        public int FormId { get; set; }
+        public string FormId { get; set; }
         public Form Form { get; set; }
         [Required]
-        public int DriverId { get; set; }
+        public string DriverId { get; set; }
         public Person Driver { get; set; }
         [Required]
         public DateTime DateCreated { get; set; }

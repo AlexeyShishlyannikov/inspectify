@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Logistics.BusinessLayer;
-using Logistics.DAL;
-using Logistics.Filters;
-using Logistics.Identity;
-using Logistics.Identity.Models;
-using Logistics.Models;
-using Logistics.Models.Identity;
+using AutoMapper;
+using server.BusinessLayer;
+using server.DAL;
+using server.Filters;
+using server.Identity;
+using server.Identity.Models;
+using server.Models;
+using server.Models.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -21,7 +22,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Server
+namespace server
 {
     public class Startup
     {
@@ -35,21 +36,24 @@ namespace Server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(config =>
-            {
-                config.Filters.Add(new ValidateModelStateFilter());
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
             // Providers
-            services.AddScoped<IAccountProvider, AccountProvider>();
             services.AddScoped<ICompaniesProvider, CompaniesProvider>();
             services.AddScoped<ITeamProvider, TeamProvider>();
             services.AddScoped<IVehicleProvider, VehicleProvider>();
             services.AddScoped<IReportsProvider, ReportProvider>();
             services.AddScoped<IFormProvider, FormProvider>();
-
+            services.AddScoped<IInvitationProvider, InvitationProvider>();
+            services.AddScoped<IEmailProvider, EmailProvider>();
+            // Cors policy
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                }));
             // Database
-            services.AddDbContext<LogisticsDbContext>(options => options.UseMySql(Configuration.GetConnectionString("LogisticsDb")));
+            services.AddDbContext<LogisticsDbContext>(options => 
+                options.UseMySql(Configuration.GetConnectionString("LogisticsDb")));
 
             // Identity
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -123,6 +127,13 @@ namespace Server
             {
                 configuration.RootPath = "client/build";
             });
+
+            services.AddAutoMapper();
+
+            services.AddMvc(config =>
+            {
+                config.Filters.Add(new ValidateModelStateFilter());
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -148,18 +159,19 @@ namespace Server
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
+            app.UseCors("MyPolicy");
             app.UseStaticFiles();
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                name: "default",
-                template: "{controller=Home}/{action=Index}/{id?}");
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
 
                 routes.MapSpaFallbackRoute(
-            name: "spa-fallback",
-            defaults: new { controller = "Home", action = "Index" });
+                    name: "spa-fallback",
+                    defaults: new { controller = "Home", action = "Index" });
             });
         }
     }

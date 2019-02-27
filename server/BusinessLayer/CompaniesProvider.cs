@@ -1,10 +1,10 @@
-﻿using Logistics.DAL;
-using Logistics.Models;
+﻿using server.DAL;
+using server.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Logistics.BusinessLayer
+namespace server.BusinessLayer
 {
     public class CompaniesProvider : ICompaniesProvider
     {
@@ -28,21 +28,27 @@ namespace Logistics.BusinessLayer
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<Company> GetCompany(string searchTerm)
+        public async Task<Company> GetCompany(string companyId)
         {
-            return await dbContext.Companies.SingleOrDefaultAsync(company => company.Name.Contains(searchTerm));
+            return await dbContext.Companies.SingleOrDefaultAsync(c => c.Id == companyId);
+        }
+
+        public async Task<Company> GetCompanyByPersonId(string personId)
+        {
+            var person = await dbContext.Persons.Where(p => p.Id == personId)
+                .Include(p => p.Company).SingleOrDefaultAsync();
+            if (person != null)
+            {
+                return person.Company;
+            }
+            return await dbContext.Companies.SingleOrDefaultAsync(c => c.ApplicationUserId == personId);
         }
 
         public async Task<Company> UpdateCompany(Company company)
         {
-            var dbCompany = await dbContext.Companies.SingleOrDefaultAsync(c => c.Id == company.Id);
-            if (dbCompany != null)
-            {
-                dbContext.Companies.Update(company);
-                await dbContext.SaveChangesAsync();
-                return company;
-            }
-            return null;
+            dbContext.Companies.Update(company);
+            await dbContext.SaveChangesAsync();
+            return company;
         }
     }
 }

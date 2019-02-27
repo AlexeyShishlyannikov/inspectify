@@ -1,16 +1,19 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using server.Models;
 
-namespace Logistics.Models
+namespace server.Models
 {
     public class Form
     {
-        [Required]
-        public int Id { get; set; }
+        public string Id { get; set; }
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
+        public bool IsArchived { get; set; }
+        public DateTime Created { get; set; }
+        public DateTime Updated { get; set; }
         public ICollection<Report> Reports { get; set; }
         public ICollection<FormCompany> FormCompanies { get; set; }
         public ICollection<FormTeam> FormTeams { get; set; }
@@ -19,8 +22,7 @@ namespace Logistics.Models
 
     public class FormInput
     {
-        [Required]
-        public int Id { get; set; }
+        public string Id { get; set; }
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
@@ -33,10 +35,9 @@ namespace Logistics.Models
 
     public class FormInputValue
     {
+        public string Id { get; set; }
         [Required]
-        public int Id { get; set; }
-        [Required]
-        public int FormInputId { get; set; }
+        public string FormInputId { get; set; }
         public FormInput FormInput { get; set; }
         public string TextValue { get; set; }
         public double? NumberValue { get; set; }
@@ -48,6 +49,8 @@ namespace Logistics.Models
     {
         Text,
         Number,
+        Radio,
+        Options,
         Photo
     }
 }

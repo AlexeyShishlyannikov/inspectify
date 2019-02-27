@@ -1,15 +1,16 @@
-﻿using Logistics.Models;
+﻿using server.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Logistics.BusinessLayer
+namespace server.BusinessLayer
 {
     public interface ITeamProvider
     {
         Task<Team> AddTeam(Team team);
-        Task<Team> GetTeam(int teamId);
+        Task<Team> GetTeam(string teamId);
+        Task<Team> GetTeamByPerson(string personId);
         Task<Team> UpdateTeam(Team team);
-        Task DeleteTeam(int id);
+        Task DeleteTeam(string id);
         Task<List<Team>> GetTeams(string companyName, string searchTerm);
     }
 }

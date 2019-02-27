@@ -2,15 +2,15 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using server.Models;
 
-namespace Logistics.Models
+namespace server.Models
 {
     public class FormFormInput
     {
         [Required]
-        public int FormId { get; set; }
+        public string FormId { get; set; }
         public Form Form { get; set; }
         [Required]
-        public int FormInputId { get; set; }
+        public string FormInputId { get; set; }
         public FormInput FormInput { get; set; }
     }
 }

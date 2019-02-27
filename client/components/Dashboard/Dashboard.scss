@@ -1,0 +1,19 @@
+.dashboard-body {
+    display: flex;
+    flex-direction: row;
+    .dashboard-panel {
+        display: flex;
+        flex-direction: column;
+        width: 225px;
+        text-decoration: none;
+    }
+    .dashboard-link {
+        text-decoration: none;
+    }
+    .dashboard-children {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: 15px;
+    }
+}

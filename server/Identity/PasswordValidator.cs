@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 
-namespace Logistics.Identity
+namespace server.Identity
 {
     public class CustomPasswordValidator<TUser> : IPasswordValidator<TUser> where TUser : class
     {
