@@ -3,7 +3,7 @@ import PeopleIcon from '@material-ui/icons/SupervisedUserCircleOutlined';
 import LayersIcon from '@material-ui/icons/Layers';
 import InboxIcon from '@material-ui/icons/Inbox';
 import PersonAddIcon from '@material-ui/icons/PersonAddOutlined';
-import FormIcon from '@material-ui/icons/InsertDriveFileOutlined';
+import FormIcon from '@material-ui/icons/Assignment';
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 import './Dashboard.scss';

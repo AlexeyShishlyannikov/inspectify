@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { ApplicationState } from 'client/store';
 import { ILogoutAction } from 'client/store/authentication/authenticationActions';
 import { User } from 'client/models/Authentication';
+import ProfileCompanyForm from '../Authentication/Profile/ProfileCompanyForm';
 
 interface IProfileProps {
     user?: User;
@@ -16,7 +17,7 @@ interface IProfileProps {
 }
 
 const Profile = (props: IProfileProps): JSX.Element => {
-    let ProfileForm = () => (props.user && props.user.isCompany ? <div>Implement company form</div> : <ProfileUserForm />);
+    let ProfileForm = () => (props.user && props.user.isCompany ? <ProfileCompanyForm /> : <ProfileUserForm />);
     return (
         <div className="profile">
             <ProfileForm />
