@@ -42,6 +42,7 @@ namespace server.Identity
             {
                 new Claim(JwtRegisteredClaimNames.Jti, await jwtOptions.JtiGenerator()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim("userId", user.Id),
                 new Claim("isEmailVerified", isUserVerified),
                 new Claim("companyId", companyId),
                 new Claim("teamId", teamId),

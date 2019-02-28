@@ -10,8 +10,7 @@ import {
     CardHeader,
     Typography,
 } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
-import SendIcon from '@material-ui/icons/Send';
+import CloseIcon from '@material-ui/icons/Close';
 import * as React from 'react';
 import { connect } from 'react-redux';
 
@@ -24,8 +23,7 @@ interface IInvitationListProps {
     invitations: IInvitation[];
     isLoading: boolean;
     getInvitations: () => void;
-    inviteUser: (invitation: IInvitation) => void;
-    selectInvitation: (invitation: IInvitation) => void;
+    deleteUser: (id: string) => void;
 }
 
 class InvitationList extends React.Component<IInvitationListProps, {}> {
@@ -34,7 +32,6 @@ class InvitationList extends React.Component<IInvitationListProps, {}> {
     }
 
     render() {
-        console.log(typeof this.props.invitations[0].sentOn);
         let Content: () => JSX.Element;
         if (this.props.isLoading) {
             Content = () => <CircularProgress></CircularProgress>;
@@ -58,14 +55,9 @@ class InvitationList extends React.Component<IInvitationListProps, {}> {
                             ]}
                         />
                         <ListItemSecondaryAction>
-                            <div style={{ display: 'flex' }}>
-                                <IconButton aria-label="Send" onClick={() => this.props.inviteUser}>
-                                    <SendIcon />
-                                </IconButton>
-                                <IconButton aria-label="Edit" onClick={() => this.props.selectInvitation}>
-                                    <EditIcon />
-                                </IconButton>
-                            </div>
+                            <IconButton aria-label="delete" color="secondary" onClick={() => this.props.deleteUser(invitation.id as string)}>
+                                <CloseIcon />
+                            </IconButton>
                         </ListItemSecondaryAction>
                     </ListItem>
                 ))}
@@ -75,7 +67,7 @@ class InvitationList extends React.Component<IInvitationListProps, {}> {
             <Card>
                 <CardHeader title="Pending Invites" />
                 <CardContent>
-                    <Content />
+                    { this.props.isLoading ? <CircularProgress /> : <Content /> }
                 </CardContent>
             </Card>
         );
@@ -92,14 +84,7 @@ const mapStateToProps = (state: ApplicationState) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         getInvitations: () => dispatch(InvitationThunks.getInvitations()),
-        inviteUser: (invitation: IInvitation) => dispatch(InvitationThunks.sendInvitation(invitation)),
-        selectInvitation: (invitation: IInvitation) => {
-            const action: ISelectInvitationAction = {
-                type: "SELECT_INVITATION_ACTION",
-                selectedInvitation: invitation
-            }
-            return dispatch(action);
-        },
+        deleteUser: (id: string) => dispatch(InvitationThunks.deleteInvitation(id))
     };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(InvitationList);

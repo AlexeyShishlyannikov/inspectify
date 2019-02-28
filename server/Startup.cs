@@ -44,6 +44,7 @@ namespace server
             services.AddScoped<IFormProvider, FormProvider>();
             services.AddScoped<IInvitationProvider, InvitationProvider>();
             services.AddScoped<IEmailProvider, EmailProvider>();
+            services.AddScoped<IUsersProvider, UsersProvider>();
             // Cors policy
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
                 {
@@ -60,15 +61,15 @@ namespace server
             {
                 options.Tokens.EmailConfirmationTokenProvider = "emailconf";
 
-                options.Password.RequiredLength = 8;
-                options.Password.RequireUppercase = true;
-                options.Password.RequireLowercase = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
 
                 options.User.RequireUniqueEmail = true;
 
                 options.Lockout.AllowedForNewUsers = true;
-                options.Lockout.MaxFailedAccessAttempts = 5;
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
+                options.Lockout.MaxFailedAccessAttempts = 7;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(3);
             })
               .AddEntityFrameworkStores<LogisticsDbContext>()
               .AddDefaultTokenProviders()

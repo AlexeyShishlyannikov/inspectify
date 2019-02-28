@@ -44,10 +44,10 @@ export interface IRegisterUserAction extends Action {
 
 export interface IRegisterCompanyAction extends Action {
     type: REGISTER_COMPANY_ACTION;
+    companyName: string;
     email: string;
     password: string;
     confirmPassword: string;
-    companyName: string;
 }
 
 export interface IChangePasswordAction extends Action {

@@ -34,7 +34,7 @@ namespace server.Controllers
         public async Task<IActionResult> SendInvitation([FromBody] Invitation invitation)
         {
             var companyId = this.User.Claims.SingleOrDefault(c => c.Type == "companyId").Value;
-            if (await invitationProvider.CheckIfEmailIsInvited(invitation.Email) || await invitationProvider.CheckIfPhoneIsInvited(invitation.PhoneNumber))
+            if (await invitationProvider.CheckIfEmailIsInvited(invitation.Email))
             {
                 return BadRequest("Has already been invited");
             }
@@ -62,7 +62,7 @@ namespace server.Controllers
         public async Task<IActionResult> UpdateInvitations(Invitation invitation)
         {
             var dbInvitation = await invitationProvider.GetInvitation(invitation.Id);
-            if (dbInvitation != null) {
+            if (dbInvitation == null) {
                 return NotFound("Invitation not found");
             }
             invitation.SentOn = DateTime.Now;
@@ -81,7 +81,7 @@ namespace server.Controllers
         public async Task<IActionResult> ResendInvitations([FromQuery]string id)
         {
             var dbInvitation = await invitationProvider.GetInvitation(id);
-            if (dbInvitation != null)
+            if (dbInvitation == null)
             {
                 return NotFound("Invitation not found");
             }
@@ -101,13 +101,13 @@ namespace server.Controllers
         public async Task<IActionResult> DeleteInvitations([FromQuery]string id)
         {
             var dbInvitation = await invitationProvider.GetInvitation(id);
-            if (dbInvitation != null)
+            if (dbInvitation == null)
             {
                 return NotFound("Invitation not found");
             }
             var deleted = await invitationProvider.DeleteInvitation(id);
             if (!deleted) return BadRequest("Could not delete invitation");
-            return Ok();
+            return Ok(id);
         }
     }
 }

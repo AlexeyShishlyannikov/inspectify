@@ -6,11 +6,13 @@ export type InvitationAction = ILoadedInvitationsAction
     | IUpdatedInvitationAction
     | IUpdateInvitationLoadingAction
     | ISelectInvitationAction
+    | IDeletedInvitationAction
     | ISentInvitaionAction;
 
 export type LOADED_INVITATIONS_ACTION = "LOADED_INVITATIONS_ACTION";
 export type SELECT_INVITATION_ACTION = "SELECT_INVITATION_ACTION";
 export type UPDATED_INVITATION_ACTION = "UPDATED_INVITATION_ACTION";
+export type DELETED_INVITATION_ACTION = "DELETED_INVITATION_ACTION";
 export type UPDATE_INVITATION_LOADING_ACTION = "UPDATE_INVITATION_LOADING_ACTION";
 export type SENT_INVITATION_ACTION = "SENT_INVITATION_ACTION";
 
@@ -27,6 +29,11 @@ export interface ISentInvitaionAction extends Action {
 export interface ILoadedInvitationsAction extends Action {
     type: LOADED_INVITATIONS_ACTION;
     invitations: IInvitation[];
+}
+
+export interface IDeletedInvitationAction extends Action {
+    type: DELETED_INVITATION_ACTION;
+    id: string;
 }
 
 export interface IUpdatedInvitationAction extends Action {

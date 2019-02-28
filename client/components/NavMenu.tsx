@@ -57,7 +57,7 @@ const NavMenu = (props: INavProps) => {
                                 <NavLink key="1" to="login">
                                     <Button className={classes.navButton} color="inherit">Login</Button>
                                 </NavLink>,
-                                <NavLink key="2" to="register">
+                                <NavLink key="2" to="registerCompany">
                                     <Button className={classes.navButton} color="inherit">Register</Button>
                                 </NavLink>
                             ]

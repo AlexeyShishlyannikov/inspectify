@@ -31,12 +31,6 @@ namespace server.BusinessLayer
             return invitation != null;
         }
 
-        public async Task<bool> CheckIfPhoneIsInvited(string phoneNumber)
-        {
-            var invitation = await dbContext.Invitations.SingleOrDefaultAsync(i => i.Email == phoneNumber);
-            return invitation != null;
-        }
-
         public async Task<bool> DeleteInvitation(string id)
         {
             var invitation = await GetInvitation(id);

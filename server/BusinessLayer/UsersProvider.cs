@@ -22,6 +22,11 @@ namespace server.BusinessLayer
             return await dbContext.Persons.SingleOrDefaultAsync(p => p.Id == id);
         }
 
+        public async Task<Person> GetPersonByApplicationUserId(string id)
+        {
+            return await dbContext.Persons.SingleOrDefaultAsync(p => p.ApplicationUserId == id);
+        }
+
         public async Task<List<Person>> GetUsersForCompany(string companyId, string searchTerm)
         {
             var users = dbContext.Persons.Where(p => p.CompanyId == companyId);

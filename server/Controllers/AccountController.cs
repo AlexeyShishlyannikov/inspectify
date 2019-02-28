@@ -56,7 +56,6 @@ namespace server.Controllers
             {
                 UserName = model.Email,
                 Email = model.Email,
-                PhoneNumber = invitation.PhoneNumber
             }, model.Password);
             if (!identityResult.Succeeded)
             {

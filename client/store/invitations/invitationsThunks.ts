@@ -1,7 +1,7 @@
 import { ICompany } from '../../models/company';
 
 import { ApplicationState, AppThunkAction } from '..';
-import { ILoadedInvitationsAction, IUpdateInvitationLoadingAction, IUpdatedInvitationAction, ISentInvitaionAction } from './invitationsActions';
+import { ILoadedInvitationsAction, IUpdateInvitationLoadingAction, IUpdatedInvitationAction, ISentInvitaionAction, IDeletedInvitationAction } from './invitationsActions';
 import { IUpdateCompanyLoadingAction } from '../company/companyActions';
 import { IInvitation } from 'client/models/invitation';
 
@@ -41,6 +41,24 @@ export namespace InvitationThunks {
             }
         ).then(res => res.json())
             .then(result => dispatch({ type: "UPDATED_INVITATION_ACTION", invitation: result }));
+    };
+
+    export const deleteInvitation = (id: string): AppThunkAction<IDeletedInvitationAction | IUpdateInvitationLoadingAction> => (dispatch, getState) => {
+        dispatch({
+            type: "UPDATE_INVITATION_LOADING_ACTION",
+            status: true
+        });
+        fetch(
+            window.location.origin + '/api/invitations/delete?id=' + id,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'Application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+            }
+        ).then(res => res.text())
+            .then(result => dispatch({ type: "DELETED_INVITATION_ACTION", id: result }));
     };
 
     export const sendInvitation = (invitation: IInvitation): AppThunkAction<ISentInvitaionAction | IUpdateInvitationLoadingAction> => (dispatch, getState) => {

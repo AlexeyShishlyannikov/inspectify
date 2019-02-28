@@ -25,15 +25,13 @@ interface IProfileUserFormProps {
 }
 
 interface IProfileUserFormState {
-    email: string;
     firstName?: string;
     lastName?: string;
     phoneNumber?: number;
 }
 
 class ProfileUserForm extends React.Component<IProfileUserFormProps, IProfileUserFormState> {
-    state = {
-        email: this.props.user ? this.props.user.email : '',
+    state: IProfileUserFormState = {
         firstName: '',
         lastName: '',
         phoneNumber: undefined
@@ -54,7 +52,7 @@ class ProfileUserForm extends React.Component<IProfileUserFormProps, IProfileUse
         }));
     };
 
-    isButtonDisabled = () => !this.state.email || !this.state.firstName || !this.state.lastName || !this.state.phoneNumber;
+    isButtonDisabled = () => !this.state.firstName || !this.state.lastName || !this.state.phoneNumber;
 
     getSubmitButton = () => {
         return <Button
@@ -81,14 +79,6 @@ class ProfileUserForm extends React.Component<IProfileUserFormProps, IProfileUse
                             </Button>
                         } />
                     <CardContent className="profile-form-content">
-                        <FormControl className="profile-form-input">
-                            <InputLabel htmlFor="email">Email</InputLabel>
-                            <Input
-                                type="email"
-                                value={this.state.email}
-                                onChange={this.handleChange('email')}
-                            />
-                        </FormControl>
                         <FormControl className="profile-form-input">
                             <InputLabel htmlFor="firstName">First Name</InputLabel>
                             <Input

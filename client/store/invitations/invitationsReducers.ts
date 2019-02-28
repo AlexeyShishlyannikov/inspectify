@@ -45,6 +45,13 @@ export const invitationsReducer: Reducer<InvitaionsState> = (
                 isLoading: false,
                 errorMessage: undefined
             });
+        case 'DELETED_INVITATION_ACTION':
+            return new InvitaionsState({
+                selectedInvitation: state.selectedInvitation && state.selectedInvitation.id === action.id ? undefined : state.selectedInvitation,
+                invitations: state.invitations.filter(inv => inv.id !== action.id),
+                isLoading: false,
+                errorMessage: undefined
+            });
         case 'UPDATE_INVITATION_LOADING_ACTION':
             return new InvitaionsState({
                 selectedInvitation: state.selectedInvitation,
