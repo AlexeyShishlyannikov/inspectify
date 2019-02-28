@@ -7,6 +7,7 @@ using server.BusinessLayer;
 using server.Models;
 using Microsoft.AspNetCore.Mvc;
 using server.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace server.Controllers
 {
@@ -28,24 +29,28 @@ namespace server.Controllers
         }
 
         [Route("send")]
+        [Authorize]
         [HttpPost]
-        public async Task<IActionResult> SendInvitation(Invitation invitation)
+        public async Task<IActionResult> SendInvitation([FromBody] Invitation invitation)
         {
+            var companyId = this.User.Claims.SingleOrDefault(c => c.Type == "companyId").Value;
             if (await invitationProvider.CheckIfEmailIsInvited(invitation.Email) || await invitationProvider.CheckIfPhoneIsInvited(invitation.PhoneNumber))
             {
                 return BadRequest("Has already been invited");
             }
             invitation.SentOn = DateTime.Now;
-            var dbInvitation = await invitationProvider.AddInvitation(invitation);
-            var isEmailSent = await emailProvider.SendInvitationEmail(dbInvitation);
+            invitation.CompanyId = companyId;
+            var isEmailSent = await emailProvider.SendInvitationEmail(invitation);
             if (!isEmailSent) {
                 return BadRequest("Email wasn't sent");
             }
+            var dbInvitation = await invitationProvider.AddInvitation(invitation);
             return Ok(dbInvitation);
         }
 
         [Route("getInvitations")]
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetInvitations() {
             var companyId = this.User.Claims.SingleOrDefault(c => c.Type == "companyId").Value;
             var invitations = await invitationProvider.GetInvitations(companyId);
@@ -72,6 +77,7 @@ namespace server.Controllers
 
         [Route("resend")]
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> ResendInvitations([FromQuery]string id)
         {
             var dbInvitation = await invitationProvider.GetInvitation(id);
@@ -91,6 +97,7 @@ namespace server.Controllers
 
         [Route("delete")]
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> DeleteInvitations([FromQuery]string id)
         {
             var dbInvitation = await invitationProvider.GetInvitation(id);

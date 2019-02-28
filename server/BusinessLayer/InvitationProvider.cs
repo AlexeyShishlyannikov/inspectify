@@ -21,6 +21,7 @@ namespace server.BusinessLayer
         public async Task<Invitation> AddInvitation(Invitation invitation)
         {
             await dbContext.Invitations.AddAsync(invitation);
+            await dbContext.SaveChangesAsync();
             return invitation;
         }
 

@@ -55,7 +55,7 @@ namespace server.BusinessLayer
 
         public Task<bool> SendInvitationEmail(Invitation invitation)
         {
-            throw new System.NotImplementedException();
+            return Task.FromResult(true);
         }
 
         public Task<bool> SendWelcomeEmail()
