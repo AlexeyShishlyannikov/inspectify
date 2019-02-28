@@ -7,8 +7,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
-import { ApplicationState } from 'client/store';
-import { IChangePasswordAction } from 'client/store/authentication/authenticationActions';
+import { ApplicationState } from '../../../store';
+import { IChangePasswordAction } from '../../../store/authentication/authenticationActions';
 import * as React from 'react';
 import { connect } from 'react-redux';
 

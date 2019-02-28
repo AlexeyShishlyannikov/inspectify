@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
 import { ILogoutAction } from '../store/authentication/authenticationActions';
-import ProfileDropdown from './Authentication/Profile/ProfileDropdown';
+import ProfileDropdown from './Dashboard/Profile/ProfileDropdown';
 
 const styles: StyleRules = {
     root: {

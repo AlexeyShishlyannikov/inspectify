@@ -1,8 +1,8 @@
 import { ClickAwayListener, Grow, MenuItem, MenuList, Paper, Popper, Divider, ListItem, ListItemText } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import ProfileIcon from '@material-ui/icons/Person';
-import { ApplicationState } from 'client/store';
-import { ILogoutAction } from 'client/store/authentication/authenticationActions';
+import { ApplicationState } from '../../../store';
+import { ILogoutAction } from '../../../store/authentication/authenticationActions';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import './ProfileDropdown.scss';

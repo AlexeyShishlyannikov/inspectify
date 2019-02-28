@@ -1,4 +1,4 @@
-import { User } from "client/models/Authentication";
+import { User } from "../../models/Authentication";
 
 export interface IAuthenticationState {
     readonly user?: User;

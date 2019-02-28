@@ -3,11 +3,14 @@ import { authReducer } from "./authentication/authenticationReducers";
 import { load } from "redux-localstorage-simple";
 import { CompanyState } from "./company/companyState";
 import { companyReducer } from "./company/companyReducers";
+import { InvitaionsState } from "./invitations/invitationsState";
+import { invitationsReducer } from "./invitations/invitationsReducers";
 
 // The top-level state object
 export interface ApplicationState {
     authentication: AuthenticationState;
     company: CompanyState;
+    invitations: InvitaionsState;
     // vehicle:;
     // report:;
     // reportForm:;
@@ -19,7 +22,8 @@ export interface ApplicationState {
 // acts on the corresponding ApplicationState property type.
 export const reducers = {
     authentication: authReducer,
-    company: companyReducer
+    company: companyReducer,
+    invitations: invitationsReducer
 };
 
 // This type can be used as a hint on action creators so that its 'dispatch' and 'getState' params are
@@ -38,6 +42,7 @@ export function getInitialState(): ApplicationState {
     }
     return {
         authentication: AuthenticationState.initialState(),
-        company: CompanyState.initialState()
+        company: CompanyState.initialState(),
+        invitations: InvitaionsState.initialState()
     };
 }

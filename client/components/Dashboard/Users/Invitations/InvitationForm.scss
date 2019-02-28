@@ -1,0 +1,19 @@
+.invitation-form-container {
+    width: 100%;
+    .invitaion-form-card {
+        width: 100%;
+        .invitation-form-card-content {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            .invitation-form-input {
+                display: flex;
+                margin: 5px;
+            }
+        }
+        .invitation-form-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+}
