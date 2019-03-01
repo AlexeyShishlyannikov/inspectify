@@ -38,10 +38,9 @@ namespace server.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetUser()
+        public async Task<IActionResult> GetUser([FromQuery] string id)
         {
-            var userId = this.User.Claims.SingleOrDefault(c => c.Type == "userId").Value;
-            var person = await usersProvider.GetPersonByApplicationUserId(userId);
+            var person = await usersProvider.GetPersonByApplicationUserId(id);
             if (person == null) return NotFound("User not found");
             var personViewModel = mapper.Map<Person, PersonViewModel>(person);
             return Ok(personViewModel);
@@ -54,10 +53,9 @@ namespace server.Controllers
         {
             var dbPerson = await usersProvider.GetPerson(personViewModel.Id);
             if (dbPerson == null) return NotFound("User not found");
-            var person = mapper.Map<PersonViewModel, Person>(personViewModel);
-            person.ApplicationUserId = dbPerson.ApplicationUserId;
-            await usersProvider.UpdatePerson(person);
-            var dbPersonViewModel = mapper.Map<Person, PersonViewModel>(person);
+            mapper.Map<PersonViewModel, Person>(personViewModel, dbPerson);
+            await usersProvider.UpdatePerson(dbPerson);
+            var dbPersonViewModel = mapper.Map<Person, PersonViewModel>(dbPerson);
             return Ok(dbPersonViewModel);
         }
 

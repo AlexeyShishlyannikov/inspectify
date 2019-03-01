@@ -5,6 +5,7 @@ import {
     ILoadedPeopleAction,
     IUpdatedPersonAction,
     IUpdatePeopleLoadingAction,
+    ILoadedPersonAction,
 } from './peopleActions';
 
 export namespace PeopleThunks {
@@ -24,6 +25,24 @@ export namespace PeopleThunks {
             }
         ).then(res => res.json())
             .then(result => dispatch({ type: "LOADED_PEOPLE_ACTION", people: result }));
+    };
+
+    export const getPerson = (id: string): AppThunkAction<ILoadedPersonAction | IUpdatePeopleLoadingAction> => (dispatch, getState) => {
+        dispatch({
+            type: "UPDATE_PEOPLE_LOADING_ACTION",
+            status: true
+        });
+        fetch(
+            window.location.origin + '/api/users?id=' + id,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'Application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+            }
+        ).then(res => res.json())
+            .then(result => dispatch({ type: "LOADED_PERSON_ACTION", person: result }));
     };
 
     export const updatePerson = (person: IPerson): AppThunkAction<IUpdatedPersonAction | IUpdatePeopleLoadingAction> => (dispatch, getState) => {

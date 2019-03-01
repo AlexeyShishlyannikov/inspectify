@@ -26,6 +26,13 @@ export const peopleReducer: Reducer<PeopleState> = (
                 isLoading: false,
                 errorMessage: undefined
             });
+        case 'LOADED_PERSON_ACTION':
+            return new PeopleState({
+                selectedPerson: action.person,
+                people: state.people,
+                isLoading: false,
+                errorMessage: undefined
+            });
         case 'UPDATED_PERSON_ACTION':
             let selectedPerson: IPerson | undefined;
             if (state.selectedPerson && state.selectedPerson.id === action.person.id) {

@@ -6,13 +6,15 @@ export type PeopleAction = IUpdatePeopleLoadingAction
     | IUpdatedPersonAction
     | IDeletedPersonAction
     | ILoadedPeopleAction
-    | ISelectPersonAction;
+    | ISelectPersonAction
+    | ILoadedPersonAction;
 
 export type LOADED_PEOPLE_ACTION = "LOADED_PEOPLE_ACTION";
 export type SELECT_PERSON_ACTION = "SELECT_PERSON_ACTION";
 export type UPDATED_PERSON_ACTION = "UPDATED_PERSON_ACTION";
 export type DELETED_PERSON_ACTION = "DELETED_PERSON_ACTION";
 export type UPDATE_PEOPLE_LOADING_ACTION = "UPDATE_PEOPLE_LOADING_ACTION";
+export type LOADED_PERSON_ACTION = "LOADED_PERSON_ACTION";
 
 export interface ILoadedPeopleAction extends Action {
     type: LOADED_PEOPLE_ACTION;
@@ -21,6 +23,11 @@ export interface ILoadedPeopleAction extends Action {
 
 export interface IUpdatedPersonAction extends Action {
     type: UPDATED_PERSON_ACTION;
+    person: IPerson;
+}
+
+export interface ILoadedPersonAction extends Action {
+    type: LOADED_PERSON_ACTION;
     person: IPerson;
 }
 

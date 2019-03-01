@@ -15,13 +15,18 @@ import { ILogoutAction } from '../../../store/authentication/authenticationActio
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
+import { IPerson } from '../../../models/person';
+import { PeopleThunks } from '../../../store/people/peopleThunks';
 
 interface IProfileUserFormProps {
+    person?: IPerson;
     user?: User;
     isLoading: boolean;
     isAuthenticated: boolean;
     errorMessage?: string;
     logout: () => void;
+    getPerson: (id: string) => void;
+    updatePerson: (person: IPerson) => void;
 }
 
 interface IProfileUserFormState {
@@ -35,9 +40,33 @@ class ProfileUserForm extends React.Component<IProfileUserFormProps, IProfileUse
         lastName: ''
     };
 
+    componentWillMount() {
+        if (this.props.user) {
+            this.props.getPerson(this.props.user.userId);
+        }
+    }
+
+    componentWillReceiveProps(newProps: IProfileUserFormProps) {
+        if (newProps.person !== this.props.person) {
+            this.setState(state => {
+                return {
+                    firstName: this.props.person ? this.props.person.firstName : state.firstName,
+                    lastName: this.props.person ? this.props.person.lastName : state.lastName
+                }
+            });
+        }
+    }
+
     updateUser = (event: React.ChangeEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        // this.props.logout();
+        event.preventDefault();
+        if (this.props.user && this.props.person) {
+            this.props.updatePerson({
+                id: this.props.person.id,
+                email: this.props.user.email,
+                firstName: this.state.firstName as string,
+                lastName: this.state.lastName as string
+            });
+        }
     };
 
     handleChange = (prop: string) => (
@@ -94,8 +123,8 @@ class ProfileUserForm extends React.Component<IProfileUserFormProps, IProfileUse
                         </FormControl>
                     </CardContent>
                     <CardActions>
+                        {<div style={{ 'color': 'red' }}> {!this.props.errorMessage ? null : this.props.errorMessage} </div>}
                         {this.getSubmitButton()}
-                        {!this.props.errorMessage ? null : <div style={{ 'color': 'red' }}> {this.props.errorMessage} </div>}
                     </CardActions>
                 </form>
             </Card>
@@ -104,8 +133,9 @@ class ProfileUserForm extends React.Component<IProfileUserFormProps, IProfileUse
 };
 
 const mapStateToProps = (state: ApplicationState) => ({
+    person: state.people.selectedPerson,
     user: state.authentication.user,
-    isLoading: state.authentication.isLoading,
+    isLoading: state.people.isLoading,
     errorMessage: state.authentication.errorMessage,
     isAuthenticated: state.authentication.isAuthenticated
 });
@@ -116,7 +146,9 @@ const mapDispatchToProps = (dispatch) => ({
             type: "LOGOUT_ACTION"
         };
         dispatch(action);
-    }
+    },
+    getPerson: (id: string) => dispatch(PeopleThunks.getPerson(id)),
+    updatePerson: (person: IPerson) => dispatch(PeopleThunks.updatePerson(person))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProfileUserForm);
