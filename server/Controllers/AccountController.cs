@@ -19,23 +19,23 @@ namespace server.Controllers
         private readonly IJwtFactory jwtFactory;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IEmailProvider emailProvider;
+        private readonly IUsersProvider usersProvider;
         private readonly IInvitationProvider invitationProvider;
-        private readonly LogisticsDbContext dbContext;
         private readonly ICompaniesProvider companiesProvider;
 
         public AccountController(
             IJwtFactory jwtFactory,
-            LogisticsDbContext dbContext,
             ICompaniesProvider companiesProvider,
             UserManager<ApplicationUser> userManager,
             IEmailProvider emailProvider,
+            IUsersProvider usersProvider,
             IInvitationProvider invitationProvider)
         {
             this.jwtFactory = jwtFactory;
-            this.dbContext = dbContext;
             this.companiesProvider = companiesProvider;
             this.userManager = userManager;
             this.emailProvider = emailProvider;
+            this.usersProvider = usersProvider;
             this.invitationProvider = invitationProvider;
         }
 
@@ -55,14 +55,11 @@ namespace server.Controllers
             var identityResult = await userManager.CreateAsync(new ApplicationUser
             {
                 UserName = model.Email,
-                Email = model.Email,
+                Email = model.Email
             }, model.Password);
-            if (!identityResult.Succeeded)
-            {
-                return BadRequest("Something went wrong!");
-            }
+            if (!identityResult.Succeeded) return BadRequest("Something went wrong!");
             var user = await userManager.FindByEmailAsync(model.Email);
-            await dbContext.Persons.AddAsync(new Person
+            await usersProvider.AddPerson(new Person
             {
                 Id = user.Id,
                 ApplicationUserId = user.Id,
@@ -70,9 +67,9 @@ namespace server.Controllers
                 LastName = model.LastName,
                 CompanyId = invitation.CompanyId
             });
-            await dbContext.SaveChangesAsync();
-            var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
-            await emailProvider.SendConfirmEmail(user, token);
+            await invitationProvider.DeleteInvitation(model.InvitationId);
+            // var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+            // await emailProvider.SendConfirmEmail(user, token);
             return Ok(await jwtFactory.GenerateEncodedToken(user));
         }
 

@@ -34,7 +34,7 @@ class InvitationList extends React.Component<IInvitationListProps, {}> {
     render() {
         let Content: () => JSX.Element;
         if (this.props.isLoading) {
-            Content = () => <CircularProgress></CircularProgress>;
+            Content = () => <CircularProgress/>;
         } else if (this.props.invitations.length === 0) {
             Content = () => <div>No Invitations found</div>;
         } else {
@@ -77,7 +77,7 @@ class InvitationList extends React.Component<IInvitationListProps, {}> {
 const mapStateToProps = (state: ApplicationState) => {
     return {
         invitations: state.invitations.invitations,
-        isLoading: state.authentication.isLoading
+        isLoading: state.invitations.isLoading
     };
 };
 

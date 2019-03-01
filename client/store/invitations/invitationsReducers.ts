@@ -9,6 +9,13 @@ export const invitationsReducer: Reducer<InvitaionsState> = (
 ) => {
     const action = incomingAction as InvitationAction;
     switch (action.type) {
+        case 'LOADED_INVITATION_ACTION':
+            return new InvitaionsState({
+                selectedInvitation: action.invitation,
+                invitations: state.invitations,
+                isLoading: false,
+                errorMessage: undefined
+            });
         case 'LOADED_INVITATIONS_ACTION':
             return new InvitaionsState({
                 selectedInvitation: state.selectedInvitation && action.invitations.find(i => i.id === state.selectedInvitation)

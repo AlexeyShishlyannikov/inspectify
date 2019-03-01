@@ -49,7 +49,10 @@ export namespace AuthThunks {
             window.location.origin + '/api/account/register/user',
             {
                 body: JSON.stringify(register),
-                method: 'POST'
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'Application/json'
+                }
             }
         ).then(res => res.text().then(result => {
             if (!res.ok) {
@@ -71,7 +74,10 @@ export namespace AuthThunks {
             window.location.origin + '/api/account/register/company',
             {
                 body: JSON.stringify(register),
-                method: 'POST'
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'Application/json'
+                }
             }
         ).then(res => res.text().then(result => {
             if (!res.ok) {
@@ -93,7 +99,10 @@ export namespace AuthThunks {
             window.location.origin + '/api/account/forgot',
             {
                 body: JSON.stringify(forgotPassword),
-                method: 'POST'
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'Application/json'
+                }
             }
         ).then(res => res.text()).then(() => {
             dispatch({
@@ -114,7 +123,10 @@ export namespace AuthThunks {
             window.location.origin + '/api/account/change',
             {
                 body: JSON.stringify(changePassword),
-                method: 'POST'
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'Application/json'
+                }
             }
         ).then(res => res.text()).then(() => {
             dispatch({
@@ -135,7 +147,10 @@ export namespace AuthThunks {
             window.location.origin + '/api/account/reset',
             {
                 body: JSON.stringify(resetPassword),
-                method: 'POST'
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'Application/json'
+                }
             }
         ).then(res => res.text()).then(() => {
             dispatch({
@@ -158,7 +173,10 @@ export namespace AuthThunks {
             confirmEmail.email
             }`,
             {
-                method: 'GET'
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'Application/json'
+                }
             }
         ).then(res => res.text()).then(token => {
             dispatch({

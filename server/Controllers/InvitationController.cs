@@ -41,7 +41,8 @@ namespace server.Controllers
             invitation.SentOn = DateTime.Now;
             invitation.CompanyId = companyId;
             var isEmailSent = await emailProvider.SendInvitationEmail(invitation);
-            if (!isEmailSent) {
+            if (!isEmailSent)
+            {
                 return BadRequest("Email wasn't sent");
             }
             var dbInvitation = await invitationProvider.AddInvitation(invitation);
@@ -51,10 +52,18 @@ namespace server.Controllers
         [Route("getInvitations")]
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetInvitations() {
+        public async Task<IActionResult> GetInvitations()
+        {
             var companyId = this.User.Claims.SingleOrDefault(c => c.Type == "companyId").Value;
             var invitations = await invitationProvider.GetInvitations(companyId);
             return Ok(invitations);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetInvitation([FromQuery] string id)
+        {
+            var invitation = await invitationProvider.GetInvitation(id);
+            return Ok(invitation);
         }
 
         [Route("update")]
@@ -62,7 +71,8 @@ namespace server.Controllers
         public async Task<IActionResult> UpdateInvitations(Invitation invitation)
         {
             var dbInvitation = await invitationProvider.GetInvitation(invitation.Id);
-            if (dbInvitation == null) {
+            if (dbInvitation == null)
+            {
                 return NotFound("Invitation not found");
             }
             invitation.SentOn = DateTime.Now;

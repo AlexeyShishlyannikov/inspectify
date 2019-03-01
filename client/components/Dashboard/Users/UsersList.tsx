@@ -47,11 +47,11 @@ class UsersList extends React.Component<IUsersListProps, {}> {
                             secondary={<span key={person.email}>Email: {person.email}</span>}
                         />
                         <ListItemSecondaryAction>
-                            <IconButton aria-label="select" color="secondary" 
+                            <IconButton aria-label="delete" color="secondary" 
                                 onClick={() => this.props.deletePerson(person.id as string)}>
                                 <CloseIcon />
                             </IconButton>
-                            <IconButton aria-label="delete" color="secondary" 
+                            <IconButton aria-label="select" color="primary" 
                                 onClick={() => this.props.selectPerson(person)}>
                                 <SelectIcon />
                             </IconButton>

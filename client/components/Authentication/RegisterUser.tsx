@@ -1,4 +1,5 @@
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import FormControl from '@material-ui/core/FormControl';
 import IconButton from '@material-ui/core/IconButton';
 import Input from '@material-ui/core/Input';
@@ -6,37 +7,69 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import InputLabel from '@material-ui/core/InputLabel';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import { IInvitation } from '../../models/invitation';
+import { ApplicationState } from '../../store';
+import { IRegisterUserAction } from '../../store/authentication/authenticationActions';
+import { InvitationThunks } from '../../store/invitations/invitationsThunks';
 import * as React from 'react';
-import { Link, Redirect } from 'react-router-dom';
-
-import { AuthThunks } from '../../store/authentication/authenticationThunks';
 import { connect } from 'react-redux';
-import { ApplicationState } from 'client/store';
-import { IRegisterCompanyAction } from 'client/store/authentication/authenticationActions';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { Link, Redirect, RouteProps } from 'react-router-dom';
+import * as queryString from 'query-string';
+import { AuthThunks } from '../../store/authentication/authenticationThunks';
+import './Register.scss';
 
-interface IRegisterCompanyProps {
+interface IRegisterUserProps {
+    invitation?: IInvitation,
     isLoading: boolean,
     isAuthenticated: boolean,
     errorMessage?: string,
-    registerCompany: (registerModel: IRegisterCompanyAction) => void,
+    registerUser: (registerModel: IRegisterUserAction) => void,
+    getInvitation: (id: string) => void
 }
 
-interface IRegisterCompanyState {
+interface IRegisterUserState {
     email: string;
-    companyName: string;
+    firstName: string;
+    lastName: string;
     password: string;
     confirmPassword: string;
     showPassword: boolean;
 }
 
-class RegisterCompany extends React.Component<IRegisterCompanyProps, IRegisterCompanyState> {
-    state: IRegisterCompanyState = {
-        email: '',
-        companyName: '',
+class RegisterUser extends React.Component<IRegisterUserProps & RouteProps, IRegisterUserState> {
+    state: IRegisterUserState = {
+        email: this.props.invitation ? this.props.invitation.email : '',
+        firstName: this.props.invitation ? this.props.invitation.firstName : '',
+        lastName: this.props.invitation ? this.props.invitation.lastName : '',
         password: '',
         confirmPassword: '',
         showPassword: false
+    }
+
+    componentWillMount() {
+        const searchString: string = this.props.location ? this.props.location.search : '';
+        const searchObject = queryString.parse(searchString);
+        if (searchObject.invitationId) {
+            this.props.getInvitation(searchObject.invitationId as string);
+        }
+    }
+
+    componentWillReceiveProps(newProps: IRegisterUserProps) {
+        if (newProps.invitation && this.props.invitation !== newProps.invitation) {
+            this.setState(state => {
+                if (newProps.invitation) {
+                    return {
+                        email: newProps.invitation.email,
+                        firstName: newProps.invitation.firstName,
+                        lastName: newProps.invitation.lastName,
+                        password: state.password,
+                        confirmPassword: state.confirmPassword,
+                        showPassword: state.showPassword
+                    }
+                }
+                return state;
+            });
+        }
     }
 
     handleChange = (prop: string) => (
@@ -56,47 +89,61 @@ class RegisterCompany extends React.Component<IRegisterCompanyProps, IRegisterCo
         }));
     };
 
-    registerCompany = (event: React.ChangeEvent<HTMLFormElement>) => {
+    registerUser = (event: React.ChangeEvent<HTMLFormElement>) => {
         event.preventDefault();
-        this.props.registerCompany({
-            type: "REGISTER_COMPANY_ACTION",
-            email: this.state.email,
-            companyName: this.state.companyName,
-            password: this.state.password,
-            confirmPassword: this.state.confirmPassword,
-        });
+        this.props.invitation && this.props.invitation.id &&
+            this.props.registerUser({
+                type: "REGISTER_USER_ACTION",
+                email: this.state.email,
+                firstName: this.state.firstName,
+                lastName: this.state.lastName,
+                invitationId: this.props.invitation.id,
+                password: this.state.password,
+                confirmPassword: this.state.confirmPassword,
+            });
     }
 
     isButtonDisabled = () => {
         return (
             !this.state.email ||
-            !this.state.companyName ||
+            !this.state.firstName ||
+            !this.state.lastName ||
             !this.state.password ||
-            !this.state.confirmPassword
+            !this.state.confirmPassword ||
+            !this.props.invitation
         );
     };
 
     render(): JSX.Element {
         if (this.props.isAuthenticated) return <Redirect to='/dashboard' />;
         return (
-            <form onSubmit={this.registerCompany} >
-                <FormControl>
+            <form onSubmit={this.registerUser} className="register-form">
+                <FormControl className="register-input">
                     <InputLabel htmlFor="email">Email</InputLabel>
                     <Input
                         type='email'
+                        disabled={true}
                         value={this.state.email}
                         onChange={this.handleChange('email')}
                     />
                 </FormControl>
-                <FormControl>
-                    <InputLabel htmlFor="companyName">Company Name</InputLabel>
+                <FormControl className="register-input">
+                    <InputLabel htmlFor="firstName">First Name</InputLabel>
                     <Input
                         type='text'
-                        value={this.state.companyName}
-                        onChange={this.handleChange('companyName')}
+                        value={this.state.firstName}
+                        onChange={this.handleChange('firstName')}
                     />
                 </FormControl>
-                <FormControl>
+                <FormControl className="register-input">
+                    <InputLabel htmlFor="lastName">Last Name</InputLabel>
+                    <Input
+                        type='text'
+                        value={this.state.lastName}
+                        onChange={this.handleChange('lastName')}
+                    />
+                </FormControl>
+                <FormControl className="register-input">
                     <InputLabel htmlFor="password">Password</InputLabel>
                     <Input
                         type={this.state.showPassword ? 'text' : 'password'}
@@ -106,15 +153,14 @@ class RegisterCompany extends React.Component<IRegisterCompanyProps, IRegisterCo
                             <InputAdornment position="end">
                                 <IconButton
                                     aria-label="Toggle password visibility"
-                                    onClick={this.handleClickShowPassword}
-                                >
+                                    onClick={this.handleClickShowPassword}>
                                     {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
                                 </IconButton>
                             </InputAdornment>
                         }
                     />
                 </FormControl>
-                <FormControl>
+                <FormControl className="register-input">
                     <InputLabel htmlFor="confirmPassword">Confirm Password</InputLabel>
                     <Input
                         type={this.state.showPassword ? 'text' : 'password'}
@@ -124,8 +170,7 @@ class RegisterCompany extends React.Component<IRegisterCompanyProps, IRegisterCo
                             <InputAdornment position="end">
                                 <IconButton
                                     aria-label="Toggle password visibility"
-                                    onClick={this.handleClickShowPassword}
-                                >
+                                    onClick={this.handleClickShowPassword}>
                                     {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
                                 </IconButton>
                             </InputAdornment>
@@ -133,14 +178,17 @@ class RegisterCompany extends React.Component<IRegisterCompanyProps, IRegisterCo
                     />
                 </FormControl>
                 <Button
+                    className="register-input"
                     disabled={this.isButtonDisabled()}
                     variant="contained"
                     color="primary"
                     type="submit">
                     {this.props.isLoading ? <CircularProgress size={30} color='secondary' /> : 'Register'}
                 </Button>
-                {!this.props.errorMessage ? null : <div style={{ 'color': 'red' }}> {this.props.errorMessage} </div>}
-                <Link to="login"> Sign in </Link>
+                <div className="register-links">
+                    {<div style={{ 'color': 'red' }}> {!this.props.errorMessage ? null : this.props.errorMessage} </div>}
+                    <Link to="login"> Sign in </Link>
+                </div>
             </form>
         );
     }
@@ -148,6 +196,7 @@ class RegisterCompany extends React.Component<IRegisterCompanyProps, IRegisterCo
 
 const mapStateToProps = (state: ApplicationState) => {
     return {
+        invitation: state.invitations.selectedInvitation,
         isLoading: state.authentication.isLoading,
         isAuthenticated: state.authentication.isAuthenticated,
         errorMessage: state.authentication.errorMessage
@@ -156,17 +205,9 @@ const mapStateToProps = (state: ApplicationState) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        registerCompany: (registerModel: IRegisterCompanyAction) => {
-            const registerCompany: IRegisterCompanyAction = {
-                type: "REGISTER_COMPANY_ACTION",
-                email: registerModel.email,
-                companyName: registerModel.companyName,
-                password: registerModel.password,
-                confirmPassword: registerModel.confirmPassword
-            };
-            dispatch(AuthThunks.registerCompany(registerCompany));
-        },
+        registerUser: (registerModel: IRegisterUserAction) => dispatch(AuthThunks.registerUser(registerModel)),
+        getInvitation: (id: string) => dispatch(InvitationThunks.getInvitation(id))
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegisterCompany);
+export default connect(mapStateToProps, mapDispatchToProps)(RegisterUser);

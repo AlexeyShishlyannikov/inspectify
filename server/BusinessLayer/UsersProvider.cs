@@ -17,6 +17,13 @@ namespace server.BusinessLayer
             this.dbContext = dbContext;
         }
 
+        public async Task<Person> AddPerson(Person person)
+        {
+            await dbContext.AddAsync(person);
+            await dbContext.SaveChangesAsync();
+            return person;
+        }
+
         public async Task<Person> GetPerson(string id)
         {
             return await dbContext.Persons.SingleOrDefaultAsync(p => p.Id == id);

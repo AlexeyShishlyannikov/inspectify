@@ -36,10 +36,11 @@ export interface ILoginAction extends Action {
 export interface IRegisterUserAction extends Action {
     type: REGISTER_USER_ACTION;
     email: string;
-    password: string;
-    confirmPassword: string;
     firstName: string;
     lastName: string;
+    password: string;
+    confirmPassword: string;
+    invitationId: string;
 }
 
 export interface IRegisterCompanyAction extends Action {
