@@ -78,7 +78,7 @@ namespace server.Controllers
         [Route("resend")]
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> ResendInvitations([FromQuery]string id)
+        public async Task<IActionResult> ResendInvitations([FromQuery] string id)
         {
             var dbInvitation = await invitationProvider.GetInvitation(id);
             if (dbInvitation == null)

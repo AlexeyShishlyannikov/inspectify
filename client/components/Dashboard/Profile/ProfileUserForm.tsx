@@ -27,14 +27,12 @@ interface IProfileUserFormProps {
 interface IProfileUserFormState {
     firstName?: string;
     lastName?: string;
-    phoneNumber?: number;
 }
 
 class ProfileUserForm extends React.Component<IProfileUserFormProps, IProfileUserFormState> {
     state: IProfileUserFormState = {
         firstName: '',
-        lastName: '',
-        phoneNumber: undefined
+        lastName: ''
     };
 
     updateUser = (event: React.ChangeEvent<HTMLFormElement>) => {
@@ -52,13 +50,12 @@ class ProfileUserForm extends React.Component<IProfileUserFormProps, IProfileUse
         }));
     };
 
-    isButtonDisabled = () => !this.state.firstName || !this.state.lastName || !this.state.phoneNumber;
+    isButtonDisabled = () => !this.state.firstName || !this.state.lastName;
 
     getSubmitButton = () => {
         return <Button
             disabled={this.isButtonDisabled()}
             type="submit"
-            className=""
             variant={this.isButtonDisabled() ? 'text' : 'contained'}
             color="primary"
         >
@@ -93,14 +90,6 @@ class ProfileUserForm extends React.Component<IProfileUserFormProps, IProfileUse
                                 type="text"
                                 value={this.state.lastName}
                                 onChange={this.handleChange('lastName')}
-                            />
-                        </FormControl>
-                        <FormControl className="profile-form-input">
-                            <InputLabel htmlFor="phoneNumber">Phone Number</InputLabel>
-                            <Input
-                                type="number"
-                                value={this.state.phoneNumber}
-                                onChange={this.handleChange('phoneNumber')}
                             />
                         </FormControl>
                     </CardContent>

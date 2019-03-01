@@ -1,16 +1,20 @@
-import { AuthenticationState } from "./authentication/authenticationState";
-import { authReducer } from "./authentication/authenticationReducers";
-import { load } from "redux-localstorage-simple";
-import { CompanyState } from "./company/companyState";
-import { companyReducer } from "./company/companyReducers";
-import { InvitaionsState } from "./invitations/invitationsState";
-import { invitationsReducer } from "./invitations/invitationsReducers";
+import { load } from 'redux-localstorage-simple';
+
+import { authReducer } from './authentication/authenticationReducers';
+import { AuthenticationState } from './authentication/authenticationState';
+import { companyReducer } from './company/companyReducers';
+import { CompanyState } from './company/companyState';
+import { invitationsReducer } from './invitations/invitationsReducers';
+import { InvitaionsState } from './invitations/invitationsState';
+import { IPeopleState, PeopleState } from './people/peopleState';
+import { peopleReducer } from './people/peopleReducers';
 
 // The top-level state object
 export interface ApplicationState {
     authentication: AuthenticationState;
     company: CompanyState;
     invitations: InvitaionsState;
+    people: IPeopleState;
     // vehicle:;
     // report:;
     // reportForm:;
@@ -23,7 +27,8 @@ export interface ApplicationState {
 export const reducers = {
     authentication: authReducer,
     company: companyReducer,
-    invitations: invitationsReducer
+    invitations: invitationsReducer,
+    people: peopleReducer
 };
 
 // This type can be used as a hint on action creators so that its 'dispatch' and 'getState' params are
@@ -43,6 +48,7 @@ export function getInitialState(): ApplicationState {
     return {
         authentication: AuthenticationState.initialState(),
         company: CompanyState.initialState(),
-        invitations: InvitaionsState.initialState()
+        invitations: InvitaionsState.initialState(),
+        people: PeopleState.initialState()
     };
 }
