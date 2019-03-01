@@ -15,6 +15,8 @@ namespace server.Models
         [Required]
         public string LastName { get; set; }
         [Required]
+        public string Email { get; set; }
+        [Required]
         public string CompanyId { get; set; }
         public Company Company { get; set; }
         public ICollection<Report> Reports { get; set; }

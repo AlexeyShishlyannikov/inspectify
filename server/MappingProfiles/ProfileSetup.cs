@@ -49,8 +49,8 @@ namespace server.MappingProfiles
 
         public void ConfigurePersonMappings()
         {
-            CreateMap<Person, DriverViewModel>();
-            CreateMap<DriverViewModel, Person>();
+            CreateMap<Person, PersonViewModel>();
+            CreateMap<PersonViewModel, Person>();
         }
 
         public void ConfigureReportMappings()

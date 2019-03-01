@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using server.DAL;
 
 namespace server.Migrations
 {
     [DbContext(typeof(LogisticsDbContext))]
-    partial class LogisticsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190301035813_Added email field to persons")]
+    partial class Addedemailfieldtopersons
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -343,9 +345,6 @@ namespace server.Migrations
                         .IsRequired();
 
                     b.Property<string>("CompanyId")
-                        .IsRequired();
-
-                    b.Property<string>("Email")
                         .IsRequired();
 
                     b.Property<string>("FirstName")

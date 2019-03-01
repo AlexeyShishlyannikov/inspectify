@@ -8,6 +8,7 @@ using server.Models;
 using Microsoft.AspNetCore.Mvc;
 using server.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace server.Controllers
 {
@@ -42,21 +43,22 @@ namespace server.Controllers
             var userId = this.User.Claims.SingleOrDefault(c => c.Type == "userId").Value;
             var person = await usersProvider.GetPersonByApplicationUserId(userId);
             if (person == null) return NotFound("User not found");
-            return Ok(person);
+            var personViewModel = mapper.Map<Person, PersonViewModel>(person);
+            return Ok(personViewModel);
         }
 
         [Route("update")]
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> UpdateUser([FromBody] Person person)
+        public async Task<IActionResult> UpdateUser([FromBody] PersonViewModel personViewModel)
         {
-            var user = await usersProvider.GetPerson(person.Id);
-            if (user == null)
-            {
-                return NotFound("User not found");
-            }
+            var dbPerson = await usersProvider.GetPerson(personViewModel.Id);
+            if (dbPerson == null) return NotFound("User not found");
+            var person = mapper.Map<PersonViewModel, Person>(personViewModel);
+            person.ApplicationUserId = dbPerson.ApplicationUserId;
             await usersProvider.UpdatePerson(person);
-            return Ok(person);
+            var dbPersonViewModel = mapper.Map<Person, PersonViewModel>(person);
+            return Ok(dbPersonViewModel);
         }
 
         [Route("remove")]
