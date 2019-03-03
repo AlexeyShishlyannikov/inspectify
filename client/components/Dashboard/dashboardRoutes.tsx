@@ -2,8 +2,9 @@ import React = require('react');
 import { Route } from 'react-router-dom';
 
 import Dashboard from './Dashboard';
-import { DashboardHome } from './DashboardHome';
+import DashboardHome from './DashboardHome';
 import Profile from './Profile';
+import { TeamRoutes } from './Teams/TeamRoutes';
 import Users from './Users/Users';
 
 export const DashboardRoutes = (path: string) => {
@@ -12,6 +13,7 @@ export const DashboardRoutes = (path: string) => {
             <Route exact path={path} component={DashboardHome} />
             <Route exact path={path + '/profile'} component={Profile} />
             <Route exact path={path + '/users'} component={Users} />
+            <Route path={path + '/teams'} component={() => TeamRoutes(path + '/teams')} />
         </Dashboard>
     );
 };

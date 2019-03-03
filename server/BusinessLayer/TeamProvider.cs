@@ -8,6 +8,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace server.BusinessLayer
 {
+
+    public interface ITeamProvider
+    {
+        Task<Team> AddTeam(Team team);
+        Task<Team> GetTeam(string teamId);
+        Task<Team> GetTeamByPerson(string personId);
+        Task<Team> UpdateTeam(Team team);
+        Task DeleteTeam(Team team);
+        Task<List<Team>> GetTeams(string companyId, string searchTerm);
+    }
+
     public class TeamProvider : ITeamProvider
     {
         private readonly LogisticsDbContext dbContext;
@@ -24,14 +35,10 @@ namespace server.BusinessLayer
             return team;
         }
 
-        public async Task DeleteTeam(string id)
+        public async Task DeleteTeam(Team team)
         {
-            var team = await dbContext.Teams.FirstOrDefaultAsync(t => t.Id == id);
-            if (team != null)
-            {
-                dbContext.Teams.Remove(team);
-                await dbContext.SaveChangesAsync();
-            }
+            dbContext.Teams.Remove(team);
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task<Team> GetTeam(string teamId)
@@ -45,21 +52,11 @@ namespace server.BusinessLayer
                 .Where(pt => pt.PersonId == personId)
                 .Include(pt => pt.Team)
                 .SingleOrDefaultAsync();
-            if (personTeam == null) {
+            if (personTeam == null)
+            {
                 return null;
             }
             return personTeam.Team;
-        }
-
-        public async Task<List<Team>> GetTeams(string companyName, string searchTerm)
-        {
-            var teams = dbContext.Teams
-                .Where(team => team.Name == companyName);
-            if (!String.IsNullOrEmpty(searchTerm))
-            {
-                teams = teams.Where(team => team.Name.Contains(searchTerm));
-            }
-            return await teams.ToListAsync();
         }
 
         public async Task<Team> UpdateTeam(Team team)
@@ -72,6 +69,16 @@ namespace server.BusinessLayer
                 return team;
             }
             return null;
+        }
+
+        public async Task<List<Team>> GetTeams(string companyId, string searchTerm)
+        {
+            var teams = dbContext.Teams.Where(team => team.CompanyId == companyId);
+            if (!String.IsNullOrEmpty(searchTerm))
+            {
+                teams = teams.Where(team => team.Name.Contains(searchTerm));
+            }
+            return await teams.ToListAsync();
         }
     }
 }

@@ -1,6 +1,6 @@
-import { IPerson } from '../../models/person';
 import { Action, Reducer } from 'redux';
 
+import { ActionsUtil } from '../actionsUtil';
 import { PeopleAction } from './peopleActions';
 import { PeopleState } from './peopleState';
 
@@ -34,14 +34,8 @@ export const peopleReducer: Reducer<PeopleState> = (
                 errorMessage: undefined
             });
         case 'UPDATED_PERSON_ACTION':
-            let selectedPerson: IPerson | undefined;
-            if (state.selectedPerson && state.selectedPerson.id === action.person.id) {
-                selectedPerson = action.person;
-            } else {
-                selectedPerson = state.selectedPerson;
-            }
             return new PeopleState({
-                selectedPerson: selectedPerson,
+                selectedPerson: ActionsUtil.getSelectedValueUtil(state.selectedPerson, action.person),
                 people: state.people.map(p => p.id === action.person.id ? action.person : p),
                 isLoading: false,
                 errorMessage: undefined

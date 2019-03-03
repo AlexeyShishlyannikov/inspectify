@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-export class DashboardHome extends React.Component<{}, {}> {
+export default class DashboardHome extends React.Component<{}, {}> {
     public render() {
         return (
             <div className="dashboard-home">

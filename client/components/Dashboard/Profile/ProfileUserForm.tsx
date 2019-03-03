@@ -50,10 +50,11 @@ class ProfileUserForm extends React.Component<IProfileUserFormProps, IProfileUse
         if (newProps.person !== this.props.person) {
             this.setState(state => {
                 return {
-                    firstName: this.props.person ? this.props.person.firstName : state.firstName,
-                    lastName: this.props.person ? this.props.person.lastName : state.lastName
+                    firstName: newProps.person ? newProps.person.firstName : state.firstName,
+                    lastName: newProps.person ? newProps.person.lastName : state.lastName
                 }
             });
+            console.log(this.state);
         }
     }
 
@@ -88,7 +89,7 @@ class ProfileUserForm extends React.Component<IProfileUserFormProps, IProfileUse
             variant={this.isButtonDisabled() ? 'text' : 'contained'}
             color="primary"
         >
-            {this.props.isLoading ? <CircularProgress size={30} /> : 'Save'}
+            {this.props.isLoading ? <CircularProgress color="secondary" size={30} /> : 'Save'}
         </Button>;
     };
 
@@ -133,8 +134,8 @@ class ProfileUserForm extends React.Component<IProfileUserFormProps, IProfileUse
 };
 
 const mapStateToProps = (state: ApplicationState) => ({
-    person: state.people.selectedPerson,
     user: state.authentication.user,
+    person: state.people.selectedPerson,
     isLoading: state.people.isLoading,
     errorMessage: state.authentication.errorMessage,
     isAuthenticated: state.authentication.isAuthenticated

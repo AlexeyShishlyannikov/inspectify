@@ -7,6 +7,7 @@ using server.BusinessLayer;
 using server.Models;
 using Microsoft.AspNetCore.Mvc;
 using server.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace server.Controllers
 {
@@ -23,56 +24,73 @@ namespace server.Controllers
         }
 
         [HttpPost]
-        [Route("Add")]
-        public async Task<IActionResult> AddTeam(TeamViewModel teamViewModel)
+        [Route("add")]
+        [Authorize]
+        public async Task<IActionResult> AddTeam([FromBody] TeamViewModel teamViewModel)
         {
+            var companyId = this.User.Claims.SingleOrDefault(c => c.Type == "companyId").Value;
             var team = mapper.Map<Team>(teamViewModel);
+            team.CompanyId = companyId;
             team = await teamProvider.AddTeam(team);
             teamViewModel = mapper.Map<TeamViewModel>(team);
             return Ok(teamViewModel);
         }
 
-        [HttpDelete]
-        [Route("delete/{{id}}")]
-        public async Task<IActionResult> DeleteTeam([FromQuery]string id)
-        {
-            await teamProvider.DeleteTeam(id);
-            return Ok(id);
-        }
-
         [HttpGet]
-        [Route("get")]
-        public async Task<IActionResult> GetTeam(string teamId)
+        [Authorize]
+        [Route("{id}")]
+        public async Task<IActionResult> GetTeam(string id)
         {
-            var team = await teamProvider.GetTeam(teamId);
-            if (team != null)
+            var team = await teamProvider.GetTeam(id);
+            if (team == null)
             {
-                var teamViewModel = mapper.Map<TeamViewModel>(team);
-                Ok(teamViewModel);
+                return NotFound();
             }
-            return NotFound();
+            var teamViewModel = mapper.Map<TeamViewModel>(team);
+            return Ok(teamViewModel);
         }
 
         [HttpGet]
         [Route("getTeams")]
-        public async Task<IActionResult> GetTeams(string companyName, string searchTerm)
+        [Authorize]
+        public async Task<IActionResult> GetTeams([FromQuery] string searchTerm)
         {
-            var teams = await teamProvider.GetTeams(companyName, searchTerm);
-            var teamViewModelList = teams.Select(t => mapper.Map<TeamViewModel>(t)).ToList();
+            var companyId = this.User.Claims.SingleOrDefault(c => c.Type == "companyId").Value;
+            var teams = await teamProvider.GetTeams(companyId, searchTerm);
+            var teamViewModelList = mapper.Map<List<TeamViewModel>>(teams);
             return Ok(teamViewModelList);
         }
 
-        [HttpPut]
+        [HttpPost]
         [Route("update")]
-        public async Task<IActionResult> UpdateTeam(Team team)
+        [Authorize]
+        public async Task<IActionResult> UpdateTeam([FromBody] TeamViewModel teamViewModel)
         {
-            var dbTeam = await teamProvider.UpdateTeam(team);
-            if (dbTeam != null)
+            var companyId = this.User.Claims.SingleOrDefault(c => c.Type == "companyId").Value;
+            var team = await teamProvider.GetTeam(teamViewModel.Id);
+            if (team == null)
             {
-                var dbTeamViewModel = mapper.Map<TeamViewModel>(dbTeam);
-                return Ok(dbTeamViewModel);
+                return NotFound("Team not found");
             }
-            return NotFound();
+            team = mapper.Map(teamViewModel, team);
+            team = await teamProvider.UpdateTeam(team);
+            teamViewModel = mapper.Map<TeamViewModel>(team);
+            return Ok(teamViewModel);
+        }
+
+
+        [HttpDelete]
+        [Route("delete/{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteTeam(string id)
+        {
+            var team = await teamProvider.GetTeam(id);
+            if (team == null)
+            {
+                return NotFound("Team not found");
+            }
+            await teamProvider.DeleteTeam(team);
+            return Ok(id);
         }
     }
 }

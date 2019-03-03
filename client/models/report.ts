@@ -1,11 +1,11 @@
 import { IVehicle } from "./Vehicle";
-import { IDriver } from "./driver";
+import { IPerson } from "./person";
 
 export interface IReport {
     id: string;
     name: string;
     vehicle: IVehicle;
-    driver: IDriver;
+    person: IPerson;
     reportFormId: string;
     dateCreated: Date;
     dateUpdated: Date;
