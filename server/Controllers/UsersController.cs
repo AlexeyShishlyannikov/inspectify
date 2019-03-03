@@ -62,7 +62,7 @@ namespace server.Controllers
         [Route("remove")]
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> RemoveUserFromCompany([FromQuery]string userId)
+        public async Task<IActionResult> RemoveUser([FromQuery] string userId)
         {
             var companyId = this.User.Claims.SingleOrDefault(c => c.Type == "companyId").Value;
             var user = await usersProvider.GetPerson(userId);
@@ -72,6 +72,16 @@ namespace server.Controllers
             }
             await usersProvider.RemoveUser(user);
             return Ok(userId);
+        }
+
+        [Route("team/{teamId}")]
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetUsersForTeam(string teamId, [FromQuery] string searchTerm)
+        {
+            var teamMembers = await usersProvider.GetUsersForTeam(teamId, searchTerm);
+            var teamMembersViewModels = mapper.Map<List<PersonViewModel>>(teamMembers);
+            return Ok(teamMembersViewModels);
         }
     }
 }

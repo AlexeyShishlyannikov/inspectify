@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +9,17 @@ using server.Models;
 
 namespace server.BusinessLayer
 {
+    public interface IUsersProvider
+    {
+        Task<Person> AddPerson(Person person);
+        Task<Person> GetPerson(string id);
+        Task<Person> GetPersonByApplicationUserId(string id);
+        Task<Person> UpdatePerson(Person person);
+        Task<List<Person>> GetUsersForCompany(string companyId, string searchTerm);
+        Task<List<Person>> GetUsersForTeam(string teamId, string searchTerm);
+        Task RemoveUser(Person person);
+    }
+
     public class UsersProvider : IUsersProvider
     {
         private readonly LogisticsDbContext dbContext;
@@ -26,21 +38,34 @@ namespace server.BusinessLayer
 
         public async Task<Person> GetPerson(string id)
         {
-            return await dbContext.Persons.SingleOrDefaultAsync(p => p.Id == id);
+            return await dbContext.Persons.Include(p => p.Team).SingleOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<Person> GetPersonByApplicationUserId(string id)
         {
-            return await dbContext.Persons.SingleOrDefaultAsync(p => p.ApplicationUserId == id);
+            return await dbContext.Persons.Include(p => p.Team).SingleOrDefaultAsync(p => p.ApplicationUserId == id);
         }
 
         public async Task<List<Person>> GetUsersForCompany(string companyId, string searchTerm)
         {
             var users = dbContext.Persons.Where(p => p.CompanyId == companyId);
-            if (searchTerm != null) {
-                users.Where(p => p.FirstName.Contains(searchTerm) || p.LastName.Contains(searchTerm));
+            if (!String.IsNullOrEmpty(searchTerm))
+            {
+                users.Where(p => p.FullName.Contains(searchTerm));
             }
-            return await users.ToListAsync();
+            return await users.Include(p => p.Team).ToListAsync();
+        }
+
+        public async Task<List<Person>> GetUsersForTeam(string teamId, string searchTerm)
+        {
+            var users = dbContext.Persons.Where(pt => pt.TeamId == teamId)
+                .AsQueryable();
+            if (!String.IsNullOrEmpty(searchTerm))
+            {
+                searchTerm = searchTerm.Trim();
+                users = users.Where(pt => pt.FullName.Contains(searchTerm));
+            }
+            return await users.Include(p => p.Team).ToListAsync();
         }
 
         public async Task RemoveUser(Person person)

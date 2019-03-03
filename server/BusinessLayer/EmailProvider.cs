@@ -8,6 +8,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace server.BusinessLayer
 {
+    public interface IEmailProvider
+    {
+        Task<bool> SendEmail(string email, string subject, string body);
+        Task<bool> SendWelcomeEmail();
+        Task<bool> SendConfirmEmail(ApplicationUser user, string token);
+        Task<bool> SendInvitationEmail(Invitation invitation);
+        Task<bool> SendForgotPasswordEmail();
+    }
+    
     public class EmailProvider : IEmailProvider
     {
         private readonly LogisticsDbContext context;

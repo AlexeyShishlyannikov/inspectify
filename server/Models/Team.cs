@@ -17,6 +17,6 @@ namespace server.Models
         public ICollection<Vehicle> Vehicles { get; set; }
         public ICollection<ReportTeam> ReportTeams { get; set; }
         public ICollection<FormTeam> FormTeams { get; set; }
-        public ICollection<PersonTeam> PersonTeams { get; set; }
+        public ICollection<Person> Persons { get; set; }
     }
 }

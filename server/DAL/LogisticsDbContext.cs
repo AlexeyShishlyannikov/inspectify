@@ -11,7 +11,6 @@ namespace server.DAL
         public DbSet<Team> Teams { get; set; }
         public DbSet<Person> Persons { get; set; }
         public DbSet<Invitation> Invitations { get; set; }
-        public DbSet<PersonTeam> PersonTeams { get; set; }
         // Vehicles
         public DbSet<Vehicle> Vehicles { get; set; }
         public DbSet<VehicleModel> VehicleModels { get; set; }
@@ -35,10 +34,6 @@ namespace server.DAL
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            // Person to Teams
-            builder.Entity<PersonTeam>().HasKey(vc => new { vc.PersonId, vc.TeamId });
-            builder.Entity<PersonTeam>().HasOne(vc => vc.Person).WithMany(v => v.PersonTeams).HasForeignKey(vc => vc.PersonId);
-            builder.Entity<PersonTeam>().HasOne(vc => vc.Team).WithMany(v => v.PersonTeams).HasForeignKey(vc => vc.TeamId);
             // Vehicle to Companies
             builder.Entity<VehicleCompany>().HasKey(vc => new { vc.VehicleId, vc.CompanyId });
             builder.Entity<VehicleCompany>().HasOne(vc => vc.Company).WithMany(v => v.VehicleCompanies).HasForeignKey(vc => vc.CompanyId);

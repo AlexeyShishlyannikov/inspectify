@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace server.BusinessLayer
 {
-
     public interface ITeamProvider
     {
         Task<Team> AddTeam(Team team);
@@ -48,15 +47,12 @@ namespace server.BusinessLayer
 
         public async Task<Team> GetTeamByPerson(string personId)
         {
-            var personTeam = await dbContext.PersonTeams
-                .Where(pt => pt.PersonId == personId)
+            var personTeam = await dbContext.Persons
+                .Where(pt => pt.Id == personId)
                 .Include(pt => pt.Team)
+                .Select(p => p.Team)
                 .SingleOrDefaultAsync();
-            if (personTeam == null)
-            {
-                return null;
-            }
-            return personTeam.Team;
+            return personTeam;
         }
 
         public async Task<Team> UpdateTeam(Team team)
