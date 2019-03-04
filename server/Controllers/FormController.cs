@@ -7,6 +7,7 @@ using Inspectify.BusinessLayer;
 using Inspectify.Models;
 using Microsoft.AspNetCore.Mvc;
 using Inspectify.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inspectify.Controllers
 {
@@ -23,6 +24,7 @@ namespace Inspectify.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddForm([FromBody] FormViewModel formViewModel)
         {
             var form = mapper.Map<FormViewModel, Form>(formViewModel);
@@ -33,6 +35,7 @@ namespace Inspectify.Controllers
 
         [HttpGet]
         [Route("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetForm([FromRoute] string id)
         {
             var form = await formProvider.GetForm(id);
@@ -41,15 +44,17 @@ namespace Inspectify.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetForms([FromQuery] string searchTerm)
         {
-            var companyId = "";
-            var forms = await formProvider.GetForms(companyId, searchTerm);
+            var companyId = this.User.Claims.SingleOrDefault(c => c.Type == "companyId").Value;
+            var forms = await formProvider.SearchForms(companyId, searchTerm);
             var formViewModelList = forms.Select(f => mapper.Map<Form, FormViewModel>(f));
             return Ok(formViewModelList);
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<IActionResult> UpdateForm([FromBody] FormViewModel formViewModel)
         {
             var form = mapper.Map<FormViewModel, Form>(formViewModel);
@@ -63,6 +68,7 @@ namespace Inspectify.Controllers
 
         [HttpDelete]
         [Route("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteForm([FromRoute] string id)
         {
             var form = await formProvider.GetForm(id);

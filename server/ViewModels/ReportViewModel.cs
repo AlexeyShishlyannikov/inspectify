@@ -12,6 +12,5 @@ namespace Inspectify.ViewModels
         public int DriverId { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
-        public ICollection<FormInputValueViewModel> FormInputValues { get; set; }
     }
 }
