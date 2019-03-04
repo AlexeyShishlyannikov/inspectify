@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using server.DAL;
+using Inspectify.DAL;
 
-namespace server.Migrations
+namespace Inspectify.Migrations
 {
     [DbContext(typeof(LogisticsDbContext))]
     [Migration("20190228232651_Removed phone number from invitation table")]

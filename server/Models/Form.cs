@@ -1,9 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using server.Models;
+using Inspectify.Models;
 
-namespace server.Models
+namespace Inspectify.Models
 {
     public class Form
     {
@@ -12,45 +13,45 @@ namespace server.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public bool IsArchived { get; set; }
+        public string CompanyId { get; set; }
+        public Company Company { get; set; }
         public DateTime Created { get; set; }
-        public DateTime Updated { get; set; }
-        public ICollection<Report> Reports { get; set; }
-        public ICollection<FormCompany> FormCompanies { get; set; }
-        public ICollection<FormTeam> FormTeams { get; set; }
-        public ICollection<FormFormInput> FormFormInputs { get; set; }
+        public IEnumerable<Field> Fields { get; set; }
     }
 
-    public class FormInput
+    public class Field
     {
         public string Id { get; set; }
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
+        public int SortIndex { get; set; }
         public bool IsRequired { get; set; }
+        public string FormId { get; set; }
+        public Form Form { get; set; }
         [Required]
-        public ReportFormInputType InputType { get; set; }
-        public FormInputValue Value { get; set; }
-        public ICollection<FormFormInput> FormFormInputs { get; set; }
+        public FieldType Type { get; set; }
+        public IEnumerable<Option> Options { get; set; }
     }
 
-    public class FormInputValue
+    public class Option
     {
         public string Id { get; set; }
         [Required]
-        public string FormInputId { get; set; }
-        public FormInput FormInput { get; set; }
-        public string TextValue { get; set; }
-        public double? NumberValue { get; set; }
-        public string PhotoUrl { get; set; }
-        public ICollection<FormInputValueReport> FormInputValueReports { get; set; }
+        public string FieldId { get; set; }
+        public Field Field { get; set; }
+        public bool IsArchived { get; set; }
+        public string Value { get; set; }
     }
 
-    public enum ReportFormInputType
+    public enum FieldType
     {
-        Text,
-        Number,
+        Input,
+        Textarea,
         Radio,
-        Options,
+        Select,
+        Multiselect,
+        Checkbox,
         Photo
     }
 }

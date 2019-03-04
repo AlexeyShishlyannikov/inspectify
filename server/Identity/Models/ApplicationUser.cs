@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace server.Models
+namespace Inspectify.Models
 {
     public class ApplicationUser: IdentityUser
     {

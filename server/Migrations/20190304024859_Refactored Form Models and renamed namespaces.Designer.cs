@@ -9,17 +9,17 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Inspectify.Migrations
 {
     [DbContext(typeof(LogisticsDbContext))]
-    [Migration("20190225000955_Added invitations and user registration")]
-    partial class Addedinvitationsanduserregistration
+    [Migration("20190304024859_Refactored Form Models and renamed namespaces")]
+    partial class RefactoredFormModelsandrenamednamespaces
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
+                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("Logistics.Models.ApplicationUser", b =>
+            modelBuilder.Entity("Inspectify.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -69,7 +69,7 @@ namespace Inspectify.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("Logistics.Models.Company", b =>
+            modelBuilder.Entity("Inspectify.Models.Company", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -90,10 +90,37 @@ namespace Inspectify.Migrations
                     b.ToTable("Companies");
                 });
 
-            modelBuilder.Entity("Logistics.Models.Form", b =>
+            modelBuilder.Entity("Inspectify.Models.Field", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("FormId");
+
+                    b.Property<bool>("IsRequired");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<int>("SortIndex");
+
+                    b.Property<int>("Type");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FormId");
+
+                    b.ToTable("Inputs");
+                });
+
+            modelBuilder.Entity("Inspectify.Models.Form", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("CompanyId");
 
                     b.Property<DateTime>("Created");
 
@@ -104,68 +131,58 @@ namespace Inspectify.Migrations
                     b.Property<string>("Name")
                         .IsRequired();
 
-                    b.Property<DateTime>("Updated");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("Forms");
                 });
 
-            modelBuilder.Entity("Logistics.Models.FormFormInput", b =>
-                {
-                    b.Property<string>("FormId");
-
-                    b.Property<string>("FormInputId");
-
-                    b.HasKey("FormId", "FormInputId");
-
-                    b.HasIndex("FormInputId");
-
-                    b.ToTable("FormFormInputs");
-                });
-
-            modelBuilder.Entity("Logistics.Models.FormInput", b =>
+            modelBuilder.Entity("Inspectify.Models.Invitation", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Description");
+                    b.Property<string>("CompanyId");
 
-                    b.Property<int>("InputType");
-
-                    b.Property<bool>("IsRequired");
-
-                    b.Property<string>("Name")
+                    b.Property<string>("Email")
                         .IsRequired();
+
+                    b.Property<string>("FirstName")
+                        .IsRequired();
+
+                    b.Property<string>("LastName")
+                        .IsRequired();
+
+                    b.Property<DateTime>("SentOn");
 
                     b.HasKey("Id");
 
-                    b.ToTable("FormInputs");
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Invitations");
                 });
 
-            modelBuilder.Entity("Logistics.Models.FormInputValue", b =>
+            modelBuilder.Entity("Inspectify.Models.Option", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("FormInputId")
+                    b.Property<string>("FieldId")
                         .IsRequired();
 
-                    b.Property<double?>("NumberValue");
+                    b.Property<bool>("IsArchived");
 
-                    b.Property<string>("PhotoUrl");
-
-                    b.Property<string>("TextValue");
+                    b.Property<string>("Value");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FormInputId")
-                        .IsUnique();
+                    b.HasIndex("FieldId");
 
-                    b.ToTable("FormInputValues");
+                    b.ToTable("InputOptions");
                 });
 
-            modelBuilder.Entity("Logistics.Models.Person", b =>
+            modelBuilder.Entity("Inspectify.Models.Person", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -176,11 +193,16 @@ namespace Inspectify.Migrations
                     b.Property<string>("CompanyId")
                         .IsRequired();
 
+                    b.Property<string>("Email")
+                        .IsRequired();
+
                     b.Property<string>("FirstName")
                         .IsRequired();
 
                     b.Property<string>("LastName")
                         .IsRequired();
+
+                    b.Property<string>("TeamId");
 
                     b.HasKey("Id");
 
@@ -188,23 +210,12 @@ namespace Inspectify.Migrations
 
                     b.HasIndex("CompanyId");
 
+                    b.HasIndex("TeamId");
+
                     b.ToTable("Persons");
                 });
 
-            modelBuilder.Entity("Logistics.Models.PersonTeam", b =>
-                {
-                    b.Property<string>("PersonId");
-
-                    b.Property<string>("TeamId");
-
-                    b.HasKey("PersonId", "TeamId");
-
-                    b.HasIndex("TeamId");
-
-                    b.ToTable("PersonTeams");
-                });
-
-            modelBuilder.Entity("Logistics.Models.Report", b =>
+            modelBuilder.Entity("Inspectify.Models.Report", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -237,7 +248,33 @@ namespace Inspectify.Migrations
                     b.ToTable("Reports");
                 });
 
-            modelBuilder.Entity("Logistics.Models.Team", b =>
+            modelBuilder.Entity("Inspectify.Models.ReportCompany", b =>
+                {
+                    b.Property<string>("ReportId");
+
+                    b.Property<string>("CompanyId");
+
+                    b.HasKey("ReportId", "CompanyId");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("ReportCompany");
+                });
+
+            modelBuilder.Entity("Inspectify.Models.ReportTeam", b =>
+                {
+                    b.Property<string>("ReportId");
+
+                    b.Property<string>("TeamId");
+
+                    b.HasKey("ReportId", "TeamId");
+
+                    b.HasIndex("TeamId");
+
+                    b.ToTable("ReportTeam");
+                });
+
+            modelBuilder.Entity("Inspectify.Models.Team", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -258,7 +295,7 @@ namespace Inspectify.Migrations
                     b.ToTable("Teams");
                 });
 
-            modelBuilder.Entity("Logistics.Models.Vehicle", b =>
+            modelBuilder.Entity("Inspectify.Models.Vehicle", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -284,7 +321,20 @@ namespace Inspectify.Migrations
                     b.ToTable("Vehicles");
                 });
 
-            modelBuilder.Entity("Logistics.Models.VehicleMake", b =>
+            modelBuilder.Entity("Inspectify.Models.VehicleCompany", b =>
+                {
+                    b.Property<string>("VehicleId");
+
+                    b.Property<string>("CompanyId");
+
+                    b.HasKey("VehicleId", "CompanyId");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("VehicleCompanies");
+                });
+
+            modelBuilder.Entity("Inspectify.Models.VehicleMake", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -301,7 +351,7 @@ namespace Inspectify.Migrations
                     b.ToTable("VehicleMarks");
                 });
 
-            modelBuilder.Entity("Logistics.Models.VehicleModel", b =>
+            modelBuilder.Entity("Inspectify.Models.VehicleModel", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -427,207 +477,139 @@ namespace Inspectify.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("server.Models.FormCompany", b =>
+            modelBuilder.Entity("Inspectify.Models.Company", b =>
                 {
-                    b.Property<string>("FormId");
-
-                    b.Property<string>("CompanyId");
-
-                    b.HasKey("FormId", "CompanyId");
-
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("FormCompanies");
-                });
-
-            modelBuilder.Entity("server.Models.FormInputValueReport", b =>
-                {
-                    b.Property<string>("ReportId");
-
-                    b.Property<string>("FormInputValueId");
-
-                    b.HasKey("ReportId", "FormInputValueId");
-
-                    b.HasIndex("FormInputValueId");
-
-                    b.ToTable("FormInputValueReports");
-                });
-
-            modelBuilder.Entity("server.Models.FormTeam", b =>
-                {
-                    b.Property<string>("FormId");
-
-                    b.Property<string>("TeamId");
-
-                    b.HasKey("FormId", "TeamId");
-
-                    b.HasIndex("TeamId");
-
-                    b.ToTable("FormTeams");
-                });
-
-            modelBuilder.Entity("server.Models.Invitation", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("CompanyId");
-
-                    b.Property<string>("Email")
-                        .IsRequired();
-
-                    b.Property<string>("FirstName")
-                        .IsRequired();
-
-                    b.Property<string>("LastName")
-                        .IsRequired();
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired();
-
-                    b.Property<DateTime>("SentOn");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("Invitations");
-                });
-
-            modelBuilder.Entity("server.Models.ReportCompany", b =>
-                {
-                    b.Property<string>("ReportId");
-
-                    b.Property<string>("CompanyId");
-
-                    b.HasKey("ReportId", "CompanyId");
-
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("ReportCompanies");
-                });
-
-            modelBuilder.Entity("server.Models.ReportTeam", b =>
-                {
-                    b.Property<string>("ReportId");
-
-                    b.Property<string>("TeamId");
-
-                    b.HasKey("ReportId", "TeamId");
-
-                    b.HasIndex("TeamId");
-
-                    b.ToTable("ReportTeams");
-                });
-
-            modelBuilder.Entity("server.Models.VehicleCompany", b =>
-                {
-                    b.Property<string>("VehicleId");
-
-                    b.Property<string>("CompanyId");
-
-                    b.HasKey("VehicleId", "CompanyId");
-
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("VehicleCompanies");
-                });
-
-            modelBuilder.Entity("Logistics.Models.Company", b =>
-                {
-                    b.HasOne("Logistics.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("Inspectify.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
                         .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Logistics.Models.FormFormInput", b =>
+            modelBuilder.Entity("Inspectify.Models.Field", b =>
                 {
-                    b.HasOne("Logistics.Models.Form", "Form")
-                        .WithMany("FormFormInputs")
-                        .HasForeignKey("FormId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("Inspectify.Models.Form", "Form")
+                        .WithMany("Fields")
+                        .HasForeignKey("FormId");
+                });
 
-                    b.HasOne("Logistics.Models.FormInput", "FormInput")
-                        .WithMany("FormFormInputs")
-                        .HasForeignKey("FormInputId")
+            modelBuilder.Entity("Inspectify.Models.Form", b =>
+                {
+                    b.HasOne("Inspectify.Models.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+                });
+
+            modelBuilder.Entity("Inspectify.Models.Invitation", b =>
+                {
+                    b.HasOne("Inspectify.Models.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+                });
+
+            modelBuilder.Entity("Inspectify.Models.Option", b =>
+                {
+                    b.HasOne("Inspectify.Models.Field", "Field")
+                        .WithMany("Options")
+                        .HasForeignKey("FieldId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Logistics.Models.FormInputValue", b =>
+            modelBuilder.Entity("Inspectify.Models.Person", b =>
                 {
-                    b.HasOne("Logistics.Models.FormInput", "FormInput")
-                        .WithOne("Value")
-                        .HasForeignKey("Logistics.Models.FormInputValue", "FormInputId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Logistics.Models.Person", b =>
-                {
-                    b.HasOne("Logistics.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("Inspectify.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
                         .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Logistics.Models.Company", "Company")
+                    b.HasOne("Inspectify.Models.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Inspectify.Models.Team", "Team")
+                        .WithMany("Persons")
+                        .HasForeignKey("TeamId");
                 });
 
-            modelBuilder.Entity("Logistics.Models.PersonTeam", b =>
+            modelBuilder.Entity("Inspectify.Models.Report", b =>
                 {
-                    b.HasOne("Logistics.Models.Person", "Person")
-                        .WithMany("PersonTeams")
-                        .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Logistics.Models.Team", "Team")
-                        .WithMany("PersonTeams")
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Logistics.Models.Report", b =>
-                {
-                    b.HasOne("Logistics.Models.Person", "Driver")
+                    b.HasOne("Inspectify.Models.Person", "Driver")
                         .WithMany("Reports")
                         .HasForeignKey("DriverId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Logistics.Models.Form", "Form")
-                        .WithMany("Reports")
+                    b.HasOne("Inspectify.Models.Form", "Form")
+                        .WithMany()
                         .HasForeignKey("FormId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Logistics.Models.Vehicle", "Vehicle")
+                    b.HasOne("Inspectify.Models.Vehicle", "Vehicle")
                         .WithMany("Reports")
                         .HasForeignKey("VehicleId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Logistics.Models.Team", b =>
+            modelBuilder.Entity("Inspectify.Models.ReportCompany", b =>
                 {
-                    b.HasOne("Logistics.Models.Company", "Company")
+                    b.HasOne("Inspectify.Models.Company", "Company")
+                        .WithMany("ReportCompanies")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Inspectify.Models.Report", "Report")
+                        .WithMany("ReportCompanies")
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Inspectify.Models.ReportTeam", b =>
+                {
+                    b.HasOne("Inspectify.Models.Team", "Team")
+                        .WithMany("ReportTeams")
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Inspectify.Models.Report", "Report")
+                        .WithMany("ReportTeams")
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Inspectify.Models.Team", b =>
+                {
+                    b.HasOne("Inspectify.Models.Company", "Company")
                         .WithMany("Teams")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Logistics.Models.Vehicle", b =>
+            modelBuilder.Entity("Inspectify.Models.Vehicle", b =>
                 {
-                    b.HasOne("Logistics.Models.VehicleModel", "Model")
+                    b.HasOne("Inspectify.Models.VehicleModel", "Model")
                         .WithMany()
                         .HasForeignKey("ModelId");
 
-                    b.HasOne("Logistics.Models.Team", "Team")
+                    b.HasOne("Inspectify.Models.Team", "Team")
                         .WithMany("Vehicles")
                         .HasForeignKey("TeamId");
                 });
 
-            modelBuilder.Entity("Logistics.Models.VehicleModel", b =>
+            modelBuilder.Entity("Inspectify.Models.VehicleCompany", b =>
                 {
-                    b.HasOne("Logistics.Models.VehicleMake", "Make")
+                    b.HasOne("Inspectify.Models.Company", "Company")
+                        .WithMany("VehicleCompanies")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Inspectify.Models.Vehicle", "Vehicle")
+                        .WithMany("VehicleCompanies")
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Inspectify.Models.VehicleModel", b =>
+                {
+                    b.HasOne("Inspectify.Models.VehicleMake", "Make")
                         .WithMany("Models")
                         .HasForeignKey("MakeId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -643,7 +625,7 @@ namespace Inspectify.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Logistics.Models.ApplicationUser")
+                    b.HasOne("Inspectify.Models.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -651,7 +633,7 @@ namespace Inspectify.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Logistics.Models.ApplicationUser")
+                    b.HasOne("Inspectify.Models.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -664,7 +646,7 @@ namespace Inspectify.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Logistics.Models.ApplicationUser")
+                    b.HasOne("Inspectify.Models.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -672,94 +654,9 @@ namespace Inspectify.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Logistics.Models.ApplicationUser")
+                    b.HasOne("Inspectify.Models.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("server.Models.FormCompany", b =>
-                {
-                    b.HasOne("Logistics.Models.Company", "Company")
-                        .WithMany("FormCompanies")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Logistics.Models.Form", "Form")
-                        .WithMany("FormCompanies")
-                        .HasForeignKey("FormId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("server.Models.FormInputValueReport", b =>
-                {
-                    b.HasOne("Logistics.Models.FormInputValue", "FormInputValue")
-                        .WithMany("FormInputValueReports")
-                        .HasForeignKey("FormInputValueId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Logistics.Models.Report", "Report")
-                        .WithMany("FormInputValueReports")
-                        .HasForeignKey("ReportId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("server.Models.FormTeam", b =>
-                {
-                    b.HasOne("Logistics.Models.Form", "Form")
-                        .WithMany("FormTeams")
-                        .HasForeignKey("FormId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Logistics.Models.Team", "Team")
-                        .WithMany("FormTeams")
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("server.Models.Invitation", b =>
-                {
-                    b.HasOne("Logistics.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId");
-                });
-
-            modelBuilder.Entity("server.Models.ReportCompany", b =>
-                {
-                    b.HasOne("Logistics.Models.Company", "Company")
-                        .WithMany("ReportCompanies")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Logistics.Models.Report", "Report")
-                        .WithMany("ReportCompanies")
-                        .HasForeignKey("ReportId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("server.Models.ReportTeam", b =>
-                {
-                    b.HasOne("Logistics.Models.Team", "Team")
-                        .WithMany("ReportTeams")
-                        .HasForeignKey("ReportId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Logistics.Models.Report", "Report")
-                        .WithMany("ReportTeams")
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("server.Models.VehicleCompany", b =>
-                {
-                    b.HasOne("Logistics.Models.Company", "Company")
-                        .WithMany("VehicleCompanies")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Logistics.Models.Vehicle", "Vehicle")
-                        .WithMany("VehicleCompanies")
-                        .HasForeignKey("VehicleId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

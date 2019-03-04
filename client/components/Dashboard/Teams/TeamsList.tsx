@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import SelectIcon from '@material-ui/icons/ChevronRight';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Redirect, RouteProps, Link } from 'react-router-dom';
+import { Link, RouteProps } from 'react-router-dom';
 
 import { ITeam } from '../../../models/team';
 import { ApplicationState } from '../../../store';
@@ -38,7 +38,7 @@ class TeamsList extends React.Component<ITeamsListProps & RouteProps, {}> {
         if (this.props.isLoading) {
             Content = () => <CircularProgress />;
         } else if (this.props.teams.length === 0) {
-            Content = () => <div>No Teams found.</div>;
+            Content = () => <CardContent><div>No Teams found.</div></CardContent>;
         } else {
             Content = () => <List>
                 {this.props.teams.map(team => (
@@ -62,9 +62,7 @@ class TeamsList extends React.Component<ITeamsListProps & RouteProps, {}> {
         return (
             <Card style={{ marginTop: '15px' }}>
                 <CardHeader title="Teams" />
-                <CardContent>
-                    <Content />
-                </CardContent>
+                <Content />
             </Card>
         );
     }

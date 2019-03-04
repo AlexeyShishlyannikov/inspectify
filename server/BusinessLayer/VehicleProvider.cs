@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using server.DAL;
-using server.Models;
+using Inspectify.DAL;
+using Inspectify.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace server.BusinessLayer
+namespace Inspectify.BusinessLayer
 {
     public interface IVehicleProvider
     {

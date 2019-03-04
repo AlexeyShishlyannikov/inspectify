@@ -2,16 +2,16 @@
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
-using server.BusinessLayer;
-using server.DAL;
-using server.Identity;
-using server.Models;
-using server.Models.Identity;
+using Inspectify.BusinessLayer;
+using Inspectify.DAL;
+using Inspectify.Identity;
+using Inspectify.Models;
+using Inspectify.Models.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using server.ViewModels;
+using Inspectify.ViewModels;
 
-namespace server.Controllers
+namespace Inspectify.Controllers
 {
     [Route("api/account")]
     public class AccountController : Controller

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using server.DAL;
-using server.Models;
+using Inspectify.DAL;
+using Inspectify.Models;
 
 
-namespace server.BusinessLayer
+namespace Inspectify.BusinessLayer
 {
     public interface IUsersProvider
     {
@@ -79,6 +79,7 @@ namespace server.BusinessLayer
         {
             dbContext.Persons.Update(person);
             await dbContext.SaveChangesAsync();
+            person = await dbContext.Persons.Include(p => p.Team).SingleOrDefaultAsync(p => p.Id == person.Id);
             return person;
         }
     }

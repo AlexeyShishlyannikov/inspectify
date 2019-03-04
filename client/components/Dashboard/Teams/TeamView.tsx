@@ -9,6 +9,11 @@ import { TeamThunks } from '../../../store/team/teamThunks';
 import EditTeamForm from './EditTeamForm';
 import TeamCard from './TeamCard';
 import './TeamView.scss';
+import { PeopleThunks } from '../../../store/people/peopleThunks';
+import UsersList from '../Users/UsersList';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import List from '@material-ui/core/List';
+import TeamUserList from './TeamUserList';
 
 interface ITeamViewProps {
     isEditMode: boolean;
@@ -16,6 +21,7 @@ interface ITeamViewProps {
     isLoading: boolean;
     errorMessage?: string;
     getTeam: (id: string) => void;
+    getPeopleForTeam: (teamId: string) => void;
     deleteTeam: (id: string) => void;
     setEditMode: (isEdit: boolean) => void;
 }
@@ -24,15 +30,18 @@ class TeamView extends React.Component<ITeamViewProps & RouteComponentProps & Ro
     componentWillMount() {
         const id: string = this.props.match.params['id'];
         this.props.getTeam(id);
+        this.props.getPeopleForTeam(id);
         this.props.setEditMode(false);
     }
 
     render() {
+        
         return (
             <div className="team-container">
                 {this.props.isEditMode
                     ? <EditTeamForm onSave={() => this.props.setEditMode(false)} />
                     : <TeamCard />}
+                <TeamUserList />
             </div>
         );
     }
@@ -58,6 +67,7 @@ const mapDispatchToProps = (dispatch) => {
             };
             return dispatch(action);
         },
+        getPeopleForTeam: (teamId: string) => dispatch(PeopleThunks.getPeopleForTeam(teamId, ''))
     };
 };
 

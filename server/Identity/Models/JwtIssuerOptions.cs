@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace server.Identity.Models
+namespace Inspectify.Identity.Models
 {
     public class JwtIssuerOptions
     {

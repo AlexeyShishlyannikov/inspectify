@@ -1,6 +1,6 @@
-using server.Models;
+using Inspectify.Models;
 
-namespace server.ViewModels
+namespace Inspectify.ViewModels
 {
     public class PersonViewModel
     {
@@ -8,6 +8,6 @@ namespace server.ViewModels
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
-        public Team Team { get; set; }
+        public TeamViewModel Team { get; set; }
     }
 }

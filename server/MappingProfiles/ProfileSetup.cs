@@ -1,8 +1,8 @@
 using AutoMapper;
-using server.Models;
-using server.ViewModels;
+using Inspectify.Models;
+using Inspectify.ViewModels;
 
-namespace server.MappingProfiles
+namespace Inspectify.MappingProfiles
 {
     public class MappingProfile : Profile
     {
@@ -42,7 +42,6 @@ namespace server.MappingProfiles
                 .ForMember(model => model.ApplicationUser, opt => opt.Ignore())
                 .ForMember(model => model.ApplicationUserId, opt => opt.Ignore())
                 .ForMember(model => model.Teams, opt => opt.Ignore())
-                .ForMember(model => model.FormCompanies, opt => opt.Ignore())
                 .ForMember(model => model.VehicleCompanies, opt => opt.Ignore())
                 .ForMember(model => model.ReportCompanies, opt => opt.Ignore());
         }
@@ -50,7 +49,9 @@ namespace server.MappingProfiles
         public void ConfigurePersonMappings()
         {
             CreateMap<Person, PersonViewModel>();
-            CreateMap<PersonViewModel, Person>();
+            CreateMap<PersonViewModel, Person>()
+                .ForMember(p => p.Team, opt => opt.Ignore())
+                .ForMember(p => p.TeamId, opt => opt.MapFrom(vm => vm.Team.Id));
         }
 
         public void ConfigureReportMappings()

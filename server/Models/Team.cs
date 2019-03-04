@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using server.Models;
+using Inspectify.Models;
 
-namespace server.Models
+namespace Inspectify.Models
 {
     public class Team
     {
@@ -16,7 +16,6 @@ namespace server.Models
         public Company Company { get; set; }
         public ICollection<Vehicle> Vehicles { get; set; }
         public ICollection<ReportTeam> ReportTeams { get; set; }
-        public ICollection<FormTeam> FormTeams { get; set; }
         public ICollection<Person> Persons { get; set; }
     }
 }

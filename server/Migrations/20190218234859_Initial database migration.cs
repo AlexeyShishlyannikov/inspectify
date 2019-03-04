@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace server.Migrations
+namespace Inspectify.Migrations
 {
     public partial class Initialdatabasemigration : Migration
     {

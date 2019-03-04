@@ -5,14 +5,14 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
-using server.BusinessLayer;
-using server.Models;
+using Inspectify.BusinessLayer;
+using Inspectify.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using server.ViewModels;
+using Inspectify.ViewModels;
 
-namespace server.Controllers
+namespace Inspectify.Controllers
 {
     [Route("api/companies")]
     public class CompaniesController : Controller

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace server.Models.Identity
+namespace Inspectify.Models.Identity
 {
     public class RegisterModel
     {

@@ -63,6 +63,7 @@ class ProfileUserForm extends React.Component<IProfileUserFormProps, IProfileUse
         if (this.props.user && this.props.person) {
             this.props.updatePerson({
                 id: this.props.person.id,
+                team: this.props.person.team,
                 email: this.props.user.email,
                 firstName: this.state.firstName as string,
                 lastName: this.state.lastName as string

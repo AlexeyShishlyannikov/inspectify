@@ -27,6 +27,24 @@ export namespace PeopleThunks {
             .then(result => dispatch({ type: "LOADED_PEOPLE_ACTION", people: result }));
     };
 
+    export const getPeopleForTeam = (teamId: string, searchTerm: string): AppThunkAction<ILoadedPeopleAction | IUpdatePeopleLoadingAction> => (dispatch, getState) => {
+        dispatch({
+            type: "UPDATE_PEOPLE_LOADING_ACTION",
+            status: true
+        });
+        fetch(
+            window.location.origin + '/api/users/team/' + teamId + '?searchTerm=' + searchTerm,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'Application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+            }
+        ).then(res => res.json())
+            .then(result => dispatch({ type: "LOADED_PEOPLE_ACTION", people: result }));
+    };
+
     export const getPerson = (id: string): AppThunkAction<ILoadedPersonAction | IUpdatePeopleLoadingAction> => (dispatch, getState) => {
         dispatch({
             type: "UPDATE_PEOPLE_LOADING_ACTION",

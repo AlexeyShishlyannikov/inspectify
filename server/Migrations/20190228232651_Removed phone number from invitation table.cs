@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace server.Migrations
+namespace Inspectify.Migrations
 {
     public partial class Removedphonenumberfrominvitationtable : Migration
     {

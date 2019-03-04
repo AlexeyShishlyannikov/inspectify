@@ -1,7 +1,7 @@
-﻿using server.Models;
+﻿using Inspectify.Models;
 using System.Threading.Tasks;
 
-namespace server.Identity
+namespace Inspectify.Identity
 {
     public interface IJwtFactory
     {

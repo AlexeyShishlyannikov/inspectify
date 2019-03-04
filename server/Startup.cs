@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
-using server.BusinessLayer;
-using server.DAL;
-using server.Filters;
-using server.Identity;
-using server.Identity.Models;
-using server.Models;
-using server.Models.Identity;
+using Inspectify.BusinessLayer;
+using Inspectify.DAL;
+using Inspectify.Filters;
+using Inspectify.Identity;
+using Inspectify.Identity.Models;
+using Inspectify.Models;
+using Inspectify.Models.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -22,7 +22,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
-namespace server
+namespace Inspectify
 {
     public class Startup
     {
