@@ -2,12 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using server.DAL;
-using server.Models;
+using Inspectify.DAL;
+using Inspectify.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace server.BusinessLayer
+namespace Inspectify.BusinessLayer
 {
+    public interface IReportsProvider
+    {
+        Task<Report> AddReport(Report report);
+        Task<Report> UpdateReport(Report report);
+        Task DeleteReport(string id);
+        Task<Report> GetReport(string id);
+        Task<List<Report>> GetReports(string teamId, DateTime? since, DateTime? to, string vehicleId = null);
+    }
+
     public class ReportProvider : IReportsProvider
     {
         private readonly LogisticsDbContext dbContext;
@@ -44,13 +53,7 @@ namespace server.BusinessLayer
 
         public async Task<List<Report>> GetReports(string teamId, DateTime? since, DateTime? to, string vehicleId = null)
         {
-            var teamReports = dbContext.ReportTeams.Where(tr => tr.TeamId == teamId);
-            var reports = dbContext.Reports.Where(r => teamReports.FirstOrDefault(tr => tr.ReportId == r.Id) != null);
-            if (vehicleId != null) reports.Where(r => r.VehicleId == vehicleId);
-            if (since != null) reports.Where(r => r.DateCreated > since);
-            if (to != null) reports.Where(r => r.DateCreated < to);
-
-            return await reports.ToListAsync();
+            throw new NotImplementedException();
         }
 
         public async Task<Report> UpdateReport(Report report)

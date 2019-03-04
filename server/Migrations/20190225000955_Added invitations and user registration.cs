@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace server.Migrations
+namespace Inspectify.Migrations
 {
     public partial class Addedinvitationsanduserregistration : Migration
     {

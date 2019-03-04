@@ -2,12 +2,21 @@ using System;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
-using server.DAL;
-using server.Models;
+using Inspectify.DAL;
+using Inspectify.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace server.BusinessLayer
+namespace Inspectify.BusinessLayer
 {
+    public interface IEmailProvider
+    {
+        Task<bool> SendEmail(string email, string subject, string body);
+        Task<bool> SendWelcomeEmail();
+        Task<bool> SendConfirmEmail(ApplicationUser user, string token);
+        Task<bool> SendInvitationEmail(Invitation invitation);
+        Task<bool> SendForgotPasswordEmail();
+    }
+    
     public class EmailProvider : IEmailProvider
     {
         private readonly LogisticsDbContext context;
@@ -55,7 +64,7 @@ namespace server.BusinessLayer
 
         public Task<bool> SendInvitationEmail(Invitation invitation)
         {
-            throw new System.NotImplementedException();
+            return Task.FromResult(true);
         }
 
         public Task<bool> SendWelcomeEmail()

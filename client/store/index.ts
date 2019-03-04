@@ -1,17 +1,28 @@
-import { AuthenticationState } from "./authentication/authenticationState";
-import { authReducer } from "./authentication/authenticationReducers";
-import { load } from "redux-localstorage-simple";
-import { CompanyState } from "./company/companyState";
-import { companyReducer } from "./company/companyReducers";
+import { load } from 'redux-localstorage-simple';
+
+import { authReducer } from './authentication/authenticationReducers';
+import { AuthenticationState } from './authentication/authenticationState';
+import { companyReducer } from './company/companyReducers';
+import { CompanyState } from './company/companyState';
+import { invitationsReducer } from './invitations/invitationsReducers';
+import { InvitaionsState } from './invitations/invitationsState';
+import { IPeopleState, PeopleState } from './people/peopleState';
+import { peopleReducer } from './people/peopleReducers';
+import { ITeamsState, TeamsState } from './team/teamState';
+import { teamsReducer } from './team/teamReducers';
+import { routerReducer, RouterState } from 'react-router-redux';
 
 // The top-level state object
 export interface ApplicationState {
     authentication: AuthenticationState;
     company: CompanyState;
+    invitations: InvitaionsState;
+    people: IPeopleState;
+    teams: ITeamsState;
+    routing: RouterState
     // vehicle:;
     // report:;
     // reportForm:;
-    // team:;
 }
 
 // Whenever an action is dispatched, Redux will update each top-level application state property using
@@ -19,7 +30,11 @@ export interface ApplicationState {
 // acts on the corresponding ApplicationState property type.
 export const reducers = {
     authentication: authReducer,
-    company: companyReducer
+    company: companyReducer,
+    invitations: invitationsReducer,
+    people: peopleReducer,
+    teams: teamsReducer,
+    routing: routerReducer
 };
 
 // This type can be used as a hint on action creators so that its 'dispatch' and 'getState' params are
@@ -38,6 +53,18 @@ export function getInitialState(): ApplicationState {
     }
     return {
         authentication: AuthenticationState.initialState(),
-        company: CompanyState.initialState()
+        company: CompanyState.initialState(),
+        invitations: InvitaionsState.initialState(),
+        people: PeopleState.initialState(),
+        teams: TeamsState.initialState(),
+        routing: {
+            location: {
+                hash: '',
+                key: '',
+                pathname: '',
+                search: '',
+                state: undefined
+            }
+        }
     };
 }

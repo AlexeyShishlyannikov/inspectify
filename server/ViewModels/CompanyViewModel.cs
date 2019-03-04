@@ -1,4 +1,4 @@
-namespace server.ViewModels
+namespace Inspectify.ViewModels
 {
     public class CompanyViewModel
     {

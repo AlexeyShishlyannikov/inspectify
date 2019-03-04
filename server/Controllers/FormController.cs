@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using server.BusinessLayer;
-using server.Models;
+using Inspectify.BusinessLayer;
+using Inspectify.Models;
 using Microsoft.AspNetCore.Mvc;
-using server.ViewModels;
+using Inspectify.ViewModels;
 
-namespace server.Controllers
+namespace Inspectify.Controllers
 {
     [Route("api/form")]
     public class FormController : Controller
@@ -23,7 +23,6 @@ namespace server.Controllers
         }
 
         [HttpPost]
-        [Route("add")]
         public async Task<IActionResult> AddForm([FromBody] FormViewModel formViewModel)
         {
             var form = mapper.Map<FormViewModel, Form>(formViewModel);
@@ -32,34 +31,9 @@ namespace server.Controllers
             return Ok(formViewModel);
         }
 
-        [HttpPost]
-        [Route("input/add")]
-        public async Task<IActionResult> AddFormInput([FromBody] FormInputViewModel inputViewModel)
-        {
-            var input = mapper.Map<FormInputViewModel, FormInput>(inputViewModel);
-            input = await formProvider.AddFormInput(input);
-            inputViewModel = mapper.Map<FormInput, FormInputViewModel>(input);
-            return Ok(inputViewModel);
-        }
-        [HttpDelete]
-        [Route("delete")]
-        public async Task<IActionResult> DeleteForm([FromQuery] string id)
-        {
-            await formProvider.DeleteForm(id);
-            return Ok(id + "Deleted");
-        }
-
-        [HttpDelete]
-        [Route("input/delete")]
-        public async Task<IActionResult> DeleteFormInput([FromQuery] string id)
-        {
-            await formProvider.DeleteFormInput(id);
-            return Ok(id + "Deleted");
-        }
-
         [HttpGet]
-        [Route("get")]
-        public async Task<IActionResult> GetForm([FromQuery] string id)
+        [Route("{id}")]
+        public async Task<IActionResult> GetForm([FromRoute] string id)
         {
             var form = await formProvider.GetForm(id);
             var formViewModel = mapper.Map<Form, FormViewModel>(form);
@@ -67,56 +41,37 @@ namespace server.Controllers
         }
 
         [HttpGet]
-        [Route("input/get")]
-        public async Task<IActionResult> GetFormInput([FromQuery] string id)
+        public async Task<IActionResult> GetForms([FromQuery] string searchTerm)
         {
-            var formInput = await formProvider.GetFormInput(id);
-            var formInputViewModel = mapper.Map<FormInput, FormInputViewModel>(formInput);
-            return Ok(formInputViewModel);
-        }
-
-        [HttpGet]
-        [Route("input/getForForm")]
-        public async Task<IActionResult> GetFormInputs([FromQuery] string formId)
-        {
-            var formInputs = await formProvider.GetFormInputs(formId);
-            var formInputViewModelList = formInputs.Select(fi => mapper.Map<FormInput, FormInputViewModel>(fi)).ToList();
-            return Ok(formInputViewModelList);
-        }
-
-        [HttpGet]
-        [Route("getForTeam")]
-        public async Task<IActionResult> GetForms([FromQuery] string teamId, [FromQuery] string searchTerm)
-        {
-            var forms = await formProvider.GetForms(teamId, searchTerm);
+            var companyId = "";
+            var forms = await formProvider.GetForms(companyId, searchTerm);
             var formViewModelList = forms.Select(f => mapper.Map<Form, FormViewModel>(f));
             return Ok(formViewModelList);
         }
 
-        [HttpPost]
-        [Route("update")]
+        [HttpPut]
         public async Task<IActionResult> UpdateForm([FromBody] FormViewModel formViewModel)
         {
             var form = mapper.Map<FormViewModel, Form>(formViewModel);
             form = await formProvider.UpdateForm(form);
-            if (form != null)
+            if (form == null)
             {
-                return Ok(form);
+                return NotFound("Form not found");
             }
-            return NotFound();
+            return Ok(form);
         }
 
-        [HttpPost]
-        [Route("input/update")]
-        public async Task<IActionResult> UpdateFormInput([FromBody] FormInputViewModel inputViewModel)
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> DeleteForm([FromRoute] string id)
         {
-            var input = mapper.Map<FormInputViewModel, FormInput>(inputViewModel);
-            input = await formProvider.UpdateFormInput(input);
-            if (input != null)
+            var form = await formProvider.GetForm(id);
+            if (form == null)
             {
-                return Ok(input);
+                return NotFound("Form not found");
             }
-            return NotFound();
+            await formProvider.DeleteForm(form);
+            return Ok(id);
         }
     }
 }

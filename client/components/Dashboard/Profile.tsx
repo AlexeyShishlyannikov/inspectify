@@ -2,13 +2,13 @@ import './Profile.scss';
 
 import * as React from 'react';
 
-import ChangePassword from '../Authentication/Profile/ChangePassword';
-import ProfileUserForm from '../Authentication/Profile/ProfileUserForm';
 import { connect } from 'react-redux';
-import { ApplicationState } from 'client/store';
-import { ILogoutAction } from 'client/store/authentication/authenticationActions';
-import { User } from 'client/models/Authentication';
-import ProfileCompanyForm from '../Authentication/Profile/ProfileCompanyForm';
+import { ApplicationState } from '../../store';
+import { ILogoutAction } from '../../store/authentication/authenticationActions';
+import { User } from '../../models/Authentication';
+import ProfileCompanyForm from './Profile/ProfileCompanyForm';
+import ProfileUserForm from './Profile/ProfileUserForm';
+import ChangePassword from './Profile/ChangePassword';
 
 interface IProfileProps {
     user?: User;

@@ -1,0 +1,15 @@
+.team-form-card {
+    display: flex;
+    width: 100%;
+    .team-form {
+        width: 100%;
+        .team-form-content {
+            display: flex;
+            flex-direction: column;
+            .team-form-input {
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+        }
+    }
+}

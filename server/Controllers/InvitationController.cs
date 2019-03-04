@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using server.BusinessLayer;
-using server.Models;
+using Inspectify.BusinessLayer;
+using Inspectify.Models;
 using Microsoft.AspNetCore.Mvc;
-using server.ViewModels;
+using Inspectify.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
-namespace server.Controllers
+namespace Inspectify.Controllers
 {
     [Route("api/invitations")]
     public class InvitationController : Controller
@@ -28,28 +29,41 @@ namespace server.Controllers
         }
 
         [Route("send")]
+        [Authorize]
         [HttpPost]
-        public async Task<IActionResult> SendInvitation(Invitation invitation)
+        public async Task<IActionResult> SendInvitation([FromBody] Invitation invitation)
         {
-            if (await invitationProvider.CheckIfEmailIsInvited(invitation.Email) || await invitationProvider.CheckIfPhoneIsInvited(invitation.PhoneNumber))
+            var companyId = this.User.Claims.SingleOrDefault(c => c.Type == "companyId").Value;
+            if (await invitationProvider.CheckIfEmailIsInvited(invitation.Email))
             {
                 return BadRequest("Has already been invited");
             }
             invitation.SentOn = DateTime.Now;
-            var dbInvitation = await invitationProvider.AddInvitation(invitation);
-            var isEmailSent = await emailProvider.SendInvitationEmail(dbInvitation);
-            if (!isEmailSent) {
+            invitation.CompanyId = companyId;
+            var isEmailSent = await emailProvider.SendInvitationEmail(invitation);
+            if (!isEmailSent)
+            {
                 return BadRequest("Email wasn't sent");
             }
+            var dbInvitation = await invitationProvider.AddInvitation(invitation);
             return Ok(dbInvitation);
         }
 
         [Route("getInvitations")]
         [HttpGet]
-        public async Task<IActionResult> GetInvitations() {
+        [Authorize]
+        public async Task<IActionResult> GetInvitations()
+        {
             var companyId = this.User.Claims.SingleOrDefault(c => c.Type == "companyId").Value;
             var invitations = await invitationProvider.GetInvitations(companyId);
             return Ok(invitations);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetInvitation([FromQuery] string id)
+        {
+            var invitation = await invitationProvider.GetInvitation(id);
+            return Ok(invitation);
         }
 
         [Route("update")]
@@ -57,7 +71,8 @@ namespace server.Controllers
         public async Task<IActionResult> UpdateInvitations(Invitation invitation)
         {
             var dbInvitation = await invitationProvider.GetInvitation(invitation.Id);
-            if (dbInvitation != null) {
+            if (dbInvitation == null)
+            {
                 return NotFound("Invitation not found");
             }
             invitation.SentOn = DateTime.Now;
@@ -72,10 +87,11 @@ namespace server.Controllers
 
         [Route("resend")]
         [HttpPost]
-        public async Task<IActionResult> ResendInvitations([FromQuery]string id)
+        [Authorize]
+        public async Task<IActionResult> ResendInvitations([FromQuery] string id)
         {
             var dbInvitation = await invitationProvider.GetInvitation(id);
-            if (dbInvitation != null)
+            if (dbInvitation == null)
             {
                 return NotFound("Invitation not found");
             }
@@ -91,16 +107,17 @@ namespace server.Controllers
 
         [Route("delete")]
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> DeleteInvitations([FromQuery]string id)
         {
             var dbInvitation = await invitationProvider.GetInvitation(id);
-            if (dbInvitation != null)
+            if (dbInvitation == null)
             {
                 return NotFound("Invitation not found");
             }
             var deleted = await invitationProvider.DeleteInvitation(id);
             if (!deleted) return BadRequest("Could not delete invitation");
-            return Ok();
+            return Ok(id);
         }
     }
 }

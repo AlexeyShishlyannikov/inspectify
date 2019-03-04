@@ -1,8 +1,5 @@
-import { IDriver } from "./driver";
-
 export interface ITeam {
-    id: number;
+    id?: string;
     name: string;
-    descrioption: string;
-    drivers: IDriver[];
+    description: string;
 }

@@ -1,8 +1,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using server.Models;
+using Inspectify.Models;
 
-namespace server.Models
+namespace Inspectify.Models
 {
     public class Invitation
     {
@@ -14,9 +14,6 @@ namespace server.Models
         [Required]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
-        [Required]
-        [DataType(DataType.PhoneNumber)]
-        public string PhoneNumber { get; set; }
         public DateTime SentOn { get; set; }
         public string CompanyId { get; set; }
         public Company Company { get; set; }

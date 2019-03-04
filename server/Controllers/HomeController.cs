@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace server.Controllers
+namespace Inspectify.Controllers
 {
     public class HomeController : Controller
     {

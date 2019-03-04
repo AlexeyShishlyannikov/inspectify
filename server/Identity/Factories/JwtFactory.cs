@@ -1,6 +1,6 @@
-﻿using server.BusinessLayer;
-using server.Identity.Models;
-using server.Models;
+﻿using Inspectify.BusinessLayer;
+using Inspectify.Identity.Models;
+using Inspectify.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using System.IdentityModel.Tokens.Jwt;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace server.Identity
+namespace Inspectify.Identity
 {
     public class JwtFactory : IJwtFactory
     {
@@ -42,6 +42,7 @@ namespace server.Identity
             {
                 new Claim(JwtRegisteredClaimNames.Jti, await jwtOptions.JtiGenerator()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim("userId", user.Id),
                 new Claim("isEmailVerified", isUserVerified),
                 new Claim("companyId", companyId),
                 new Claim("teamId", teamId),

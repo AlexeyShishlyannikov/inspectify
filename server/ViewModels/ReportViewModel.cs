@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace server.ViewModels
+namespace Inspectify.ViewModels
 {
     public class ReportViewModel
     {

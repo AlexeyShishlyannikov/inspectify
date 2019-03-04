@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using server.BusinessLayer;
-using server.Models;
+using Inspectify.BusinessLayer;
+using Inspectify.Models;
 using Microsoft.AspNetCore.Mvc;
-using server.ViewModels;
+using Inspectify.ViewModels;
 
-namespace server.Controllers
+namespace Inspectify.Controllers
 {
     [Route("api/report")]
     public class ReportsController : Controller

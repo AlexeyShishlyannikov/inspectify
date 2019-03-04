@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using server.Models;
+using Inspectify.Models;
 
-namespace server.Models
+namespace Inspectify.Models
 {
     public class Person
     {
@@ -14,10 +14,18 @@ namespace server.Models
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
+
+        public string FullName
+        {
+            get => this.FirstName + " " + this.LastName;
+        }
+        [Required]
+        public string Email { get; set; }
+        public string TeamId { get; set; }
+        public Team Team { get; set; }
         [Required]
         public string CompanyId { get; set; }
         public Company Company { get; set; }
         public ICollection<Report> Reports { get; set; }
-        public ICollection<PersonTeam> PersonTeams { get; set; }
     }
 }

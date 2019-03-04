@@ -1,11 +1,20 @@
-﻿using server.DAL;
-using server.Models;
+﻿using Inspectify.DAL;
+using Inspectify.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace server.BusinessLayer
+namespace Inspectify.BusinessLayer
 {
+    public interface ICompaniesProvider
+    {
+        Task<Company> AddCompany(Company company);
+        Task<Company> GetCompany(string companyId);
+        Task<Company> GetCompanyByPersonId(string personId);
+        Task<Company> UpdateCompany(Company company);
+        Task DeleteCompany(Company company);
+    }
+    
     public class CompaniesProvider : ICompaniesProvider
     {
         private readonly LogisticsDbContext dbContext;

@@ -49,7 +49,5 @@ export default function configureStore(
 }
 
 function buildRootReducer(allReducers: ReducersMapObject<ApplicationState>) {
-    return combineReducers<ApplicationState>(
-        Object.assign({}, allReducers, { routing: routerReducer })
-    );
+    return combineReducers<ApplicationState>(allReducers);
 }

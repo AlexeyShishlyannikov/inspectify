@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using server.Models;
+using Inspectify.Models;
 
-namespace server.Models
+namespace Inspectify.Models
 {
     public class Report
     {
@@ -25,6 +25,5 @@ namespace server.Models
         public DateTime DateUpdated { get; set; }
         public ICollection<ReportCompany> ReportCompanies { get; set; }
         public ICollection<ReportTeam> ReportTeams { get; set; }
-        public ICollection<FormInputValueReport> FormInputValueReports { get; set; }
     }
 }

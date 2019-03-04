@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using server.Models;
+using Inspectify.Models;
 
-namespace server.Models
+namespace Inspectify.Models
 {
     public class ReportCompany
     {

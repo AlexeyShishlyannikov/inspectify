@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using server.Models;
+using Inspectify.Models;
 
-namespace server.Models
+namespace Inspectify.Models
 {
     public class Company
     {
@@ -15,7 +15,6 @@ namespace server.Models
         [Required]
         public string ApplicationUserId { get; set; }
         public ICollection<Team> Teams { get; set; }
-        public ICollection<FormCompany> FormCompanies { get; set; }
         public ICollection<VehicleCompany> VehicleCompanies { get; set; }
         public ICollection<ReportCompany> ReportCompanies { get; set; }
     }

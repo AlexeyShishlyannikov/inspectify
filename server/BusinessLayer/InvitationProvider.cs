@@ -2,13 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using server.DAL;
-using server.Models;
+using Inspectify.DAL;
+using Inspectify.Models;
 using Microsoft.EntityFrameworkCore;
-using server.BusinessLayer;
+using Inspectify.BusinessLayer;
 
-namespace server.BusinessLayer
+namespace Inspectify.BusinessLayer
 {
+    public interface IInvitationProvider
+    {
+        Task<Invitation> AddInvitation(Invitation invitation);
+        Task<Invitation> GetInvitation(string id);
+        Task<bool> CheckIfEmailIsInvited(string email);
+        Task<Invitation> UpdateInvitation(Invitation invitation);
+        Task<bool> DeleteInvitation(string id);
+        Task<List<Invitation>> GetInvitations(string companyId);
+    }
+    
     public class InvitationProvider : IInvitationProvider
     {
         private readonly LogisticsDbContext dbContext;
@@ -21,18 +31,13 @@ namespace server.BusinessLayer
         public async Task<Invitation> AddInvitation(Invitation invitation)
         {
             await dbContext.Invitations.AddAsync(invitation);
+            await dbContext.SaveChangesAsync();
             return invitation;
         }
 
         public async Task<bool> CheckIfEmailIsInvited(string email)
         {
             var invitation = await dbContext.Invitations.SingleOrDefaultAsync(i => i.Email == email);
-            return invitation != null;
-        }
-
-        public async Task<bool> CheckIfPhoneIsInvited(string phoneNumber)
-        {
-            var invitation = await dbContext.Invitations.SingleOrDefaultAsync(i => i.Email == phoneNumber);
             return invitation != null;
         }
 

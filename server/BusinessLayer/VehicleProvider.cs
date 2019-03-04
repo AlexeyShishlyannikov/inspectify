@@ -2,12 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using server.DAL;
-using server.Models;
+using Inspectify.DAL;
+using Inspectify.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace server.BusinessLayer
+namespace Inspectify.BusinessLayer
 {
+    public interface IVehicleProvider
+    {
+        Task<List<VehicleMake>> GetMakes(string searchTerm);
+        Task<VehicleMake> GetMake(string makeId);
+        Task<List<VehicleModel>> GetModels(string makeId, string searchTerm);
+        Task<VehicleModel> GetModel(string modelId);
+        Task<List<Vehicle>> GetVehicles(string teamId, string searchTerm);
+        Task<Vehicle> GetVehicle(string id);
+        Task<Vehicle> AddVehicle(Vehicle vehicle);
+        Task<Vehicle> EditVehicle(Vehicle vehicle);
+        Task DeleteVehicle(string id);
+    }
+
     public class VehicleProvider : IVehicleProvider
     {
         private readonly LogisticsDbContext dbContext;
