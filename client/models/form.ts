@@ -1,5 +1,5 @@
 export interface IForm {
-    id: string;
+    id?: string;
     name: string;
     description: string;
     isArchived: boolean;
@@ -8,7 +8,7 @@ export interface IForm {
 }
 
 export interface IField {
-    id: string;
+    id?: string;
     name: string;
     description: string;
     sortIndex: number;
@@ -18,7 +18,7 @@ export interface IField {
 }
 
 export interface IOption {
-    id: string;
+    id?: string;
     value: string;
 }
 

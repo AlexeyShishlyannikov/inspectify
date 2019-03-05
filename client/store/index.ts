@@ -11,6 +11,8 @@ import { peopleReducer } from './people/peopleReducers';
 import { ITeamsState, TeamsState } from './team/teamState';
 import { teamsReducer } from './team/teamReducers';
 import { routerReducer, RouterState } from 'react-router-redux';
+import { IFormsState, FormsState } from './form/FormState';
+import { formsReducer } from './form/formReducers';
 
 // The top-level state object
 export interface ApplicationState {
@@ -19,7 +21,8 @@ export interface ApplicationState {
     invitations: InvitaionsState;
     people: IPeopleState;
     teams: ITeamsState;
-    routing: RouterState
+    routing: RouterState;
+    forms: IFormsState;
     // vehicle:;
     // report:;
     // reportForm:;
@@ -34,7 +37,8 @@ export const reducers = {
     invitations: invitationsReducer,
     people: peopleReducer,
     teams: teamsReducer,
-    routing: routerReducer
+    routing: routerReducer,
+    forms: formsReducer
 };
 
 // This type can be used as a hint on action creators so that its 'dispatch' and 'getState' params are
@@ -57,14 +61,17 @@ export function getInitialState(): ApplicationState {
         invitations: InvitaionsState.initialState(),
         people: PeopleState.initialState(),
         teams: TeamsState.initialState(),
-        routing: {
-            location: {
-                hash: '',
-                key: '',
-                pathname: '',
-                search: '',
-                state: undefined
-            }
-        }
+        forms: FormsState.initialState(),
+        routing: routingInitialState()
     };
 }
+
+export const routingInitialState = () => ({
+    location: {
+        hash: '',
+        key: '',
+        pathname: '',
+        search: '',
+        state: undefined
+    }
+});

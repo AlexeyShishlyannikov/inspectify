@@ -7,6 +7,7 @@ import Profile from './Profile';
 import { TeamRoutes } from './Teams/TeamRoutes';
 
 import { UsersRoutes } from './Users/UsersRoutes';
+import { FormsRoutes } from './Forms/FormsRoutes';
 
 export const DashboardRoutes = (path: string) => {
     return (
@@ -15,6 +16,7 @@ export const DashboardRoutes = (path: string) => {
             <Route exact path={path + '/profile'} component={Profile} />
             <Route path={path + '/users'} component={() => UsersRoutes(path + '/users')} />
             <Route path={path + '/teams'} component={() => TeamRoutes(path + '/teams')} />
+            <Route path={path + '/forms'} component={() => FormsRoutes(path + '/forms')} />
         </Dashboard>
     );
 };

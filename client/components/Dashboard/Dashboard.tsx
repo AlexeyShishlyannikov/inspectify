@@ -42,16 +42,16 @@ const Dashboard = (props: IDashboardProps) => {
                         <ListItemText inset primary="Inventory" />
                     </MenuItem>
                 </NavLink>
-                <NavLink className="dashboard-link" to={props.path + "/reports"}>
-                    <MenuItem className="dashboard-menu-item">
-                        <ListItemIcon ><InboxIcon /></ListItemIcon>
-                        <ListItemText inset primary="Reports" />
-                    </MenuItem>
-                </NavLink>
                 <NavLink className="dashboard-link" to={props.path + "/forms"}>
                     <MenuItem className="dashboard-menu-item">
                         <ListItemIcon ><FormIcon /></ListItemIcon>
                         <ListItemText inset primary="Forms" />
+                    </MenuItem>
+                </NavLink>
+                <NavLink className="dashboard-link" to={props.path + "/reports"}>
+                    <MenuItem className="dashboard-menu-item">
+                        <ListItemIcon ><InboxIcon /></ListItemIcon>
+                        <ListItemText inset primary="Reports" />
                     </MenuItem>
                 </NavLink>
             </MenuList>
