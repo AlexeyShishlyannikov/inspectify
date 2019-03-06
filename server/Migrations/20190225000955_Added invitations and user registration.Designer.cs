@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Inspectify.Migrations
 {
-    [DbContext(typeof(LogisticsDbContext))]
+    [DbContext(typeof(InspectifyDbContext))]
     [Migration("20190225000955_Added invitations and user registration")]
     partial class Addedinvitationsanduserregistration
     {

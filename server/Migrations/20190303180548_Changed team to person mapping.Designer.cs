@@ -8,7 +8,7 @@ using Inspectify.DAL;
 
 namespace Inspectify.Migrations
 {
-    [DbContext(typeof(LogisticsDbContext))]
+    [DbContext(typeof(InspectifyDbContext))]
     [Migration("20190303180548_Changed team to person mapping")]
     partial class Changedteamtopersonmapping
     {

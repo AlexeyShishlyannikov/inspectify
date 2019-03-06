@@ -19,9 +19,9 @@ namespace Inspectify.BusinessLayer
 
     public class ReportProvider : IReportsProvider
     {
-        private readonly LogisticsDbContext dbContext;
+        private readonly InspectifyDbContext dbContext;
 
-        public ReportProvider(LogisticsDbContext dbContext)
+        public ReportProvider(InspectifyDbContext dbContext)
         {
             this.dbContext = dbContext;
         }

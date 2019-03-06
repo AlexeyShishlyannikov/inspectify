@@ -19,8 +19,8 @@ namespace Inspectify.BusinessLayer
     
     public class EmailProvider : IEmailProvider
     {
-        private readonly LogisticsDbContext context;
-        public EmailProvider(LogisticsDbContext context)
+        private readonly InspectifyDbContext context;
+        public EmailProvider(InspectifyDbContext context)
         {
             this.context = context;
         }

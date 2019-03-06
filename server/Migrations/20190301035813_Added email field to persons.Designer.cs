@@ -8,7 +8,7 @@ using Inspectify.DAL;
 
 namespace Inspectify.Migrations
 {
-    [DbContext(typeof(LogisticsDbContext))]
+    [DbContext(typeof(InspectifyDbContext))]
     [Migration("20190301035813_Added email field to persons")]
     partial class Addedemailfieldtopersons
     {

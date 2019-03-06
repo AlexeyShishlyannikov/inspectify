@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Inspectify.DAL
 {
-    public class LogisticsDbContext : IdentityDbContext<ApplicationUser>
+    public class InspectifyDbContext : IdentityDbContext<ApplicationUser>
     {
         // People
         public DbSet<Company> Companies { get; set; }
@@ -20,10 +20,10 @@ namespace Inspectify.DAL
         public DbSet<Report> Reports { get; set; }
         // Forms
         public DbSet<Form> Forms { get; set; }
-        public DbSet<Field> Inputs { get; set; }
-        public DbSet<Option> InputOptions { get; set; }
+        public DbSet<Field> FormFields { get; set; }
+        public DbSet<Option> FormFieldOptions { get; set; }
 
-        public LogisticsDbContext(DbContextOptions<LogisticsDbContext> options) : base(options) { }
+        public InspectifyDbContext(DbContextOptions<InspectifyDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

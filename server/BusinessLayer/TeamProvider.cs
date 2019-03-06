@@ -20,9 +20,9 @@ namespace Inspectify.BusinessLayer
 
     public class TeamProvider : ITeamProvider
     {
-        private readonly LogisticsDbContext dbContext;
+        private readonly InspectifyDbContext dbContext;
 
-        public TeamProvider(LogisticsDbContext dbContext)
+        public TeamProvider(InspectifyDbContext dbContext)
         {
             this.dbContext = dbContext;
         }

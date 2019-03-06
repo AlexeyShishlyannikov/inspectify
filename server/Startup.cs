@@ -53,7 +53,7 @@ namespace Inspectify
                            .AllowAnyHeader();
                 }));
             // Database
-            services.AddDbContext<LogisticsDbContext>(options => 
+            services.AddDbContext<InspectifyDbContext>(options =>
                 options.UseMySql(Configuration.GetConnectionString("LogisticsDb")));
 
             // Identity
@@ -71,7 +71,7 @@ namespace Inspectify
                 options.Lockout.MaxFailedAccessAttempts = 7;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(3);
             })
-              .AddEntityFrameworkStores<LogisticsDbContext>()
+              .AddEntityFrameworkStores<InspectifyDbContext>()
               .AddDefaultTokenProviders()
               .AddTokenProvider<EmailConfirmationTokenProvider<ApplicationUser>>("emailconf")
               .AddPasswordValidator<CustomPasswordValidator<ApplicationUser>>();
@@ -134,7 +134,10 @@ namespace Inspectify
             services.AddMvc(config =>
             {
                 config.Filters.Add(new ValidateModelStateFilter());
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+            .AddJsonOptions(
+                options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

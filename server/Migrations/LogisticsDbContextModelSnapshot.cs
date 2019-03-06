@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Inspectify.Migrations
 {
-    [DbContext(typeof(LogisticsDbContext))]
+    [DbContext(typeof(InspectifyDbContext))]
     partial class LogisticsDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

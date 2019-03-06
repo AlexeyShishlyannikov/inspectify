@@ -11,7 +11,7 @@ namespace Inspectify.ViewModels
         public string Description { get; set; }
         public bool IsArchived { get; set; }
         public DateTime Created { get; set; }
-        public IEnumerable<Field> Fields { get; set; }
+        public IEnumerable<FieldViewModel> Fields { get; set; }
     }
 
     public class FieldViewModel

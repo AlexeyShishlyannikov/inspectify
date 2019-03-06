@@ -27,7 +27,10 @@ namespace Inspectify.Controllers
         [Authorize]
         public async Task<IActionResult> AddForm([FromBody] FormViewModel formViewModel)
         {
+            var companyId = this.User.Claims.SingleOrDefault(c => c.Type == "companyId").Value;
             var form = mapper.Map<FormViewModel, Form>(formViewModel);
+            form.CompanyId = companyId;
+            form.Created = DateTime.Now;
             form = await formProvider.AddForm(form);
             formViewModel = mapper.Map<Form, FormViewModel>(form);
             return Ok(formViewModel);

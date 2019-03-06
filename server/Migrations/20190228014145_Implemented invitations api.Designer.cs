@@ -8,7 +8,7 @@ using Inspectify.DAL;
 
 namespace Inspectify.Migrations
 {
-    [DbContext(typeof(LogisticsDbContext))]
+    [DbContext(typeof(InspectifyDbContext))]
     [Migration("20190228014145_Implemented invitations api")]
     partial class Implementedinvitationsapi
     {

@@ -23,9 +23,9 @@ namespace Inspectify.BusinessLayer
 
     public class VehicleProvider : IVehicleProvider
     {
-        private readonly LogisticsDbContext dbContext;
+        private readonly InspectifyDbContext dbContext;
 
-        public VehicleProvider(LogisticsDbContext dbContext)
+        public VehicleProvider(InspectifyDbContext dbContext)
         {
             this.dbContext = dbContext;
         }
