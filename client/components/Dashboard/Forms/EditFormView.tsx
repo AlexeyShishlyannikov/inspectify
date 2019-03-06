@@ -33,7 +33,9 @@ interface IEditFormsFormProps {
 interface IEditFormsFormState {
     name: string;
     description: string;
+    isAdding: boolean;
     fields: IField[];
+    fieldEditingMap: { [id: string]: boolean }
 }
 
 class EditFormView extends React.Component<IEditFormsFormProps & RouteComponentProps & RouteProps, IEditFormsFormState> {
@@ -45,7 +47,8 @@ class EditFormView extends React.Component<IEditFormsFormProps & RouteComponentP
         this.setState({
             name: this.props.isEditMode && this.props.selectedForm ? this.props.selectedForm.name : '',
             description: this.props.isEditMode && this.props.selectedForm && this.props.selectedForm.description ? this.props.selectedForm.description : '',
-            fields: this.props.isEditMode && this.props.selectedForm ? this.props.selectedForm.fields : []
+            fields: this.props.isEditMode && this.props.selectedForm ? this.props.selectedForm.fields : [],
+            isAdding: false
         });
     }
 
@@ -53,17 +56,20 @@ class EditFormView extends React.Component<IEditFormsFormProps & RouteComponentP
         if (newProps.selectedForm && newProps.selectedForm !== this.props.selectedForm && newProps.isEditMode) {
             this.setState({
                 name: newProps.selectedForm.name,
-                description: newProps.selectedForm.description
+                description: newProps.selectedForm.description,
+                fields: newProps.selectedForm ? newProps.selectedForm.fields : [],
+                isAdding: false
             });
         }
     }
 
     createForm = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        // this.props.addForm({
-        //     name: this.state.name,
-        //     description: this.state.description
-        // });
+        this.props.addForm({
+            name: this.state.name,
+            description: this.state.description,
+            fields: this.state.fields
+        });
     };
 
     updateForm = (event: React.FormEvent<HTMLFormElement>) => {
@@ -71,13 +77,26 @@ class EditFormView extends React.Component<IEditFormsFormProps & RouteComponentP
         if (this.props.selectedForm
             && (this.props.selectedForm.name !== this.state.name || this.props.selectedForm.description !== this.state.description)
         ) {
-            // this.props.updateForm({
-            //     id: this.props.selectedForm.id,
-            //     name: this.state.name,
-            //     description: this.state.description
-            // });
+            this.props.updateForm({
+                id: this.props.selectedForm.id,
+                name: this.state.name,
+                description: this.state.description,
+                fields: this.state.fields
+            });
         }
     };
+
+    updateEditingState = (id: string, isEditing: boolean) => {
+        this.setState((state) => {
+            const newEditingState = {
+                ...state.fieldEditingMap,
+                [id]: isEditing
+            };
+            return {
+                fieldEditingMap: newEditingState
+            }
+        });
+    }
 
     handleChange = (prop: string) => (
         event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -89,27 +108,29 @@ class EditFormView extends React.Component<IEditFormsFormProps & RouteComponentP
         }));
     };
 
-    isButtonDisabled = () => !this.state.name || this.props.isLoading;
+    addField = () => {
+        this.setState({
+            isAdding: true
+        });
+    }
 
-    getSubmitButton = () => {
-        return <Button
-            type="submit"
-            color="primary"
-            disabled={this.isButtonDisabled()}
-            variant={this.isButtonDisabled() ? 'text' : 'contained'}
-        >
-            {this.props.isLoading ? <CircularProgress color="secondary" size={30} /> : 'Save'}
-        </Button>;
-    };
+    onFieldSave = (field: IField) => {
+        this.setState({
+            fields: field.id ? this.state.fields.map(f => f.id === field.id ? field : f) : this.state.fields.concat(field),
+            isAdding: false,
+        });
+    }
+
+    isButtonDisabled = () => !this.state.name || this.state.fields.length === 0 || this.props.isLoading;
 
     render() {
         return (
             <div className="form-view-form-card" style={{ display: 'flex', flexDirection: 'column' }}>
-                <Card>
-                    <form className="form-view-form" onSubmit={(event) => {
-                        this.props.isEditMode ? this.updateForm(event) : this.createForm(event);
-                        if (this.props.onSave) this.props.onSave();
-                    }}>
+                <form className="form-view-form" onSubmit={(event) => {
+                    this.props.isEditMode ? this.updateForm(event) : this.createForm(event);
+                    if (this.props.onSave) this.props.onSave();
+                }}>
+                    <Card>
                         <CardHeader title={(this.props.isEditMode ? 'Edit' : 'Create') + ' Form'} />
                         <CardContent className="form-view-form-content">
                             <FormControl className="form-view-form-input">
@@ -129,37 +150,52 @@ class EditFormView extends React.Component<IEditFormsFormProps & RouteComponentP
                                 />
                             </FormControl>
                         </CardContent>
-                        <CardActions>
-                            {<div style={{ 'color': 'red' }}> {this.props.errorMessage} </div>}
-                            {this.getSubmitButton()}
-                        </CardActions>
-                    </form>
-                </Card>
-                <br />
-                <Card>
-                    <CardHeader title="Fields" />
-                </Card>
-                {this.state.fields.map(field => <div key={field.id}><br /><EditFieldForm field={field} /></div>)}
-                <br />
-                <div style={{ display: 'flex', justifyContent: 'center' }} >
-                    <Button
-                        color="primary"
-                        variant='contained'
-                        onClick={() => {
-                            this.setState({
-                                fields: this.state.fields.concat({
-                                    name: '',
-                                    description: '',
-                                    isRequired: false,
-                                    type: FieldType.Input,
-                                    options: [],
-                                    sortIndex: 0
-                                })
-                            });
-                        }}>
-                        Add Field
-                    </Button>
-                </div>
+                    </Card>
+                    <br />
+                    <Card>
+                        <CardHeader title="Fields" />
+                    </Card>
+                    {this.state.fields.map(field => {
+                        if (this.state.fieldEditingMap[field.id as string]) {
+                            return <EditFieldForm
+                                key={field.id}
+                                field={field}
+                                onClose={() => {
+                                    this.updateEditingState(field.id as string, false)
+                                }}
+                                onSave={this.onFieldSave}
+                            />;
+                        }
+                        return <div>
+                            {JSON.stringify(field)}
+                            <Button onClick={() => { this.updateEditingState(field.id as string, true) }}>Edit</Button>
+                        </div>
+                    })}
+                    {this.state.isAdding && <EditFieldForm
+                        onClose={() => {
+                            this.setState({ isAdding: false })
+                        }}
+                        onSave={this.onFieldSave} //separate
+                    />}
+                    <br />
+                    <div style={{ display: 'flex', justifyContent: 'center' }} >
+                        <Button
+                            color="primary"
+                            variant='contained'
+                            onClick={this.addField}>
+                            Add Field
+                        </Button>
+                        <br />
+                        <Button
+                            type="submit"
+                            color="primary"
+                            disabled={this.isButtonDisabled()}
+                            variant={this.isButtonDisabled() ? 'text' : 'contained'}
+                        >
+                            {this.props.isLoading ? <CircularProgress color="secondary" size={30} /> : 'Save Form'}
+                        </Button>
+                    </div>
+                </form>
             </div>
         );
     }

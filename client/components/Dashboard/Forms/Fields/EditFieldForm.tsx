@@ -32,7 +32,11 @@ class EditFormView extends React.Component<IEditFieldFormProps, IEditFieldFormSt
     componentWillMount() {
         this.setState({
             name: this.props.field ? this.props.field.name : '',
-            description: this.props.field && this.props.field.description ? this.props.field.description : ''
+            description: this.props.field && this.props.field.description ? this.props.field.description : '',
+            isRequired: this.props.field && this.props.field.isRequired ? this.props.field.isRequired : false,
+            type: this.props.field && this.props.field.type ? this.props.field.type : FieldType.Input,
+            sortIndex: this.props.field && this.props.field.sortIndex ? this.props.field.sortIndex : 0,
+            options: this.props.field && this.props.field.options ? this.props.field.options : []
         });
     }
 
@@ -80,7 +84,7 @@ class EditFormView extends React.Component<IEditFieldFormProps, IEditFieldFormSt
                     <CardHeader
                         title={(!this.props.field ? 'Add' : 'Edit') + ' Field'}
                         action={
-                            this.props.onClose && <IconButton color="secondary" onClick={this.props.onClose}>
+                            this.props.field && this.props.onClose && <IconButton color="secondary" onClick={this.props.onClose}>
                                 <CloseIcon />
                             </IconButton>
                         } />

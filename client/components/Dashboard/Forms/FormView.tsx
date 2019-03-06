@@ -9,14 +9,12 @@ import { ApplicationState } from '../../../store';
 import { FormThunks } from '../../../store/form/formThunks';
 
 interface IFormViewProps {
-    isEditMode: boolean;
     selectedForm?: IForm;
     isLoading: boolean;
     errorMessage?: string;
     getForm: (id: string) => void;
-    // getPeopleForForm: (FormId: string) => void;
     deleteForm: (id: string) => void;
-    setEditMode: (isEdit: boolean) => void;
+    // getPeopleForForm: (FormId: string) => void;
 }
 
 class FormView extends React.Component<IFormViewProps & RouteComponentProps & RouteProps> {
@@ -24,12 +22,12 @@ class FormView extends React.Component<IFormViewProps & RouteComponentProps & Ro
         const id: string = this.props.match.params['id'];
         this.props.getForm(id);
         // this.props.getPeopleForForm(id);
-        this.props.setEditMode(false);
     }
 
     render() {
         return (
             <div className="form-container">
+                {JSON.stringify(this.props.selectedForm)}
             </div>
         );
     }

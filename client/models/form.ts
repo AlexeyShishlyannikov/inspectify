@@ -2,8 +2,8 @@ export interface IForm {
     id?: string;
     name: string;
     description: string;
-    isArchived: boolean;
-    created: Date;
+    isArchived?: boolean;
+    created?: Date;
     fields: IField[];
 }
 
