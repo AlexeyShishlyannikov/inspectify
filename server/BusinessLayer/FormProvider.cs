@@ -19,10 +19,10 @@ namespace Inspectify.BusinessLayer
     }
 
     public class FormProvider : IFormProvider
-    {Inspectify
-        private readonly LogisticsDbContext dbContext;
-Inspectify
-        public FormProvider(LogisticsDbContext dbContext)
+    {
+        private readonly InspectifyDbContext dbContext;
+
+        public FormProvider(InspectifyDbContext dbContext)
         {
             this.dbContext = dbContext;
         }
