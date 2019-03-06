@@ -48,7 +48,8 @@ class EditFormView extends React.Component<IEditFormsFormProps & RouteComponentP
             name: this.props.isEditMode && this.props.selectedForm ? this.props.selectedForm.name : '',
             description: this.props.isEditMode && this.props.selectedForm && this.props.selectedForm.description ? this.props.selectedForm.description : '',
             fields: this.props.isEditMode && this.props.selectedForm ? this.props.selectedForm.fields : [],
-            isAdding: false
+            isAdding: false,
+            fieldEditingMap: {}
         });
     }
 
@@ -58,7 +59,8 @@ class EditFormView extends React.Component<IEditFormsFormProps & RouteComponentP
                 name: newProps.selectedForm.name,
                 description: newProps.selectedForm.description,
                 fields: newProps.selectedForm ? newProps.selectedForm.fields : [],
-                isAdding: false
+                isAdding: false,
+                fieldEditingMap: {}
             });
         }
     }

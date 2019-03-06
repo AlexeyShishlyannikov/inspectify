@@ -84,7 +84,7 @@ class EditFormView extends React.Component<IEditFieldFormProps, IEditFieldFormSt
                     <CardHeader
                         title={(!this.props.field ? 'Add' : 'Edit') + ' Field'}
                         action={
-                            this.props.field && this.props.onClose && <IconButton color="secondary" onClick={this.props.onClose}>
+                            this.props.onClose && <IconButton color="secondary" onClick={this.props.onClose}>
                                 <CloseIcon />
                             </IconButton>
                         } />
