@@ -117,12 +117,9 @@ class EditFormView extends React.Component<IEditFormViewProps & RouteComponentPr
 
     onFieldSave = (field: IField) => {
         this.setState({
-            fields: field.id ? this.state.fields.map((savedField, index) => {
-                return {
-                    ...(savedField.id === field.id ? field : savedField),
-                    sortIndex: index + 1
-                };
-            }) : this.state.fields.concat({ ...field, sortIndex: this.state.fields.length + 1 }),
+            fields: field.id
+                ? this.adjustSortIndexes(this.state.fields.map(savedField => savedField.id === field.id ? field : savedField))
+                : this.state.fields.concat({ ...field, sortIndex: this.state.fields.length + 1 }),
             isAdding: false
         });
         if (field.id) {
@@ -131,6 +128,13 @@ class EditFormView extends React.Component<IEditFormViewProps & RouteComponentPr
     }
 
     isButtonDisabled = () => !this.state.name || this.state.fields.length === 0 || this.props.isLoading;
+
+    adjustSortIndexes = (fields: IField[]) => {
+        return fields.sort((f1, f2) => f1.sortIndex - f2.sortIndex).map((field, index) => ({
+            ...field,
+            sortIndex: index + 1
+        }));
+    }
 
     render() {
         return (
@@ -179,7 +183,7 @@ class EditFormView extends React.Component<IEditFormViewProps & RouteComponentPr
                                 onClose={() => this.updateEditingState(field.id as string, false)}
                                 onSave={this.onFieldSave}
                                 onDelete={(deletedField: IField) => this.setState({
-                                    fields: this.state.fields.filter(stateField => stateField.id !== deletedField.id)
+                                    fields: this.adjustSortIndexes(this.state.fields.filter(stateField => stateField.id !== deletedField.id))
                                 })}
                             />;
                         }

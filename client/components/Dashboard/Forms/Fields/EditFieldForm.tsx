@@ -51,8 +51,8 @@ class EditFieldForm extends React.Component<IEditFieldFormProps, IEditFieldFormS
                 description: this.state.description,
                 isRequired: this.state.isRequired,
                 options: this.state.options,
-                sortIndex: 0,
-                type: FieldType.Input
+                sortIndex: this.state.sortIndex,
+                type: this.state.type
             });
         }
     };

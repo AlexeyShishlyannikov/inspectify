@@ -68,7 +68,8 @@ namespace Inspectify.MappingProfiles
             CreateMap<FieldViewModel, Field>()
                 .ForMember(f => f.Form, opt => opt.Ignore())
                 .ForMember(f => f.FormId, opt => opt.MapFrom((src, dest, destMember, context) => (string)context.Items["FormId"]));
-            CreateMap<Form, FormViewModel>();
+            CreateMap<Form, FormViewModel>()
+                .AfterMap((src, dest) => dest.Fields.Sort((fieldA, fieldB) => fieldA.SortIndex - fieldB.SortIndex));
             CreateMap<FormViewModel, Form>()
                 .BeforeMap((src, dest, context) => context.Items["FormId"] = src.Id) // Writing form id into context, to pick up in field mapping
                 .ForMember(src => src.Fields, opt => opt.MapFrom((src, dest, i, context) => GetUpdatedFields(src, dest, context))); // Childrens mapping
