@@ -60,13 +60,11 @@ namespace Inspectify.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateForm([FromBody] FormViewModel formViewModel)
         {
-            var form = mapper.Map<FormViewModel, Form>(formViewModel);
-            form = await formProvider.UpdateForm(form);
-            if (form == null)
-            {
-                return NotFound("Form not found");
-            }
-            return Ok(form);
+            var form = await formProvider.GetForm(formViewModel.Id);
+            if (form == null) return NotFound("Form not found");
+            mapper.Map<FormViewModel, Form>(formViewModel, form);
+            await formProvider.UpdateForm(form);
+            return Ok(mapper.Map<FormViewModel>(form));
         }
 
         [HttpDelete]

@@ -17,7 +17,7 @@ namespace Inspectify.Models
         [Required]
         public string CompanyId { get; set; }
         public Company Company { get; set; }
-        public IEnumerable<Field> Fields { get; set; }
+        public List<Field> Fields { get; set; }
     }
 
     public class Field
@@ -30,7 +30,8 @@ namespace Inspectify.Models
         public bool IsRequired { get; set; }
         [Required]
         public FieldType Type { get; set; }
-        public IEnumerable<Option> Options { get; set; }
+        public List<Option> Options { get; set; }
+        [Required]
         public string FormId { get; set; }
         public Form Form { get; set; }
     }

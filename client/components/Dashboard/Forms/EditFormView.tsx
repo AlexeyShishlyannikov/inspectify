@@ -17,8 +17,9 @@ import { connect } from 'react-redux';
 import { IForm, IField, FieldType } from '../../../models/form';
 import { RouteComponentProps, RouteProps } from 'react-router-dom';
 import EditFieldForm from './Fields/EditFieldForm';
+import FieldPreview from './Fields/FieldPreview';
 
-interface IEditFormsFormProps {
+interface IEditFormViewProps {
     isEditMode: boolean;
 
     selectedForm?: IForm;
@@ -30,7 +31,7 @@ interface IEditFormsFormProps {
     onSave?: () => void;
 }
 
-interface IEditFormsFormState {
+interface IEditFormViewState {
     name: string;
     description: string;
     isAdding: boolean;
@@ -38,7 +39,7 @@ interface IEditFormsFormState {
     fieldEditingMap: { [id: string]: boolean }
 }
 
-class EditFormView extends React.Component<IEditFormsFormProps & RouteComponentProps & RouteProps, IEditFormsFormState> {
+class EditFormView extends React.Component<IEditFormViewProps & RouteComponentProps & RouteProps, IEditFormViewState> {
     componentWillMount() {
         if (this.props.isEditMode) {
             const id: string = this.props.match.params['id'];
@@ -53,7 +54,7 @@ class EditFormView extends React.Component<IEditFormsFormProps & RouteComponentP
         });
     }
 
-    componentWillReceiveProps(newProps: IEditFormsFormProps) {
+    componentWillReceiveProps(newProps: IEditFormViewProps) {
         if (newProps.selectedForm && newProps.selectedForm !== this.props.selectedForm && newProps.isEditMode) {
             this.setState({
                 name: newProps.selectedForm.name,
@@ -76,9 +77,7 @@ class EditFormView extends React.Component<IEditFormsFormProps & RouteComponentP
 
     updateForm = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (this.props.selectedForm
-            && (this.props.selectedForm.name !== this.state.name || this.props.selectedForm.description !== this.state.description)
-        ) {
+        if (this.props.selectedForm) {
             this.props.updateForm({
                 id: this.props.selectedForm.id,
                 name: this.state.name,
@@ -118,9 +117,17 @@ class EditFormView extends React.Component<IEditFormsFormProps & RouteComponentP
 
     onFieldSave = (field: IField) => {
         this.setState({
-            fields: field.id ? this.state.fields.map(f => f.id === field.id ? field : f) : this.state.fields.concat(field),
-            isAdding: false,
+            fields: field.id ? this.state.fields.map((savedField, index) => {
+                return {
+                    ...(savedField.id === field.id ? field : savedField),
+                    sortIndex: index + 1
+                };
+            }) : this.state.fields.concat({ ...field, sortIndex: this.state.fields.length + 1 }),
+            isAdding: false
         });
+        if (field.id) {
+            this.updateEditingState(field.id, false);
+        }
     }
 
     isButtonDisabled = () => !this.state.name || this.state.fields.length === 0 || this.props.isLoading;
@@ -129,8 +136,15 @@ class EditFormView extends React.Component<IEditFormsFormProps & RouteComponentP
         return (
             <div className="form-view-form-card" style={{ display: 'flex', flexDirection: 'column' }}>
                 <form className="form-view-form" onSubmit={(event) => {
-                    this.props.isEditMode ? this.updateForm(event) : this.createForm(event);
-                    if (this.props.onSave) this.props.onSave();
+                    event.preventDefault();
+                    if (this.props.isEditMode) {
+                        this.updateForm(event);
+                    } else {
+                        this.createForm(event);
+                    }
+                    if (this.props.onSave) {
+                        this.props.onSave();
+                    }
                 }}>
                     <Card>
                         <CardHeader title={(this.props.isEditMode ? 'Edit' : 'Create') + ' Form'} />
@@ -162,31 +176,23 @@ class EditFormView extends React.Component<IEditFormsFormProps & RouteComponentP
                             return <EditFieldForm
                                 key={field.id}
                                 field={field}
-                                onClose={() => {
-                                    this.updateEditingState(field.id as string, false)
-                                }}
+                                onClose={() => this.updateEditingState(field.id as string, false)}
                                 onSave={this.onFieldSave}
+                                onDelete={(deletedField: IField) => this.setState({
+                                    fields: this.state.fields.filter(stateField => stateField.id !== deletedField.id)
+                                })}
                             />;
                         }
-                        return <div>
-                            {JSON.stringify(field)}
-                            <Button onClick={() => { this.updateEditingState(field.id as string, true) }}>Edit</Button>
-                        </div>
+                        return <FieldPreview field={field} onEditClick={() => this.updateEditingState(field.id as string, true)} />
                     })}
-                    {this.state.isAdding && <EditFieldForm
-                        onClose={() => {
-                            this.setState({ isAdding: false })
-                        }}
-                        onSave={this.onFieldSave} //separate
-                    />}
+                    {this.state.isAdding &&
+                        <EditFieldForm
+                            onClose={() => this.setState({ isAdding: false })}
+                            onSave={this.onFieldSave}
+                        />}
                     <br />
-                    <div style={{ display: 'flex', justifyContent: 'center' }} >
-                        <Button
-                            color="primary"
-                            variant='contained'
-                            onClick={this.addField}>
-                            Add Field
-                        </Button>
+                    <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }} >
+                        {!this.state.isAdding && <Button color="primary" variant='contained' onClick={this.addField}> Add Field</Button>}
                         <br />
                         <Button
                             type="submit"
@@ -202,7 +208,6 @@ class EditFormView extends React.Component<IEditFormsFormProps & RouteComponentP
         );
     }
 }
-
 
 const mapStateToProps = (state: ApplicationState) => {
     return {

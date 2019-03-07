@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using Inspectify.Models;
 using Inspectify.ViewModels;
@@ -62,8 +65,29 @@ namespace Inspectify.MappingProfiles
 
         public void ConfigureFormMappings()
         {
+            CreateMap<FieldViewModel, Field>()
+                .ForMember(f => f.Form, opt => opt.Ignore())
+                .ForMember(f => f.FormId, opt => opt.MapFrom((src, dest, destMember, context) => (string)context.Items["FormId"]));
             CreateMap<Form, FormViewModel>();
-            CreateMap<FormViewModel, Form>();
+            CreateMap<FormViewModel, Form>()
+                .BeforeMap((src, dest, context) => context.Items["FormId"] = src.Id) // Writing form id into context, to pick up in field mapping
+                .ForMember(src => src.Fields, opt => opt.MapFrom((src, dest, i, context) => GetUpdatedFields(src, dest, context))); // Childrens mapping
+        }
+        private List<Field> GetUpdatedFields(FormViewModel src, Form dest, ResolutionContext context)
+        {
+            var destArray = new List<Field>();
+            foreach (var srcField in src.Fields)
+            {
+                if (String.IsNullOrEmpty(srcField.Id))
+                {
+                    destArray.Add(context.Mapper.Map<Field>(srcField));
+                }
+                else
+                {
+                    destArray.Add(context.Mapper.Map(srcField, dest.Fields.SingleOrDefault(c => c.Id == srcField.Id))); // TODO: Turn into map calls
+                }
+            }
+            return destArray;
         }
     }
 }

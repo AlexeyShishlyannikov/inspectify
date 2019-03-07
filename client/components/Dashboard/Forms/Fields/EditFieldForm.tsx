@@ -16,6 +16,7 @@ import CloseIcon from '@material-ui/icons/Close';
 interface IEditFieldFormProps {
     field?: IField;
     onSave?: (field: IField) => void;
+    onDelete?: (field: IField) => void;
     onClose?: () => void;
 }
 
@@ -28,7 +29,7 @@ interface IEditFieldFormState {
     options: IOption[];
 }
 
-class EditFormView extends React.Component<IEditFieldFormProps, IEditFieldFormState> {
+class EditFieldForm extends React.Component<IEditFieldFormProps, IEditFieldFormState> {
     componentWillMount() {
         this.setState({
             name: this.props.field ? this.props.field.name : '',
@@ -42,6 +43,7 @@ class EditFormView extends React.Component<IEditFieldFormProps, IEditFieldFormSt
 
     saveField = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        event.stopPropagation();
         if (this.props.onSave) {
             this.props.onSave({
                 id: this.props.field ? this.props.field.id : undefined,
@@ -106,11 +108,14 @@ class EditFormView extends React.Component<IEditFieldFormProps, IEditFieldFormSt
                             />
                         </FormControl>
                     </CardContent>
-                    <CardActions>{this.getSubmitButton()}</CardActions>
+                    <CardActions>
+                        {this.getSubmitButton()}
+                        {this.props.field && this.props.onDelete && <Button onClick={() => this.props.onDelete && this.props.onDelete(this.props.field as IField)}>Delete</Button>}
+                    </CardActions>
                 </form>
             </Card>
         );
     }
 }
 
-export default (EditFormView)
+export default (EditFieldForm)

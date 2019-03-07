@@ -11,7 +11,7 @@ namespace Inspectify.ViewModels
         public string Description { get; set; }
         public bool IsArchived { get; set; }
         public DateTime Created { get; set; }
-        public IEnumerable<FieldViewModel> Fields { get; set; }
+        public List<FieldViewModel> Fields { get; set; }
     }
 
     public class FieldViewModel
@@ -22,7 +22,7 @@ namespace Inspectify.ViewModels
         public int SortIndex { get; set; }
         public bool isRequired { get; set; }
         public FieldType Type { get; set; }
-        public IEnumerable<OptionViewModel> Options { get; set; }
+        public List<OptionViewModel> Options { get; set; }
     }
 
     public class OptionViewModel
