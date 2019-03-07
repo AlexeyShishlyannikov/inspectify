@@ -76,19 +76,15 @@ namespace Inspectify.MappingProfiles
         }
         private List<Field> GetUpdatedFields(FormViewModel src, Form dest, ResolutionContext context)
         {
-            var destArray = new List<Field>();
-            foreach (var srcField in src.Fields)
+            var fieldMap = dest.Fields.ToDictionary(v => v.Id, v => v);
+            return src.Fields.Select(srcField =>
             {
                 if (String.IsNullOrEmpty(srcField.Id))
                 {
-                    destArray.Add(context.Mapper.Map<Field>(srcField));
+                    return context.Mapper.Map<Field>(srcField);
                 }
-                else
-                {
-                    destArray.Add(context.Mapper.Map(srcField, dest.Fields.SingleOrDefault(c => c.Id == srcField.Id))); // TODO: Turn into map calls
-                }
-            }
-            return destArray;
+                return context.Mapper.Map(srcField, fieldMap.SingleOrDefault(c => c.Key == srcField.Id).Value);
+            }).ToList();
         }
     }
 }

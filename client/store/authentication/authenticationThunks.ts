@@ -29,7 +29,7 @@ export namespace AuthThunks {
                     'Content-Type': 'Application/json'
                 }
             }
-        ).then(res => res.text().then(result => {
+        ).then(res => res.json().then(result => {
             if (!res.ok) {
                 dispatch({ type: "RECEIVED_ERROR_ACTION", message: result });
             } else {
@@ -54,7 +54,7 @@ export namespace AuthThunks {
                     'Content-Type': 'Application/json'
                 }
             }
-        ).then(res => res.text().then(result => {
+        ).then(res => res.json().then(result => {
             if (!res.ok) {
                 dispatch({ type: "RECEIVED_ERROR_ACTION", message: result });
             } else {
@@ -79,7 +79,7 @@ export namespace AuthThunks {
                     'Content-Type': 'Application/json'
                 }
             }
-        ).then(res => res.text().then(result => {
+        ).then(res => res.json().then(result => {
             if (!res.ok) {
                 dispatch({ type: "RECEIVED_ERROR_ACTION", message: result });
             } else {
@@ -178,7 +178,7 @@ export namespace AuthThunks {
                     'Content-Type': 'Application/json'
                 }
             }
-        ).then(res => res.text()).then(token => {
+        ).then(res => res.json()).then(token => {
             dispatch({
                 type: "LOADED_USER_ACTION",
                 token: token

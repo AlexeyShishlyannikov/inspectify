@@ -172,28 +172,29 @@ class EditFormView extends React.Component<IEditFormViewProps & RouteComponentPr
                         </CardContent>
                     </Card>
                     <br />
-                    <Card>
-                        <CardHeader title="Fields" />
-                    </Card>
+                    {this.state.fields.length > 0 && <CardHeader title="Fields" />}
                     {this.state.fields.map(field => {
                         if (this.state.fieldEditingMap[field.id as string]) {
-                            return <EditFieldForm
-                                key={field.id}
-                                field={field}
-                                onClose={() => this.updateEditingState(field.id as string, false)}
-                                onSave={this.onFieldSave}
-                                onDelete={(deletedField: IField) => this.setState({
-                                    fields: this.adjustSortIndexes(this.state.fields.filter(stateField => stateField.id !== deletedField.id))
-                                })}
-                            />;
+                            return <div key={field.id} className="form-view-form-panel">
+                                <EditFieldForm
+                                    field={field}
+                                    onClose={() => this.updateEditingState(field.id as string, false)}
+                                    onSave={this.onFieldSave}
+                                    onDelete={(deletedField: IField) => this.setState({
+                                        fields: this.adjustSortIndexes(this.state.fields.filter(stateField => stateField.id !== deletedField.id))
+                                    })}
+                                />
+                            </div>
                         }
-                        return <FieldPreview field={field} onEditClick={() => this.updateEditingState(field.id as string, true)} />
+                        return <div key={field.id} className="form-view-form-panel"><FieldPreview field={field} onEditClick={() => this.updateEditingState(field.id as string, true)} /></div>
                     })}
                     {this.state.isAdding &&
-                        <EditFieldForm
-                            onClose={() => this.setState({ isAdding: false })}
-                            onSave={this.onFieldSave}
-                        />}
+                        <div className="form-view-form-panel">
+                            <EditFieldForm
+                                onClose={() => this.setState({ isAdding: false })}
+                                onSave={this.onFieldSave}
+                            />
+                        </div>}
                     <br />
                     <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }} >
                         {!this.state.isAdding && <Button color="primary" variant='contained' onClick={this.addField}> Add Field</Button>}

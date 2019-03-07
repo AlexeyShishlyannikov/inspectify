@@ -3,13 +3,21 @@ using Inspectify.Identity.Models;
 using Inspectify.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace Inspectify.Identity
 {
+    public interface IJwtFactory
+    {
+        Task<string> GenerateEncodedToken(ApplicationUser user);
+        string GenerateRefreshToken();
+    }
+
     public class JwtFactory : IJwtFactory
     {
         private readonly JwtIssuerOptions jwtOptions;
@@ -60,6 +68,16 @@ namespace Inspectify.Identity
 
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
             return encodedJwt;
+        }
+
+        public string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+                return Convert.ToBase64String(randomNumber);
+            }
         }
     }
 }

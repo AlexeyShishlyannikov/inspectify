@@ -10,6 +10,9 @@ using Inspectify.Models.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Inspectify.ViewModels;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Inspectify.Controllers
 {
@@ -70,7 +73,15 @@ namespace Inspectify.Controllers
             await invitationProvider.DeleteInvitation(model.InvitationId);
             // var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
             // await emailProvider.SendConfirmEmail(user, token);
-            return Ok(await jwtFactory.GenerateEncodedToken(user));
+            var appToken = await jwtFactory.GenerateEncodedToken(user);
+            var newRefreshToken = jwtFactory.GenerateRefreshToken();
+            user.RefreshToken = newRefreshToken;
+            await userManager.UpdateAsync(user);
+            return new ObjectResult(new
+            {
+                token = appToken,
+                refreshToken = newRefreshToken
+            });
         }
 
 
@@ -83,19 +94,27 @@ namespace Inspectify.Controllers
                 return BadRequest("Company already exists!");
             }
             var identityResult = await userManager.CreateAsync(new ApplicationUser { UserName = model.Email, Email = model.Email }, model.Password);
-            if (identityResult.Succeeded)
+            if (!identityResult.Succeeded)
             {
-                var user = await userManager.FindByEmailAsync(model.Email);
-                await companiesProvider.AddCompany(new Company
-                {
-                    Name = model.CompanyName,
-                    ApplicationUserId = user.Id
-                });
-                var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
-                await emailProvider.SendConfirmEmail(user, token);
-                return Ok(await jwtFactory.GenerateEncodedToken(user));
+                return BadRequest("Something went wrong!");
             }
-            return BadRequest("Something went wrong!");
+            var user = await userManager.FindByEmailAsync(model.Email);
+            await companiesProvider.AddCompany(new Company
+            {
+                Name = model.CompanyName,
+                ApplicationUserId = user.Id
+            });
+            var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+            await emailProvider.SendConfirmEmail(user, token);
+            var appToken = await jwtFactory.GenerateEncodedToken(user);
+            var newRefreshToken = jwtFactory.GenerateRefreshToken();
+            user.RefreshToken = newRefreshToken;
+            await userManager.UpdateAsync(user);
+            return new ObjectResult(new
+            {
+                token = appToken,
+                refreshToken = newRefreshToken
+            });
         }
 
         [HttpPost]
@@ -118,7 +137,15 @@ namespace Inspectify.Controllers
                 return BadRequest("Incorrect password");
             }
             await userManager.ResetAccessFailedCountAsync(user);
-            return Ok(await jwtFactory.GenerateEncodedToken(user));
+            var appToken = await jwtFactory.GenerateEncodedToken(user);
+            var newRefreshToken = jwtFactory.GenerateRefreshToken();
+            user.RefreshToken = newRefreshToken;
+            await userManager.UpdateAsync(user);
+            return new ObjectResult(new
+            {
+                token = appToken,
+                refreshToken = newRefreshToken
+            });
         }
 
         [HttpGet]
@@ -187,6 +214,26 @@ namespace Inspectify.Controllers
                 await userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
             }
             return Ok("Password was reset succesfully");
+        }
+
+        [HttpPost]
+        [Route("refresh")]
+        public async Task<IActionResult> Refresh([FromQuery] string token,[FromQuery] string refreshToken)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var principal = handler.ReadToken(token) as JwtSecurityToken;
+            var email = principal.Claims.FirstOrDefault(claim => claim.Type == "Email")?.Value;
+            var user = await userManager.FindByEmailAsync(email);
+            if (user.RefreshToken != refreshToken) throw new SecurityTokenException("Invalid refresh token");
+            var newJwtToken = await jwtFactory.GenerateEncodedToken(user);
+            var newRefreshToken = jwtFactory.GenerateRefreshToken();
+            user.RefreshToken = newRefreshToken;
+            await userManager.UpdateAsync(user);
+            return new ObjectResult(new
+            {
+                token = newJwtToken,
+                refreshToken = newRefreshToken
+            });
         }
     }
 }

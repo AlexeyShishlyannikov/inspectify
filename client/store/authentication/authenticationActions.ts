@@ -89,7 +89,10 @@ export interface IChangeIsLoadingAction extends Action {
 
 export interface ILoadedTokenAction extends Action {
     type: LOADED_TOKEN_ACTION;
-    token: string;
+    token: {
+        token: string;
+        refreshToken: string;
+    };
 }
 
 export interface IReceivedErrorAction extends Action {
