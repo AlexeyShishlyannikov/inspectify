@@ -1,6 +1,5 @@
 import { ApplicationState } from ".";
-
-let jwtDecode = require('jwt-decode');
+import { ILoadedTokenAction } from "./authentication/authenticationActions";
 
 export namespace ActionsUtil {
     export interface DefaultType {
@@ -21,25 +20,38 @@ export namespace ActionsUtil {
         return stateArray.map(value => value.id === actionValue.id ? actionValue : value);
     }
 
-    export const refreshToken = (state: ApplicationState): Promise<{
+    export const refreshToken = async (dispatch, state: ApplicationState): Promise<{
         token: string,
         refreshToken: string
     }> => {
         const token = localStorage.getItem('token') as string;
         const refreshToken = localStorage.getItem('refreshToken') as string;
-        if (state.authentication.user && state.authentication.user.expirationDate - 1000 > new Date().getTime()) {
-            return new Promise((res) => res({
-                token,
-                refreshToken
-            }));
+        if (state.authentication.user && state.authentication.user.expirationDate > new Date().getTime() / 1000) {
+            return {
+                token: token,
+                refreshToken: refreshToken
+            };
         }
-        return fetch(window.location.origin + `/api/account/refresh?token=${token}&refreshToken${refreshToken}`,
+        const tokenObjectResponse = await fetch(window.location.origin + `/api/account/refresh`,
             {
                 method: 'POST',
+                body: JSON.stringify({
+                    token,
+                    refreshToken
+                }),
                 headers: {
                     'Content-Type': 'Application/json'
                 }
             }
-        ).then(res => res.json());
+        );
+        const tokenOject = await tokenObjectResponse.json();
+        if (tokenObjectResponse.ok) {
+            const loadedUserAction: ILoadedTokenAction = {
+                type: "LOADED_USER_ACTION",
+                token: tokenOject
+            }
+            dispatch(loadedUserAction);
+        }
+        return tokenOject;
     }
 }

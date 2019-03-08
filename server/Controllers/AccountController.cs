@@ -218,22 +218,21 @@ namespace Inspectify.Controllers
 
         [HttpPost]
         [Route("refresh")]
-        public async Task<IActionResult> Refresh([FromQuery] string token,[FromQuery] string refreshToken)
+        public async Task<IActionResult> Refresh([FromBody] TokenObject tokenObject)
         {
             var handler = new JwtSecurityTokenHandler();
-            var principal = handler.ReadToken(token) as JwtSecurityToken;
-            var email = principal.Claims.FirstOrDefault(claim => claim.Type == "Email")?.Value;
+            var principal = handler.ReadToken(tokenObject.Token) as JwtSecurityToken;
+            var email = principal.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Email)?.Value;
             var user = await userManager.FindByEmailAsync(email);
-            if (user.RefreshToken != refreshToken) throw new SecurityTokenException("Invalid refresh token");
+            if (user.RefreshToken != tokenObject.RefreshToken)
+            {
+                return BadRequest("Invalid refresh token");
+            }
             var newJwtToken = await jwtFactory.GenerateEncodedToken(user);
             var newRefreshToken = jwtFactory.GenerateRefreshToken();
             user.RefreshToken = newRefreshToken;
             await userManager.UpdateAsync(user);
-            return new ObjectResult(new
-            {
-                token = newJwtToken,
-                refreshToken = newRefreshToken
-            });
+            return Ok(new TokenObject { Token = newJwtToken, RefreshToken = newRefreshToken });
         }
     }
 }
