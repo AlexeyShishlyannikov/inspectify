@@ -66,8 +66,14 @@ namespace Inspectify.MappingProfiles
         public void ConfigureFormMappings()
         {
             CreateMap<FieldViewModel, Field>()
+                .BeforeMap((src, dest, context) => context.Items["FieldId"] = src.Id)
                 .ForMember(f => f.Form, opt => opt.Ignore())
-                .ForMember(f => f.FormId, opt => opt.MapFrom((src, dest, destMember, context) => (string)context.Items["FormId"]));
+                .ForMember(f => f.FormId, opt => opt.MapFrom((src, dest, destMember, context) => (string)context.Items["FormId"]))
+                .ForMember(src => src.Options, opt => opt.MapFrom((src, dest, i, context) => GetUpdatedOptions(src, dest, context))); // Childrens mapping
+            CreateMap<OptionViewModel, Option>()
+                .ForMember(f => f.IsArchived, opt => opt.MapFrom((src, dest) => false))
+                .ForMember(f => f.Field, opt => opt.Ignore())
+                .ForMember(f => f.FieldId, opt => opt.MapFrom((src, dest, destMember, context) => (string)context.Items["FieldId"]));
             CreateMap<Form, FormViewModel>()
                 .AfterMap((src, dest) => dest.Fields.Sort((fieldA, fieldB) => fieldA.SortIndex - fieldB.SortIndex));
             CreateMap<FormViewModel, Form>()
@@ -76,7 +82,7 @@ namespace Inspectify.MappingProfiles
         }
         private List<Field> GetUpdatedFields(FormViewModel src, Form dest, ResolutionContext context)
         {
-            var fieldMap = dest.Fields.ToDictionary(v => v.Id, v => v);
+            var fieldMap = dest.Fields?.ToDictionary(v => v.Id, v => v);
             return src.Fields.Select(srcField =>
             {
                 if (String.IsNullOrEmpty(srcField.Id))
@@ -84,6 +90,19 @@ namespace Inspectify.MappingProfiles
                     return context.Mapper.Map<Field>(srcField);
                 }
                 return context.Mapper.Map(srcField, fieldMap.SingleOrDefault(c => c.Key == srcField.Id).Value);
+            }).ToList();
+        }
+
+        private List<Option> GetUpdatedOptions(FieldViewModel src, Field dest, ResolutionContext context)
+        {
+            var optionsMap = dest.Options?.ToDictionary(v => v.Id, v => v);
+            return src.Options.Select(srcOption =>
+            {
+                if (String.IsNullOrEmpty(srcOption.Id))
+                {
+                    return context.Mapper.Map<Option>(srcOption);
+                }
+                return context.Mapper.Map(srcOption, optionsMap.SingleOrDefault(c => c.Key == srcOption.Id).Value);
             }).ToList();
         }
     }
