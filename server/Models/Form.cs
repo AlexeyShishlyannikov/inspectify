@@ -54,6 +54,8 @@ namespace Inspectify.Models
         Select = 3,
         Multiselect = 4,
         Checkbox = 5,
-        Photo = 6
+        Photo = 6,
+        Video = 7,
+        Boolean = 8
     }
 }

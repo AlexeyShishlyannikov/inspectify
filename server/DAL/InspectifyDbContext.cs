@@ -11,11 +11,6 @@ namespace Inspectify.DAL
         public DbSet<Team> Teams { get; set; }
         public DbSet<Person> Persons { get; set; }
         public DbSet<Invitation> Invitations { get; set; }
-        // Vehicles
-        public DbSet<Vehicle> Vehicles { get; set; }
-        public DbSet<VehicleModel> VehicleModels { get; set; }
-        public DbSet<VehicleMake> VehicleMarks { get; set; }
-        public DbSet<VehicleCompany> VehicleCompanies { get; set; }
         // Reports
         public DbSet<Report> Reports { get; set; }
         // Forms
@@ -28,10 +23,6 @@ namespace Inspectify.DAL
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            // Vehicle to Companies
-            builder.Entity<VehicleCompany>().HasKey(vc => new { vc.VehicleId, vc.CompanyId });
-            builder.Entity<VehicleCompany>().HasOne(vc => vc.Company).WithMany(v => v.VehicleCompanies).HasForeignKey(vc => vc.CompanyId);
-            builder.Entity<VehicleCompany>().HasOne(vc => vc.Vehicle).WithMany(v => v.VehicleCompanies).HasForeignKey(vc => vc.VehicleId);
             // Report to Companies
             builder.Entity<ReportCompany>().HasKey(vc => new { vc.ReportId, vc.CompanyId });
             builder.Entity<ReportCompany>().HasOne(vc => vc.Company).WithMany(v => v.ReportCompanies).HasForeignKey(vc => vc.CompanyId);

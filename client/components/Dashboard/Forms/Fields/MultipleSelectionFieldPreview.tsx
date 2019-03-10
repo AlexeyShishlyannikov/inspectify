@@ -68,7 +68,7 @@ class MultipleSelectionFieldPreview extends React.Component<IMultipleSelectionFi
     getCheckboxTemplate = () => {
         return <FormControl className="input-field-preview">
             <FormLabel htmlFor="name">{this.props.field.name}</FormLabel>
-            <FormGroup>
+            <FormGroup style={{display: 'flex', flexDirection: 'row'}}>
                 {this.props.field.options.map(option =>
                     <FormControlLabel
                         key={option.id}

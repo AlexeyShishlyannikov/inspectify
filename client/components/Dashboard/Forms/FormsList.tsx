@@ -38,19 +38,17 @@ class FormsList extends React.Component<IFormsListProps & RouteProps> {
         } else {
             Content = () => <List>
                 {this.props.forms.map(form => (
-                    <ListItem key={form.id} dense>
-                        <ListItemText
-                            primary={<Typography variant="title">{form.name}</Typography>}
-                            secondary={form.description && <span>Description: {form.description}</span>}
-                        />
-                        <ListItemSecondaryAction>
-                            <Link to={'/dashboard/forms/view/' + form.id}>
-                                <IconButton aria-label="select" color="primary" onClick={() => this.props.selectForm(form)}>
-                                    <SelectIcon />
-                                </IconButton>
-                            </Link>
-                        </ListItemSecondaryAction>
-                    </ListItem>
+                    <Link style={{textDecoration: 'none'}} key={form.id} to={'/dashboard/forms/view/' + form.id}>
+                        <ListItem dense button onClick={() => this.props.selectForm(form)}>
+                            <ListItemText
+                                primary={<Typography variant="title">{form.name}</Typography>}
+                                secondary={form.description && <span>Description: {form.description}</span>}
+                            />
+                            <ListItemSecondaryAction>
+                                <SelectIcon />
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                    </Link>
                 ))}
             </List>;
         }

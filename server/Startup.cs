@@ -39,7 +39,6 @@ namespace Inspectify
             // Providers
             services.AddScoped<ICompaniesProvider, CompaniesProvider>();
             services.AddScoped<ITeamProvider, TeamProvider>();
-            services.AddScoped<IVehicleProvider, VehicleProvider>();
             services.AddScoped<IReportsProvider, ReportProvider>();
             services.AddScoped<IFormProvider, FormProvider>();
             services.AddScoped<IInvitationProvider, InvitationProvider>();

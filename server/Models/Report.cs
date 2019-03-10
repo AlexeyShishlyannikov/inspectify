@@ -12,9 +12,6 @@ namespace Inspectify.Models
         [MaxLength(256)]
         public string Name { get; set; }
         [Required]
-        public string VehicleId { get; set; }
-        public Vehicle Vehicle { get; set; }
-        [Required]
         public string FormId { get; set; }
         public Form Form { get; set; }
         [Required]

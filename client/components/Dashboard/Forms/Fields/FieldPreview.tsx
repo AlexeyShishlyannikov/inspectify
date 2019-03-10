@@ -8,10 +8,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import React = require('react');
 
 import { FieldType, FormUtil, IField } from '../../../../models/form';
-import InputFieldPreview from './InputFieldPreview';
-import SingleSelectionFieldPreview from './SingleSelectionFieldPreview';
-import MultipleSelectionFieldPreview from './MultipleSelectionFieldPreview';
-import MediaFieldPreview from './MediaFieldPreview';
+import { FieldPreviewBuilder } from './FieldPreviewBuilder';
 
 interface IFieldPreviewProps {
     field: IField;
@@ -36,21 +33,7 @@ class FieldPreview extends React.Component<IFieldPreviewProps> {
         }
     };
 
-    getFieldPreview = () => {
-        switch (this.props.field.type) {
-            case FieldType.Input:
-            case FieldType.Textarea:
-                return <InputFieldPreview field={this.props.field} />;
-            case FieldType.Radio:
-            case FieldType.Select:
-                return <SingleSelectionFieldPreview field={this.props.field} />;
-            case FieldType.Multiselect:
-            case FieldType.Checkbox:
-                return <MultipleSelectionFieldPreview field={this.props.field} />;
-            case FieldType.Photo:
-                return <MediaFieldPreview field={this.props.field} />;
-        }
-    }
+    
 
     render() {
         return (
@@ -65,7 +48,7 @@ class FieldPreview extends React.Component<IFieldPreviewProps> {
                         </Button>
                     } />
                 <CardContent className="field-preview-content">
-                    {this.getFieldPreview()}
+                    <FieldPreviewBuilder field={this.props.field} />
                 </CardContent>
             </Card>
         );

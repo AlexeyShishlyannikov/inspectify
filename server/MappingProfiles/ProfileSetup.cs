@@ -11,25 +11,11 @@ namespace Inspectify.MappingProfiles
     {
         public MappingProfile()
         {
-            ConfigureVehicleMappings();
             ConfigureTeamMappings();
             ConfigureCompanyMappings();
             ConfigurePersonMappings();
             ConfigureReportMappings();
             ConfigureFormMappings();
-        }
-
-        public void ConfigureVehicleMappings()
-        {
-            CreateMap<Vehicle, VehicleViewModel>();
-            CreateMap<VehicleViewModel, Vehicle>()
-                .ForMember(model => model.ModelId, opt => opt.MapFrom(viewModel => viewModel.Model.Id));
-
-            CreateMap<VehicleMake, VehicleMakeViewModel>();
-            CreateMap<VehicleMakeViewModel, VehicleMake>();
-
-            CreateMap<VehicleModel, VehicleModelViewModel>();
-            CreateMap<VehicleModelViewModel, VehicleModel>();
         }
 
         public void ConfigureTeamMappings()
@@ -45,7 +31,6 @@ namespace Inspectify.MappingProfiles
                 .ForMember(model => model.ApplicationUser, opt => opt.Ignore())
                 .ForMember(model => model.ApplicationUserId, opt => opt.Ignore())
                 .ForMember(model => model.Teams, opt => opt.Ignore())
-                .ForMember(model => model.VehicleCompanies, opt => opt.Ignore())
                 .ForMember(model => model.ReportCompanies, opt => opt.Ignore());
         }
 
