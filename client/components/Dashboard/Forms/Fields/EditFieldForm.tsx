@@ -6,12 +6,16 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import FormControl from '@material-ui/core/FormControl';
+import IconButton from '@material-ui/core/IconButton';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
-import { FieldType, IField, IOption } from '../../../../models/form';
-import React = require('react');
-import { IconButton } from '@material-ui/core';
+import Select from '@material-ui/core/Select';
+import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
+import React = require('react');
+
+import { FieldType, FormUtil, IField, IOption } from '../../../../models/form';
+import FieldOptionsForm from './FieldOptionsForm';
 
 interface IEditFieldFormProps {
     field?: IField;
@@ -26,6 +30,7 @@ interface IEditFieldFormState {
     type: FieldType;
     sortIndex: number;
     isRequired: boolean;
+    optionValue: string;
     options: IOption[];
 }
 
@@ -67,6 +72,21 @@ class EditFieldForm extends React.Component<IEditFieldFormProps, IEditFieldFormS
         }));
     };
 
+    handleTypeSelection = (prop: string) => (
+        event: React.ChangeEvent<HTMLSelectElement>
+    ): void => {
+        const value = +event.target.value;
+        this.setState(state => ({
+            ...state,
+            [prop]: value
+        }));
+    };
+
+    get showOptionsInput(): boolean {
+        const type = this.state.type;
+        return type === FieldType.Checkbox || type === FieldType.Multiselect || type === FieldType.Radio || type === FieldType.Select;
+    }
+
     isButtonDisabled = () => !this.state.name;
 
     getSubmitButton = () => {
@@ -78,6 +98,10 @@ class EditFieldForm extends React.Component<IEditFieldFormProps, IEditFieldFormS
             Save
         </Button>;
     };
+
+    getTypeSelectionOption = (type: FieldType) => {
+        return <option value={type}>{FormUtil.getInputString(type)}</option>
+    }
 
     render() {
         return (
@@ -107,6 +131,26 @@ class EditFieldForm extends React.Component<IEditFieldFormProps, IEditFieldFormS
                                 onChange={this.handleChange('description')}
                             />
                         </FormControl>
+                        <FormControl className="form-view-form-input">
+                            <InputLabel htmlFor="age-native-simple">Type</InputLabel>
+                            <Select
+                                native
+                                value={this.state.type}
+                                onChange={this.handleTypeSelection('type')}
+                            >
+                                {this.getTypeSelectionOption(FieldType.Input)}
+                                {this.getTypeSelectionOption(FieldType.Textarea)}
+                                {this.getTypeSelectionOption(FieldType.Radio)}
+                                {this.getTypeSelectionOption(FieldType.Select)}
+                                {this.getTypeSelectionOption(FieldType.Multiselect)}
+                                {this.getTypeSelectionOption(FieldType.Checkbox)}
+                                {this.getTypeSelectionOption(FieldType.Photo)}
+                            </Select>
+                        </FormControl>
+                        {this.showOptionsInput && <div>
+                            <Typography variant="subtitle1">Add options</Typography>
+                            <FieldOptionsForm options={this.state.options} onChange={(options: IOption[]) =>{ console.log(options); this.setState({ options: options })}} />
+                        </div>}
                     </CardContent>
                     <CardActions>
                         {this.getSubmitButton()}

@@ -1,17 +1,17 @@
 import './FieldPreview.scss';
 
-import { IconButton, Avatar, Button } from '@material-ui/core';
+import { Avatar, Button } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
-import FormControl from '@material-ui/core/FormControl';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
 import EditIcon from '@material-ui/icons/Edit';
 import React = require('react');
 
-import { FieldType, IField } from '../../../../models/form';
+import { FieldType, FormUtil, IField } from '../../../../models/form';
+import InputFieldPreview from './InputFieldPreview';
+import SingleSelectionFieldPreview from './SingleSelectionFieldPreview';
+import MultipleSelectionFieldPreview from './MultipleSelectionFieldPreview';
+import MediaFieldPreview from './MediaFieldPreview';
 
 interface IFieldPreviewProps {
     field: IField;
@@ -36,24 +36,36 @@ class FieldPreview extends React.Component<IFieldPreviewProps> {
         }
     };
 
+    getFieldPreview = () => {
+        switch (this.props.field.type) {
+            case FieldType.Input:
+            case FieldType.Textarea:
+                return <InputFieldPreview field={this.props.field} />;
+            case FieldType.Radio:
+            case FieldType.Select:
+                return <SingleSelectionFieldPreview field={this.props.field} />;
+            case FieldType.Multiselect:
+            case FieldType.Checkbox:
+                return <MultipleSelectionFieldPreview field={this.props.field} />;
+            case FieldType.Photo:
+                return <MediaFieldPreview field={this.props.field} />;
+        }
+    }
+
     render() {
         return (
             <Card>
                 <CardHeader
-                    avatar={
-                        <Avatar aria-label="index">
-                            {this.props.field.sortIndex}
-                        </Avatar>
-                    }
+                    avatar={<Avatar aria-label="index">{this.props.field.sortIndex}</Avatar>}
                     title={this.props.field.name}
-                    subheader={this.props.field.type}
+                    subheader={FormUtil.getInputString(this.props.field.type)}
                     action={
                         this.props.onEditClick && <Button color="secondary" onClick={this.editCallback} variant="text">
                             Edit <EditIcon />
                         </Button>
                     } />
-                <CardContent className="form-view-form-content">
-                    {JSON.stringify(this.props.field)}
+                <CardContent className="field-preview-content">
+                    {this.getFieldPreview()}
                 </CardContent>
             </Card>
         );

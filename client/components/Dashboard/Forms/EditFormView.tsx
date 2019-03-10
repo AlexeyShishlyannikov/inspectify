@@ -2,20 +2,19 @@ import './EditFormView.scss';
 
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
-import { ApplicationState } from '../../../store';
-import { FormThunks } from '../../../store/form/formThunks';
 import * as React from 'react';
 import { connect } from 'react-redux';
-
-import { IForm, IField, FieldType } from '../../../models/form';
 import { RouteComponentProps, RouteProps } from 'react-router-dom';
+
+import { IField, IForm } from '../../../models/form';
+import { ApplicationState } from '../../../store';
+import { FormThunks } from '../../../store/form/formThunks';
 import EditFieldForm from './Fields/EditFieldForm';
 import FieldPreview from './Fields/FieldPreview';
 
