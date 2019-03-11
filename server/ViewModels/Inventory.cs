@@ -19,6 +19,7 @@ namespace Inspectify.ViewModels
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public TemplateViewModel Template { get; set; }
         public List<ItemValueViewModel> Values { get; set; }
     }
 
