@@ -3,14 +3,16 @@ using System;
 using Inspectify.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Inspectify.Migrations
 {
     [DbContext(typeof(InspectifyDbContext))]
-    partial class InspectifyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190310191732_Removed vehicle concept from the db models")]
+    partial class Removedvehicleconceptfromthedbmodels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -165,43 +167,6 @@ namespace Inspectify.Migrations
                     b.ToTable("Invitations");
                 });
 
-            modelBuilder.Entity("Inspectify.Models.Item", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name");
-
-                    b.Property<string>("TemplateId")
-                        .IsRequired();
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TemplateId");
-
-                    b.ToTable("Items");
-                });
-
-            modelBuilder.Entity("Inspectify.Models.ItemValue", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("ItemId");
-
-                    b.Property<int>("PropertyId");
-
-                    b.Property<string>("Value");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ItemId");
-
-                    b.HasIndex("PropertyId");
-
-                    b.ToTable("ItemValues");
-                });
-
             modelBuilder.Entity("Inspectify.Models.Option", b =>
                 {
                     b.Property<string>("Id")
@@ -252,22 +217,6 @@ namespace Inspectify.Migrations
                     b.HasIndex("TeamId");
 
                     b.ToTable("Persons");
-                });
-
-            modelBuilder.Entity("Inspectify.Models.Property", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name");
-
-                    b.Property<string>("TemplateId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TemplateId");
-
-                    b.ToTable("Properties");
                 });
 
             modelBuilder.Entity("Inspectify.Models.Report", b =>
@@ -343,23 +292,6 @@ namespace Inspectify.Migrations
                     b.HasIndex("CompanyId");
 
                     b.ToTable("Teams");
-                });
-
-            modelBuilder.Entity("Inspectify.Models.Template", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("CompanyId")
-                        .IsRequired();
-
-                    b.Property<string>("Name");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("Templates");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -500,26 +432,6 @@ namespace Inspectify.Migrations
                         .HasForeignKey("CompanyId");
                 });
 
-            modelBuilder.Entity("Inspectify.Models.Item", b =>
-                {
-                    b.HasOne("Inspectify.Models.Template", "Template")
-                        .WithMany("Items")
-                        .HasForeignKey("TemplateId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Inspectify.Models.ItemValue", b =>
-                {
-                    b.HasOne("Inspectify.Models.Item", "Item")
-                        .WithMany("Values")
-                        .HasForeignKey("ItemId");
-
-                    b.HasOne("Inspectify.Models.Property", "Property")
-                        .WithMany()
-                        .HasForeignKey("PropertyId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("Inspectify.Models.Option", b =>
                 {
                     b.HasOne("Inspectify.Models.Field", "Field")
@@ -543,13 +455,6 @@ namespace Inspectify.Migrations
                     b.HasOne("Inspectify.Models.Team", "Team")
                         .WithMany("Persons")
                         .HasForeignKey("TeamId");
-                });
-
-            modelBuilder.Entity("Inspectify.Models.Property", b =>
-                {
-                    b.HasOne("Inspectify.Models.Template", "Template")
-                        .WithMany("Properties")
-                        .HasForeignKey("TemplateId");
                 });
 
             modelBuilder.Entity("Inspectify.Models.Report", b =>
@@ -595,14 +500,6 @@ namespace Inspectify.Migrations
                 {
                     b.HasOne("Inspectify.Models.Company", "Company")
                         .WithMany("Teams")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Inspectify.Models.Template", b =>
-                {
-                    b.HasOne("Inspectify.Models.Company", "Comapany")
-                        .WithMany()
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

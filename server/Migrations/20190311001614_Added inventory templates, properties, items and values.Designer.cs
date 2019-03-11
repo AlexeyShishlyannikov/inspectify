@@ -3,14 +3,16 @@ using System;
 using Inspectify.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Inspectify.Migrations
 {
     [DbContext(typeof(InspectifyDbContext))]
-    partial class InspectifyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190311001614_Added inventory templates, properties, items and values")]
+    partial class Addedinventorytemplatespropertiesitemsandvalues
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -1,0 +1,31 @@
+using System.Collections.Generic;
+
+namespace Inspectify.ViewModels
+{
+    public class TemplateViewModel
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public List<PropertyViewModel> Properties { get; set; }
+    }
+
+    public class PropertyViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
+
+    public class ItemViewModel
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public List<ItemValueViewModel> Values { get; set; }
+    }
+
+    public class ItemValueViewModel
+    {
+        public int Id { get; set; }
+        public PropertyViewModel Property { get; set; }
+        public string Value { get; set; }
+    }
+}
