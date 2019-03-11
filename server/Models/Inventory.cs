@@ -18,8 +18,16 @@ namespace Inspectify.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public PropertyType type { get; set; }
         public string TemplateId { get; set; }
         public Template Template { get; set; }
+    }
+
+    public enum PropertyType
+    {
+        String,
+        Number,
+        Photo
     }
 
     public class Item

@@ -44,6 +44,7 @@ namespace Inspectify
             services.AddScoped<IInvitationProvider, InvitationProvider>();
             services.AddScoped<IEmailProvider, EmailProvider>();
             services.AddScoped<IUsersProvider, UsersProvider>();
+            services.AddScoped<IInventoryProvider, InventoryProvider>();
             // Cors policy
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
                 {

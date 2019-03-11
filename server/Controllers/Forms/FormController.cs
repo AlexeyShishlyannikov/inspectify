@@ -42,6 +42,7 @@ namespace Inspectify.Controllers
         public async Task<IActionResult> GetForm([FromRoute] string id)
         {
             var form = await formProvider.GetForm(id);
+            if (form == null) return NotFound("Form not found");
             var formViewModel = mapper.Map<Form, FormViewModel>(form);
             return Ok(formViewModel);
         }
@@ -52,7 +53,7 @@ namespace Inspectify.Controllers
         {
             var companyId = this.User.Claims.SingleOrDefault(c => c.Type == "companyId").Value;
             var forms = await formProvider.SearchForms(companyId, searchTerm);
-            var formViewModelList = forms.Select(f => mapper.Map<Form, FormViewModel>(f));
+            var formViewModelList = mapper.Map<List<FormViewModel>>(forms);
             return Ok(formViewModelList);
         }
 
