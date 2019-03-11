@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Inspectify.Models;
 
 namespace Inspectify.ViewModels
 {
@@ -12,6 +13,7 @@ namespace Inspectify.ViewModels
     public class PropertyViewModel
     {
         public int Id { get; set; }
+        public PropertyType type { get; set; }
         public string Name { get; set; }
     }
 
@@ -25,7 +27,7 @@ namespace Inspectify.ViewModels
 
     public class ItemValueViewModel
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public PropertyViewModel Property { get; set; }
         public string Value { get; set; }
     }

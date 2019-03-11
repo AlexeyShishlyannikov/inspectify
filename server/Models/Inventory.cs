@@ -10,7 +10,7 @@ namespace Inspectify.Models
         public List<Property> Properties { get; set; }
         [Required]
         public string CompanyId { get; set; }
-        public Company Comapany { get; set; }
+        public Company Company { get; set; }
         public List<Item> Items { get; set; }
     }
 
@@ -19,6 +19,7 @@ namespace Inspectify.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public PropertyType type { get; set; }
+        [Required]
         public string TemplateId { get; set; }
         public Template Template { get; set; }
     }
@@ -42,10 +43,12 @@ namespace Inspectify.Models
 
     public class ItemValue
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public string Value { get; set; }
+        [Required]
         public string ItemId { get; set; }
         public Item Item { get; set; }
+        [Required]
         public int PropertyId { get; set; }
         public Property Property { get; set; }
     }

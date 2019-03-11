@@ -16,6 +16,7 @@ namespace Inspectify.MappingProfiles
             ConfigurePersonMappings();
             ConfigureReportMappings();
             ConfigureFormMappings();
+            ConfigureInventoryMappings();
         }
 
         public void ConfigureTeamMappings()
@@ -88,6 +89,49 @@ namespace Inspectify.MappingProfiles
                     return context.Mapper.Map<Option>(srcOption);
                 }
                 return context.Mapper.Map(srcOption, optionsMap.SingleOrDefault(c => c.Key == srcOption.Id).Value);
+            }).ToList();
+        }
+
+        public void ConfigureInventoryMappings()
+        {
+            CreateMap<Template, TemplateViewModel>();
+            CreateMap<TemplateViewModel, Template>()
+                .ForMember(t => t.Items, opt => opt.Ignore())
+                .ForMember(t => t.CompanyId, opt => opt.Ignore())
+                .ForMember(t => t.Company, opt => opt.Ignore())
+                .ForMember(t => t.Properties, opt => opt.Ignore());
+
+            CreateMap<Property, PropertyViewModel>();
+            CreateMap<PropertyViewModel, Property>()
+                .ForMember(p => p.TemplateId, opt => opt.Ignore())
+                .ForMember(p => p.Template, opt => opt.Ignore());
+
+            CreateMap<Item, ItemViewModel>();
+            CreateMap<ItemViewModel, Item>()
+                .BeforeMap((src, dest, context) => context.Items["ItemId"] = src.Id)
+                .ForMember(p => p.Template, opt => opt.Ignore())
+                .ForMember(i => i.TemplateId, opt => opt.MapFrom(src => src.Template.Id))
+                .ForMember(src => src.Values, 
+                    opt => opt.MapFrom((src, dest, i, context) => GetUpdatedValues(src, dest, context))); // Childrens mapping
+
+            CreateMap<ItemValue, ItemValueViewModel>();
+            CreateMap<ItemValueViewModel, ItemValue>()
+                .ForMember(i => i.PropertyId, opt => opt.MapFrom(src => src.Property.Id))
+                .ForMember(p => p.Property, opt => opt.Ignore())
+                .ForMember(v => v.ItemId, opt => opt.MapFrom((src, dest, destMember, context) => (string)context.Items["ItemId"]))
+                .ForMember(v => v.Item, opt => opt.Ignore());
+        }
+
+        private List<ItemValue> GetUpdatedValues(ItemViewModel src, Item dest, ResolutionContext context)
+        {
+            var valuesMap = dest.Values.ToDictionary(v => v.Id, v => v);
+            return src.Values.Select(value =>
+            {
+                if (value.Id == null)
+                {
+                    return context.Mapper.Map<ItemValue>(value);
+                }
+                return context.Mapper.Map(value, valuesMap.SingleOrDefault(c => c.Key == value.Id).Value);
             }).ToList();
         }
     }
