@@ -3,7 +3,7 @@ import { ILoadedTokenAction } from "./authentication/authenticationActions";
 
 export namespace ActionsUtil {
     export interface DefaultType {
-        id?: string
+        id?: any
     };
 
     export const getSelectedValueUtil = <T extends DefaultType>(stateValue: T | undefined, actionValue: T): T => {

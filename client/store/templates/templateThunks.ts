@@ -1,5 +1,5 @@
 import { AppThunkAction } from '..';
-import { ITemplate } from '../../models/inventory';
+import { ITemplate, IProperty } from '../../models/inventory';
 import { ActionsUtil } from '../actionsUtil';
 import {
     IAddedTemplateAction,
@@ -8,6 +8,11 @@ import {
     ILoadedTemplatesAction,
     IUpdatedTemplateAction,
     IUpdateTemplateLoadingAction,
+    IUpdatePropertiesLoadingAction,
+    IAddedPropertyAction,
+    IUpdatedPropertyAction,
+    IDeletedPropertyAction,
+    ILoadedPropertiesAction,
 } from './templateActions';
 
 export namespace TemplatesThunks {
@@ -106,5 +111,83 @@ export namespace TemplatesThunks {
             }
         ).then(res => res.text())
             .then(result => dispatch({ type: "DELETED_TEMPLATE_ACTION", id: result }));
+    };
+
+    export const getProperties = (id: string): AppThunkAction<ILoadedPropertiesAction | IUpdatePropertiesLoadingAction> => async (dispatch, getState) => {
+        dispatch({
+            type: "UPDATE_PROPERTIES_LOADING_ACTION",
+            status: true
+        });
+        const token = await ActionsUtil.refreshToken(dispatch, getState());
+        fetch(
+            window.location.origin + '/api/Property/' + id,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'Application/json',
+                    'Authorization': 'Bearer ' + token.token
+                }
+            }
+        ).then(res => res.json())
+            .then(result => dispatch({ type: "LOADED_PROPERTIES_ACTION", properties: result }));
+    };
+
+    export const createProperty = (Property: IProperty): AppThunkAction<IAddedPropertyAction | IUpdatePropertiesLoadingAction> => async (dispatch, getState) => {
+        dispatch({
+            type: "UPDATE_PROPERTIES_LOADING_ACTION",
+            status: true
+        });
+        const token = await ActionsUtil.refreshToken(dispatch, getState());
+        fetch(
+            window.location.origin + '/api/Property',
+            {
+                body: JSON.stringify(Property),
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'Application/json',
+                    'Authorization': 'Bearer ' + token.token
+                }
+            }
+        ).then(res => res.json())
+            .then(result => dispatch({ type: "ADDED_PROPERTY_ACTION", property: result }));
+    };
+
+    export const updateProperty = (Property: IProperty): AppThunkAction<IUpdatedPropertyAction | IUpdatePropertiesLoadingAction> => async (dispatch, getState) => {
+        dispatch({
+            type: "UPDATE_PROPERTIES_LOADING_ACTION",
+            status: true
+        });
+        const token = await ActionsUtil.refreshToken(dispatch, getState());
+        fetch(
+            window.location.origin + '/api/Property',
+            {
+                body: JSON.stringify(Property),
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'Application/json',
+                    'Authorization': 'Bearer ' + token.token
+                }
+            }
+        ).then(res => res.json())
+            .then(result => dispatch({ type: "UPDATED_PROPERTY_ACTION", property: result }));
+    };
+
+    export const deleteProperty = (id: string): AppThunkAction<IDeletedPropertyAction | IUpdatePropertiesLoadingAction> => async (dispatch, getState) => {
+        dispatch({
+            type: "UPDATE_PROPERTIES_LOADING_ACTION",
+            status: true
+        });
+        const token = await ActionsUtil.refreshToken(dispatch, getState());
+        fetch(
+            window.location.origin + '/api/Property/' + id,
+            {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'Application/json',
+                    'Authorization': 'Bearer ' + token.token
+                },
+            }
+        ).then(res => res.text())
+            .then(result => dispatch({ type: "DELETED_PROPERTY_ACTION", id: +result }));
     };
 }
