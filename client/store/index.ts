@@ -13,6 +13,10 @@ import { teamsReducer } from './team/teamReducers';
 import { routerReducer, RouterState } from 'react-router-redux';
 import { IFormsState, FormsState } from './form/FormState';
 import { formsReducer } from './form/formReducers';
+import { IItemsState, ItemsState } from './items/itemsState';
+import { itemsReducer } from './items/itemsReducers';
+import { templatesReducer } from './templates/templateReducers';
+import { ITemplatesState, TemplatesState } from './templates/templateState';
 
 // The top-level state object
 export interface ApplicationState {
@@ -23,9 +27,9 @@ export interface ApplicationState {
     teams: ITeamsState;
     routing: RouterState;
     forms: IFormsState;
-    // vehicle:;
+    items: IItemsState;
+    templates: ITemplatesState;
     // report:;
-    // reportForm:;
 }
 
 // Whenever an action is dispatched, Redux will update each top-level application state property using
@@ -38,7 +42,9 @@ export const reducers = {
     people: peopleReducer,
     teams: teamsReducer,
     routing: routerReducer,
-    forms: formsReducer
+    forms: formsReducer,
+    items: itemsReducer,
+    templates: templatesReducer
 };
 
 // This type can be used as a hint on action creators so that its 'dispatch' and 'getState' params are
@@ -62,7 +68,9 @@ export function getInitialState(): ApplicationState {
         people: PeopleState.initialState(),
         teams: TeamsState.initialState(),
         forms: FormsState.initialState(),
-        routing: routingInitialState()
+        routing: routingInitialState(),
+        templates: TemplatesState.initialState(),
+        items: ItemsState.initialState()
     };
 }
 

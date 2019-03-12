@@ -18,6 +18,7 @@ namespace Inspectify.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public bool isRequired { get; set; }
         public PropertyType type { get; set; }
         [Required]
         public string TemplateId { get; set; }

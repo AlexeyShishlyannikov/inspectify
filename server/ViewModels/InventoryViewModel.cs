@@ -15,6 +15,7 @@ namespace Inspectify.ViewModels
         public int Id { get; set; }
         public PropertyType type { get; set; }
         public string Name { get; set; }
+        public bool IsRequired { get; set; }
     }
 
     public class ItemViewModel

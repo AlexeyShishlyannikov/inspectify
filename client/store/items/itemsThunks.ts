@@ -1,24 +1,24 @@
 import { AppThunkAction } from '..';
-import { IForm } from '../../models/Form';
+import { IItem } from '../../models/inventory';
 import {
-    IDeletedFormAction,
-    ILoadedFormsAction,
-    IUpdatedFormAction,
-    IUpdateFormLoadingAction,
-    ILoadedFormAction,
-    IAddedFormAction
-} from './FormActions';
+    IDeletedItemAction,
+    ILoadedItemsAction,
+    IUpdatedItemAction,
+    IUpdateItemLoadingAction,
+    ILoadedItemAction,
+    IAddedItemAction
+} from './ItemsActions';
 import { ActionsUtil } from '../actionsUtil';
 
-export namespace FormThunks {
-    export const searchForms = (searchTerm: string): AppThunkAction<ILoadedFormsAction | IUpdateFormLoadingAction> => async (dispatch, getState) => {
+export namespace ItemsThunks {
+    export const searchItems = (searchTerm: string): AppThunkAction<ILoadedItemsAction | IUpdateItemLoadingAction> => async (dispatch, getState) => {
         dispatch({
-            type: "UPDATE_FORMS_LOADING_ACTION",
+            type: "UPDATE_ITEMS_LOADING_ACTION",
             status: true
         });
         const token = await ActionsUtil.refreshToken(dispatch, getState());
         fetch(
-            window.location.origin + '/api/form?searchTerm=' + searchTerm,
+            window.location.origin + '/api/item?searchTerm=' + searchTerm,
             {
                 method: 'GET',
                 headers: {
@@ -27,17 +27,17 @@ export namespace FormThunks {
                 }
             }
         ).then(res => res.json())
-            .then(result => dispatch({ type: "LOADED_FORMS_ACTION", forms: result }));
+            .then(result => dispatch({ type: "LOADED_ITEMS_ACTION", items: result }));
     };
 
-    export const getForm = (id: string): AppThunkAction<ILoadedFormAction | IUpdateFormLoadingAction> => async (dispatch, getState) => {
+    export const getItem = (id: string): AppThunkAction<ILoadedItemAction | IUpdateItemLoadingAction> => async (dispatch, getState) => {
         dispatch({
-            type: "UPDATE_FORMS_LOADING_ACTION",
+            type: "UPDATE_ITEMS_LOADING_ACTION",
             status: true
         });
         const token = await ActionsUtil.refreshToken(dispatch, getState());
         fetch(
-            window.location.origin + '/api/form/' + id,
+            window.location.origin + '/api/item/' + id,
             {
                 method: 'GET',
                 headers: {
@@ -46,19 +46,19 @@ export namespace FormThunks {
                 }
             }
         ).then(res => res.json())
-            .then(result => dispatch({ type: "LOADED_FORM_ACTION", form: result }));
+            .then(result => dispatch({ type: "LOADED_ITEM_ACTION", item: result }));
     };
 
-    export const createForm = (form: IForm): AppThunkAction<IAddedFormAction | IUpdateFormLoadingAction> => async (dispatch, getState) => {
+    export const createItem = (item: IItem): AppThunkAction<IAddedItemAction | IUpdateItemLoadingAction> => async (dispatch, getState) => {
         dispatch({
-            type: "UPDATE_FORMS_LOADING_ACTION",
+            type: "UPDATE_ITEMS_LOADING_ACTION",
             status: true
         });
         const token = await ActionsUtil.refreshToken(dispatch, getState());
         fetch(
-            window.location.origin + '/api/form',
+            window.location.origin + '/api/item',
             {
-                body: JSON.stringify(form),
+                body: JSON.stringify(item),
                 method: 'POST',
                 headers: {
                     'Content-Type': 'Application/json',
@@ -66,19 +66,19 @@ export namespace FormThunks {
                 }
             }
         ).then(res => res.json())
-            .then(result => dispatch({ type: "ADDED_FORM_ACTION", form: result }));
+            .then(result => dispatch({ type: "ADDED_ITEM_ACTION", item: result }));
     };
 
-    export const updateForm = (form: IForm): AppThunkAction<IUpdatedFormAction | IUpdateFormLoadingAction> => async (dispatch, getState) => {
+    export const updateItem = (item: IItem): AppThunkAction<IUpdatedItemAction | IUpdateItemLoadingAction> => async (dispatch, getState) => {
         dispatch({
-            type: "UPDATE_FORMS_LOADING_ACTION",
+            type: "UPDATE_ITEMS_LOADING_ACTION",
             status: true
         });
         const token = await ActionsUtil.refreshToken(dispatch, getState());
         fetch(
-            window.location.origin + '/api/form',
+            window.location.origin + '/api/item',
             {
-                body: JSON.stringify(form),
+                body: JSON.stringify(item),
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'Application/json',
@@ -86,17 +86,17 @@ export namespace FormThunks {
                 }
             }
         ).then(res => res.json())
-            .then(result => dispatch({ type: "UPDATED_FORM_ACTION", form: result }));
+            .then(result => dispatch({ type: "UPDATED_ITEM_ACTION", item: result }));
     };
 
-    export const deleteForm = (id: string): AppThunkAction<IDeletedFormAction | IUpdateFormLoadingAction> => async (dispatch, getState) => {
+    export const deleteItem = (id: string): AppThunkAction<IDeletedItemAction | IUpdateItemLoadingAction> => async (dispatch, getState) => {
         dispatch({
-            type: "UPDATE_FORMS_LOADING_ACTION",
+            type: "UPDATE_ITEMS_LOADING_ACTION",
             status: true
         });
         const token = await ActionsUtil.refreshToken(dispatch, getState());
         fetch(
-            window.location.origin + '/api/form/' + id,
+            window.location.origin + '/api/item/' + id,
             {
                 method: 'DELETE',
                 headers: {
@@ -105,6 +105,6 @@ export namespace FormThunks {
                 },
             }
         ).then(res => res.text())
-            .then(result => dispatch({ type: "DELETED_FORM_ACTION", id: result }));
+            .then(result => dispatch({ type: "DELETED_ITEM_ACTION", id: result }));
     };
 }
