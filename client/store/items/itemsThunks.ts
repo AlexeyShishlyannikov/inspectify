@@ -17,8 +17,10 @@ export namespace ItemsThunks {
             status: true
         });
         const token = await ActionsUtil.refreshToken(dispatch, getState());
+        const selectedTemplate = getState().templates.selectedTemplate;
+        const templateId = selectedTemplate ? selectedTemplate.id : undefined;
         fetch(
-            window.location.origin + '/api/inventory/items?searchTerm=' + searchTerm,
+            window.location.origin + '/api/inventory/items?searchTerm=' + searchTerm + '&templateId=' + templateId,
             {
                 method: 'GET',
                 headers: {
