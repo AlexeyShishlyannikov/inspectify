@@ -23,7 +23,7 @@ export namespace TemplatesThunks {
         });
         const token = await ActionsUtil.refreshToken(dispatch, getState());
         fetch(
-            window.location.origin + '/api/template?searchTerm=' + searchTerm,
+            window.location.origin + '/api/inventory/templates?searchTerm=' + searchTerm,
             {
                 method: 'GET',
                 headers: {
@@ -42,7 +42,7 @@ export namespace TemplatesThunks {
         });
         const token = await ActionsUtil.refreshToken(dispatch, getState());
         fetch(
-            window.location.origin + '/api/template/' + id,
+            window.location.origin + '/api/inventory/templates/' + id,
             {
                 method: 'GET',
                 headers: {
@@ -61,7 +61,7 @@ export namespace TemplatesThunks {
         });
         const token = await ActionsUtil.refreshToken(dispatch, getState());
         fetch(
-            window.location.origin + '/api/template',
+            window.location.origin + '/api/inventory/templates',
             {
                 body: JSON.stringify(template),
                 method: 'POST',
@@ -81,7 +81,7 @@ export namespace TemplatesThunks {
         });
         const token = await ActionsUtil.refreshToken(dispatch, getState());
         fetch(
-            window.location.origin + '/api/template',
+            window.location.origin + '/api/inventory/templates',
             {
                 body: JSON.stringify(template),
                 method: 'PUT',
@@ -101,7 +101,7 @@ export namespace TemplatesThunks {
         });
         const token = await ActionsUtil.refreshToken(dispatch, getState());
         fetch(
-            window.location.origin + '/api/template/' + id,
+            window.location.origin + '/api/inventory/templates/' + id,
             {
                 method: 'DELETE',
                 headers: {
@@ -119,8 +119,10 @@ export namespace TemplatesThunks {
             status: true
         });
         const token = await ActionsUtil.refreshToken(dispatch, getState());
+        const selectedTemplate = getState().templates.selectedTemplate;
+        const templateId = selectedTemplate ? selectedTemplate.id : undefined;
         fetch(
-            window.location.origin + '/api/Property/' + id,
+            window.location.origin + '/api/inventory/templates/'+ templateId + 'properties/' + id,
             {
                 method: 'GET',
                 headers: {
@@ -138,8 +140,10 @@ export namespace TemplatesThunks {
             status: true
         });
         const token = await ActionsUtil.refreshToken(dispatch, getState());
+        const selectedTemplate = getState().templates.selectedTemplate;
+        const templateId = selectedTemplate ? selectedTemplate.id : undefined;
         fetch(
-            window.location.origin + '/api/Property',
+            window.location.origin + '/api/inventory/templates/'+ templateId + 'properties',
             {
                 body: JSON.stringify(Property),
                 method: 'POST',
@@ -158,8 +162,10 @@ export namespace TemplatesThunks {
             status: true
         });
         const token = await ActionsUtil.refreshToken(dispatch, getState());
+        const selectedTemplate = getState().templates.selectedTemplate;
+        const templateId = selectedTemplate ? selectedTemplate.id : undefined;
         fetch(
-            window.location.origin + '/api/Property',
+            window.location.origin + '/api/inventory/templates/'+ templateId + 'properties',
             {
                 body: JSON.stringify(Property),
                 method: 'PUT',
@@ -178,8 +184,10 @@ export namespace TemplatesThunks {
             status: true
         });
         const token = await ActionsUtil.refreshToken(dispatch, getState());
+        const selectedTemplate = getState().templates.selectedTemplate;
+        const templateId = selectedTemplate ? selectedTemplate.id : undefined;
         fetch(
-            window.location.origin + '/api/Property/' + id,
+            window.location.origin + '/api/inventory/templates/'+ templateId + 'properties/' + id,
             {
                 method: 'DELETE',
                 headers: {

@@ -11,10 +11,10 @@ export type TemplateAction =
     | IDeletedTemplateAction
     | IUpdateTemplateLoadingAction
     | IUpdatePropertiesLoadingAction
-| ILoadedPropertiesAction
-| IAddedPropertyAction
-| IUpdatedPropertyAction
-| IDeletedPropertyAction
+    | ILoadedPropertiesAction
+    | IAddedPropertyAction
+    | IUpdatedPropertyAction
+    | IDeletedPropertyAction
 // | ISwitchEditTemplateModeAction
 
 export type SELECT_TEMPLATE_ACTION = "SELECT_TEMPLATE_ACTION";

@@ -18,7 +18,7 @@ export namespace ItemsThunks {
         });
         const token = await ActionsUtil.refreshToken(dispatch, getState());
         fetch(
-            window.location.origin + '/api/item?searchTerm=' + searchTerm,
+            window.location.origin + '/api/inventory/items?searchTerm=' + searchTerm,
             {
                 method: 'GET',
                 headers: {
@@ -37,7 +37,7 @@ export namespace ItemsThunks {
         });
         const token = await ActionsUtil.refreshToken(dispatch, getState());
         fetch(
-            window.location.origin + '/api/item/' + id,
+            window.location.origin + '/api/inventory/items/' + id,
             {
                 method: 'GET',
                 headers: {
@@ -56,7 +56,7 @@ export namespace ItemsThunks {
         });
         const token = await ActionsUtil.refreshToken(dispatch, getState());
         fetch(
-            window.location.origin + '/api/item',
+            window.location.origin + '/api/inventory/items',
             {
                 body: JSON.stringify(item),
                 method: 'POST',
@@ -76,7 +76,7 @@ export namespace ItemsThunks {
         });
         const token = await ActionsUtil.refreshToken(dispatch, getState());
         fetch(
-            window.location.origin + '/api/item',
+            window.location.origin + '/api/inventory/items',
             {
                 body: JSON.stringify(item),
                 method: 'PUT',
@@ -96,7 +96,7 @@ export namespace ItemsThunks {
         });
         const token = await ActionsUtil.refreshToken(dispatch, getState());
         fetch(
-            window.location.origin + '/api/item/' + id,
+            window.location.origin + '/api/inventory/items/' + id,
             {
                 method: 'DELETE',
                 headers: {
