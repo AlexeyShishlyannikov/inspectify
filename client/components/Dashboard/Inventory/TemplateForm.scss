@@ -1,0 +1,18 @@
+.form-view-form-card {
+    display: flex;
+    width: 90%;
+    .form-view-form {
+        width: 100%;
+        .form-view-form-content {
+            display: flex;
+            flex-direction: column;
+            .form-view-form-input {
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+        }
+        .form-view-form-panel {
+            margin-top: 10px;
+        }
+    }
+}

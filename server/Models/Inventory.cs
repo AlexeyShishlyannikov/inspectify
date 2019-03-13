@@ -7,6 +7,7 @@ namespace Inspectify.Models
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
         public List<Property> Properties { get; set; }
         [Required]
         public string CompanyId { get; set; }
@@ -19,6 +20,7 @@ namespace Inspectify.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public bool isRequired { get; set; }
+        public int SortIndex { get; set; }
         public PropertyType type { get; set; }
         [Required]
         public string TemplateId { get; set; }

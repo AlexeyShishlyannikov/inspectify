@@ -1,13 +1,15 @@
 export interface ITemplate {
     id?: string;
     name: string;
+    description: string;
     properties: IProperty[];
 }
 
 export interface IProperty {
     id?: number;
-    type: PropertyType;
     name: string;
+    type: PropertyType;
+    sortIndex: number;
 }
 
 export interface IItem {

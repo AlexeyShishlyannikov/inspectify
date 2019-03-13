@@ -7,14 +7,16 @@ namespace Inspectify.ViewModels
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
         public List<PropertyViewModel> Properties { get; set; }
     }
 
     public class PropertyViewModel
     {
         public int Id { get; set; }
-        public PropertyType type { get; set; }
         public string Name { get; set; }
+        public int SortIndex { get; set; }
+        public PropertyType type { get; set; }
         public bool IsRequired { get; set; }
     }
 
