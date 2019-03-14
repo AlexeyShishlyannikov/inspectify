@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 
 import { ITemplate } from '../../../models/inventory';
 import { ApplicationState } from '../../../store';
-import TemplatesList from './TemplatesList';
-import { TemplatesThunks } from 'client/store/templates/templateThunks';
+import TemplatesList from './Templates/TemplatesList';
+import { TemplatesThunks } from '../../../store/templates/templateThunks';
 
 interface IInventoryProps {
     selectedTemplate?: ITemplate;

@@ -46,6 +46,7 @@ namespace Inspectify.BusinessLayer
         public async Task<Template> GetTemplate(string id)
         {
             return await dbContext.Templates
+                .Include(t => t.Properties)
                 .SingleOrDefaultAsync(t => t.Id == id);
         }
 
@@ -83,6 +84,8 @@ namespace Inspectify.BusinessLayer
         public async Task<Item> GetItem(string id)
         {
             return await dbContext.Items
+                .Include(i => i.Template)
+                .Include(i => i.Values)
                 .SingleOrDefaultAsync(t => t.Id == id);
         }
 

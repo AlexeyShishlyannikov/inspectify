@@ -30,3 +30,14 @@ export enum PropertyType {
     Number,
     Photo
 }
+
+export const getPropertyTypeString = (type: PropertyType) => {
+    switch (type) {
+        case PropertyType.Number:
+            return 'Number';
+        case PropertyType.String:
+            return 'Text';
+        case PropertyType.Photo:
+            return 'Photo';
+    }
+};

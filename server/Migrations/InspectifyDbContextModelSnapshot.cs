@@ -262,8 +262,12 @@ namespace Inspectify.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<int>("SortIndex");
+
                     b.Property<string>("TemplateId")
                         .IsRequired();
+
+                    b.Property<bool>("isRequired");
 
                     b.Property<int>("type");
 
@@ -356,6 +360,8 @@ namespace Inspectify.Migrations
 
                     b.Property<string>("CompanyId")
                         .IsRequired();
+
+                    b.Property<string>("Description");
 
                     b.Property<string>("Name");
 

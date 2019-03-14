@@ -25,7 +25,7 @@ export const templatesReducer: Reducer<TemplatesState> = (
             return new TemplatesState({
                 selectedTemplate: action.selectedTemplate,
                 templates: state.templates,
-                properties: state.properties,
+                properties: action.selectedTemplate ? state.properties : [],
                 isLoading: false,
                 isPropertiesLoading: false,
                 errorMessage: undefined
@@ -34,9 +34,9 @@ export const templatesReducer: Reducer<TemplatesState> = (
             return new TemplatesState({
                 selectedTemplate: action.template,
                 templates: state.templates,
-                properties: state.properties,
+                properties: action.template.properties,
                 isLoading: false,
-                isPropertiesLoading: state.isPropertiesLoading,
+                isPropertiesLoading: false,
                 errorMessage: undefined
             });
         case 'ADDED_TEMPLATE_ACTION':

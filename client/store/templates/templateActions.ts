@@ -43,7 +43,7 @@ export interface ILoadedTemplatesAction extends Action {
 
 export interface ISelectTemplateAction extends Action {
     type: SELECT_TEMPLATE_ACTION;
-    selectedTemplate: ITemplate;
+    selectedTemplate?: ITemplate;
 }
 
 export interface IAddedTemplateAction extends Action {

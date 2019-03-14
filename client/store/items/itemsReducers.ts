@@ -1,7 +1,7 @@
 import { Action, Reducer } from 'redux';
 
 import { ItemAction } from './ItemsActions';
-import { ItemsState } from './ItemsState';
+import { ItemsState } from './itemsState';
 import { ActionsUtil } from '../actionsUtil';
 
 export const itemsReducer: Reducer<ItemsState> = (

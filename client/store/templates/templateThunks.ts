@@ -122,7 +122,7 @@ export namespace TemplatesThunks {
         const selectedTemplate = getState().templates.selectedTemplate;
         const templateId = selectedTemplate ? selectedTemplate.id : undefined;
         fetch(
-            window.location.origin + '/api/inventory/templates/'+ templateId + 'properties/' + id,
+            window.location.origin + '/api/inventory/templates/'+ templateId + '/properties/' + id,
             {
                 method: 'GET',
                 headers: {
@@ -134,7 +134,7 @@ export namespace TemplatesThunks {
             .then(result => dispatch({ type: "LOADED_PROPERTIES_ACTION", properties: result }));
     };
 
-    export const createProperty = (Property: IProperty): AppThunkAction<IAddedPropertyAction | IUpdatePropertiesLoadingAction> => async (dispatch, getState) => {
+    export const createProperty = (property: IProperty): AppThunkAction<IAddedPropertyAction | IUpdatePropertiesLoadingAction> => async (dispatch, getState) => {
         dispatch({
             type: "UPDATE_PROPERTIES_LOADING_ACTION",
             status: true
@@ -143,9 +143,9 @@ export namespace TemplatesThunks {
         const selectedTemplate = getState().templates.selectedTemplate;
         const templateId = selectedTemplate ? selectedTemplate.id : undefined;
         fetch(
-            window.location.origin + '/api/inventory/templates/'+ templateId + 'properties',
+            window.location.origin + '/api/inventory/templates/'+ templateId + '/properties',
             {
-                body: JSON.stringify(Property),
+                body: JSON.stringify(property),
                 method: 'POST',
                 headers: {
                     'Content-Type': 'Application/json',
@@ -156,7 +156,7 @@ export namespace TemplatesThunks {
             .then(result => dispatch({ type: "ADDED_PROPERTY_ACTION", property: result }));
     };
 
-    export const updateProperty = (Property: IProperty): AppThunkAction<IUpdatedPropertyAction | IUpdatePropertiesLoadingAction> => async (dispatch, getState) => {
+    export const updateProperty = (property: IProperty): AppThunkAction<IUpdatedPropertyAction | IUpdatePropertiesLoadingAction> => async (dispatch, getState) => {
         dispatch({
             type: "UPDATE_PROPERTIES_LOADING_ACTION",
             status: true
@@ -165,9 +165,9 @@ export namespace TemplatesThunks {
         const selectedTemplate = getState().templates.selectedTemplate;
         const templateId = selectedTemplate ? selectedTemplate.id : undefined;
         fetch(
-            window.location.origin + '/api/inventory/templates/'+ templateId + 'properties',
+            window.location.origin + '/api/inventory/templates/'+ templateId + '/properties',
             {
-                body: JSON.stringify(Property),
+                body: JSON.stringify(property),
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'Application/json',
@@ -178,7 +178,7 @@ export namespace TemplatesThunks {
             .then(result => dispatch({ type: "UPDATED_PROPERTY_ACTION", property: result }));
     };
 
-    export const deleteProperty = (id: string): AppThunkAction<IDeletedPropertyAction | IUpdatePropertiesLoadingAction> => async (dispatch, getState) => {
+    export const deleteProperty = (id: number): AppThunkAction<IDeletedPropertyAction | IUpdatePropertiesLoadingAction> => async (dispatch, getState) => {
         dispatch({
             type: "UPDATE_PROPERTIES_LOADING_ACTION",
             status: true
@@ -187,7 +187,7 @@ export namespace TemplatesThunks {
         const selectedTemplate = getState().templates.selectedTemplate;
         const templateId = selectedTemplate ? selectedTemplate.id : undefined;
         fetch(
-            window.location.origin + '/api/inventory/templates/'+ templateId + 'properties/' + id,
+            window.location.origin + '/api/inventory/templates/'+ templateId + '/properties/' + id,
             {
                 method: 'DELETE',
                 headers: {
