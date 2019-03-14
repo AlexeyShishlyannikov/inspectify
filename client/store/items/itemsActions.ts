@@ -33,7 +33,7 @@ export interface ILoadedItemsAction extends Action {
 
 export interface ISelectItemAction extends Action {
     type: SELECT_ITEM_ACTION;
-    selectedItem: IItem;
+    selectedItem?: IItem;
 }
 
 export interface IAddedItemAction extends Action {

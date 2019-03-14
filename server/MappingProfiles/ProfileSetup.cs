@@ -111,11 +111,12 @@ namespace Inspectify.MappingProfiles
                 .BeforeMap((src, dest, context) => context.Items["ItemId"] = src.Id)
                 .ForMember(p => p.Template, opt => opt.Ignore())
                 .ForMember(i => i.TemplateId, opt => opt.MapFrom(src => src.Template.Id))
-                .ForMember(src => src.Values, 
+                .ForMember(src => src.Values,
                     opt => opt.MapFrom((src, dest, i, context) => GetUpdatedValues(src, dest, context))); // Childrens mapping
 
             CreateMap<ItemValue, ItemValueViewModel>();
             CreateMap<ItemValueViewModel, ItemValue>()
+                .ForMember(i => i.Value, opt => opt.MapFrom(src => src.Value))
                 .ForMember(i => i.PropertyId, opt => opt.MapFrom(src => src.Property.Id))
                 .ForMember(p => p.Property, opt => opt.Ignore())
                 .ForMember(v => v.ItemId, opt => opt.MapFrom((src, dest, destMember, context) => (string)context.Items["ItemId"]))
@@ -124,7 +125,7 @@ namespace Inspectify.MappingProfiles
 
         private List<ItemValue> GetUpdatedValues(ItemViewModel src, Item dest, ResolutionContext context)
         {
-            var valuesMap = dest.Values.ToDictionary(v => v.Id, v => v);
+            var valuesMap = dest.Values?.ToDictionary(v => v.Id, v => v);
             return src.Values.Select(value =>
             {
                 if (value.Id == null)

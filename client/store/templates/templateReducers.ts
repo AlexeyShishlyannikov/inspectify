@@ -25,7 +25,7 @@ export const templatesReducer: Reducer<TemplatesState> = (
             return new TemplatesState({
                 selectedTemplate: action.selectedTemplate,
                 templates: state.templates,
-                properties: action.selectedTemplate ? state.properties : [],
+                properties: action.selectedTemplate ? action.selectedTemplate.properties : [],
                 isLoading: false,
                 isPropertiesLoading: false,
                 errorMessage: undefined

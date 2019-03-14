@@ -36,7 +36,7 @@ class TemplateView extends React.Component<ITemplateViewProps & RouteComponentPr
             return <CircularProgress />
         }
         if (!this.props.selectedTemplate) {
-            return <Redirect to=".." />
+            return <Redirect to="../.." />
         }
         return (
             <div style={{ width: '90%', display: 'flex', flexDirection: 'column' }}>

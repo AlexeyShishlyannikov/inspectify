@@ -58,7 +58,7 @@ namespace Inspectify.BusinessLayer
             {
                 templates = templates.Where(t => t.Name.Contains(searchTerm));
             }
-            return await templates.ToListAsync();
+            return await templates.Include(t => t.Properties).ToListAsync();
         }
 
         public async Task<Template> UpdateTemplate(Template template)
@@ -86,6 +86,7 @@ namespace Inspectify.BusinessLayer
             return await dbContext.Items
                 .Include(i => i.Template)
                 .Include(i => i.Values)
+                    .ThenInclude(v => v.Property)
                 .SingleOrDefaultAsync(t => t.Id == id);
         }
 
@@ -107,7 +108,11 @@ namespace Inspectify.BusinessLayer
             {
                 items = items.Where(i => i.Name.Contains(searchTerm));
             }
-            return await items.ToListAsync();
+            return await items
+                .Include(i => i.Template)
+                .Include(i => i.Values)
+                    .ThenInclude(v => v.Property)
+                .ToListAsync();
         }
 
         public async Task<Item> UpdateItem(Item item)

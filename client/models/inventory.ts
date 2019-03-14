@@ -9,6 +9,7 @@ export interface IProperty {
     id?: number;
     name: string;
     type: PropertyType;
+    isRequired: boolean;
     sortIndex: number;
 }
 
@@ -22,7 +23,7 @@ export interface IItem {
 export interface IItemValue {
     id?: number;
     property: IProperty;
-    value: string;
+    value?: string;
 }
 
 export enum PropertyType {

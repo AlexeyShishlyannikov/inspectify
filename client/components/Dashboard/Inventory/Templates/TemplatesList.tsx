@@ -54,7 +54,7 @@ class TemplatesList extends React.Component<ITemplatesListProps & RouteProps> {
         }
         return (
             <Card style={{ marginTop: '15px' }}>
-                <CardHeader title="templates" />
+                <CardHeader title="Templates" />
                 <Content />
                 <CardActions className="templates-card-actions">
                     <Link to="/dashboard/inventory/templates/create" className="templates-new-template-link">

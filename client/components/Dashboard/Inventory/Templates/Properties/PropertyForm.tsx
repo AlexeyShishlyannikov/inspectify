@@ -30,13 +30,15 @@ interface IPropertyFormProps {
 interface IPropertyFormState {
     name: string;
     type: PropertyType;
+    isRequired: boolean;
 }
 
 class PropertyForm extends React.Component<IPropertyFormProps, IPropertyFormState> {
     componentWillMount() {
         this.setState({
             name: this.props.property ? this.props.property.name : '',
-            type: this.props.property && this.props.property.type ? this.props.property.type : PropertyType.String
+            type: this.props.property && this.props.property.type ? this.props.property.type : PropertyType.String,
+            isRequired: this.props.property ? this.props.property.isRequired : false
         });
     }
 
@@ -47,13 +49,15 @@ class PropertyForm extends React.Component<IPropertyFormProps, IPropertyFormStat
                 id: this.props.property ? this.props.property.id : undefined,
                 name: this.state.name,
                 type: this.state.type,
-                sortIndex: this.props.sortIndex
+                sortIndex: this.props.sortIndex,
+                isRequired: this.state.isRequired
             });
         } else {
             this.props.addProperty({
                 name: this.state.name,
                 type: this.state.type,
-                sortIndex: this.props.sortIndex
+                sortIndex: this.props.sortIndex,
+                isRequired: this.state.isRequired
             });
         }
         if (this.props.onClose) this.props.onClose();
