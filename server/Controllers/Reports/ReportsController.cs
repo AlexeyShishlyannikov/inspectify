@@ -7,10 +7,11 @@ using Inspectify.BusinessLayer;
 using Inspectify.Models;
 using Microsoft.AspNetCore.Mvc;
 using Inspectify.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inspectify.Controllers
 {
-    [Route("api/report")]
+    [Route("api/reports")]
     public class ReportsController : Controller
     {
         private readonly IReportsProvider reportsProvider;
@@ -23,7 +24,7 @@ namespace Inspectify.Controllers
         }
 
         [HttpPost]
-        [Route("add")]
+        [Authorize]
         public async Task<IActionResult> AddReport([FromBody] ReportViewModel reportViewModel)
         {
             var report = mapper.Map<ReportViewModel, Report>(reportViewModel);
@@ -33,7 +34,7 @@ namespace Inspectify.Controllers
         }
 
         [HttpPut]
-        [Route("update")]
+        [Authorize]
         public async Task<IActionResult> UpdateReport([FromBody] ReportViewModel reportViewModel)
         {
             var report = mapper.Map<Report>(reportViewModel);
@@ -43,16 +44,23 @@ namespace Inspectify.Controllers
         }
 
         [HttpDelete]
-        [Route("delete")]
-        public async Task<IActionResult> DeleteReport([FromQuery] string id)
+        [Route("{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteReport([FromRoute] string id)
         {
-            await reportsProvider.DeleteReport(id);
+            var report = await reportsProvider.GetReport(id);
+            if (report == null)
+            {
+                return NotFound("Report not found");
+            }
+            await reportsProvider.DeleteReport(report);
             return Ok(id);
         }
 
         [HttpGet]
-        [Route("get")]
-        public async Task<IActionResult> GetReport([FromQuery] string id)
+        [Route("{id}")]
+        [Authorize]
+        public async Task<IActionResult> GetReport([FromRoute] string id)
         {
             var report = await reportsProvider.GetReport(id);
             if (report != null)
@@ -64,11 +72,25 @@ namespace Inspectify.Controllers
         }
 
         [HttpGet]
-        [Route("getReports")]
-        public async Task<IActionResult> GetReports([FromQuery] string teamId, [FromQuery] string vehicleId, [FromQuery] DateTime? since, [FromQuery] DateTime? to)
+        [Authorize]
+        public async Task<IActionResult> GetReports(
+            [FromQuery] string teamId,
+            [FromQuery] string personId,
+            [FromQuery] string itemId,
+            [FromQuery] string formId
+        )
         {
-            var reports = await reportsProvider.GetReports(teamId, since, to, vehicleId);
-            var reportViewModelList = reports.Select(r => mapper.Map<ReportViewModel>(r)).ToList();
+            var companyId = this.User.Claims.SingleOrDefault(c => c.Type == "companyId").Value;
+            var reports = await reportsProvider.GetReports(
+                companyId: companyId,
+                teamId: teamId,
+                personId: personId,
+                itemId: itemId,
+                formId: formId,
+                from: null,
+                to: null
+            );
+            var reportViewModelList = mapper.Map<List<ReportViewModel>>(reports);
             return Ok(reportViewModelList);
         }
     }

@@ -22,20 +22,13 @@ namespace Inspectify.DAL
         public DbSet<ItemValue> ItemValues { get; set; }
         // Reports
         public DbSet<Report> Reports { get; set; }
+        public DbSet<ReportValue> ReportValues { get; set; }
 
         public InspectifyDbContext(DbContextOptions<InspectifyDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            // Report to Companies
-            builder.Entity<ReportCompany>().HasKey(vc => new { vc.ReportId, vc.CompanyId });
-            builder.Entity<ReportCompany>().HasOne(vc => vc.Company).WithMany(v => v.ReportCompanies).HasForeignKey(vc => vc.CompanyId);
-            builder.Entity<ReportCompany>().HasOne(vc => vc.Report).WithMany(v => v.ReportCompanies).HasForeignKey(vc => vc.ReportId);
-            // Report to Teams
-            builder.Entity<ReportTeam>().HasKey(vc => new { vc.ReportId, vc.TeamId });
-            builder.Entity<ReportTeam>().HasOne(vc => vc.Report).WithMany(v => v.ReportTeams).HasForeignKey(vc => vc.TeamId);
-            builder.Entity<ReportTeam>().HasOne(vc => vc.Team).WithMany(v => v.ReportTeams).HasForeignKey(vc => vc.ReportId);
         }
     }
 }

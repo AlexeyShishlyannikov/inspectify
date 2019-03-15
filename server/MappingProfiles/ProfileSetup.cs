@@ -31,8 +31,7 @@ namespace Inspectify.MappingProfiles
             CreateMap<CompanyViewModel, Company>()
                 .ForMember(model => model.ApplicationUser, opt => opt.Ignore())
                 .ForMember(model => model.ApplicationUserId, opt => opt.Ignore())
-                .ForMember(model => model.Teams, opt => opt.Ignore())
-                .ForMember(model => model.ReportCompanies, opt => opt.Ignore());
+                .ForMember(model => model.Teams, opt => opt.Ignore());
         }
 
         public void ConfigurePersonMappings()
