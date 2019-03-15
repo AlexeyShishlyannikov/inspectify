@@ -9,27 +9,30 @@ import TemplatesList from './Templates/TemplatesList';
 import { TemplatesThunks } from '../../../store/templates/templateThunks';
 import ItemList from './Items/ItemList';
 import { ItemsThunks } from '../../../store/items/itemsThunks';
+import { ISelectTemplateAction } from 'client/store/templates/templateActions';
 
 interface IInventoryProps {
     selectedTemplate?: ITemplate;
     templates: ITemplate[];
     isLoading: boolean;
     errorMessage?: string;
-    searchTemplates: (searchTerm: string) => void;
-    searchItems: (searchTerm: string) => void;
+    deselectTemplate: () => void;
+    searchTemplates: (searchTerm?: string) => void;
+    searchItems: (searchTerm?: string) => void;
 }
 
 class Inventory extends React.Component<IInventoryProps> {
     componentWillMount() {
-        this.props.searchTemplates('');
-        this.props.searchItems('');
+        this.props.deselectTemplate();
+        this.props.searchTemplates();
+        this.props.searchItems();
     }
 
     render() {
         return (
-            <div className="dashboard-Inventory">
-                <TemplatesList />
+            <div className="dashboard-inventory">
                 <ItemList />
+                <TemplatesList />
             </div>
         )
     }
@@ -46,8 +49,15 @@ const mapStateToProps = (state: ApplicationState) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        searchTemplates: (searchTerm: string) => dispatch(TemplatesThunks.searchTemplates(searchTerm)),
-        searchItems: (searchTerm: string) => dispatch(ItemsThunks.searchItems(searchTerm))
+        deselectTemplate: () => {
+            const action: ISelectTemplateAction = {
+                type: "SELECT_TEMPLATE_ACTION",
+                selectedTemplate: undefined
+            }
+            return dispatch(action);
+        },
+        searchTemplates: (searchTerm?: string) => dispatch(TemplatesThunks.searchTemplates(searchTerm)),
+        searchItems: (searchTerm?: string) => dispatch(ItemsThunks.searchItems(searchTerm))
     };
 };
 

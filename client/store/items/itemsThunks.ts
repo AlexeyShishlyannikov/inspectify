@@ -9,9 +9,10 @@ import {
     IAddedItemAction
 } from './ItemsActions';
 import { ActionsUtil } from '../actionsUtil';
+import { stringify } from 'query-string';
 
 export namespace ItemsThunks {
-    export const searchItems = (searchTerm: string): AppThunkAction<ILoadedItemsAction | IUpdateItemLoadingAction> => async (dispatch, getState) => {
+    export const searchItems = (searchTerm?: string): AppThunkAction<ILoadedItemsAction | IUpdateItemLoadingAction> => async (dispatch, getState) => {
         dispatch({
             type: "UPDATE_ITEMS_LOADING_ACTION",
             status: true
@@ -20,7 +21,10 @@ export namespace ItemsThunks {
         const selectedTemplate = getState().templates.selectedTemplate;
         const templateId = selectedTemplate ? selectedTemplate.id : undefined;
         fetch(
-            window.location.origin + '/api/inventory/items?searchTerm=' + searchTerm + '&templateId=' + templateId,
+            window.location.origin + '/api/inventory/items?' + stringify({
+                searchTerm: searchTerm,
+                templateId: templateId
+            }),
             {
                 method: 'GET',
                 headers: {

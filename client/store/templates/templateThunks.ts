@@ -16,7 +16,7 @@ import {
 } from './templateActions';
 
 export namespace TemplatesThunks {
-    export const searchTemplates = (searchTerm: string): AppThunkAction<ILoadedTemplatesAction | IUpdateTemplateLoadingAction> => async (dispatch, getState) => {
+    export const searchTemplates = (searchTerm?: string): AppThunkAction<ILoadedTemplatesAction | IUpdateTemplateLoadingAction> => async (dispatch, getState) => {
         dispatch({
             type: "UPDATE_TEMPLATES_LOADING_ACTION",
             status: true

@@ -13,7 +13,7 @@ import { ISelectTemplateAction } from '../../../../store/templates/templateActio
 import { TemplatesThunks } from '../../../../store/templates/templateThunks';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Link, RouteComponentProps, RouteProps } from 'react-router-dom';
+import { Link, RouteComponentProps, RouteProps, Redirect } from 'react-router-dom';
 
 import { IItem, IItemValue, ITemplate, IProperty, PropertyType } from '../../../../models/inventory';
 import { ApplicationState } from '../../../../store';
@@ -133,9 +133,12 @@ class ItemForm extends React.Component<IItemFormProps & RouteComponentProps & Ro
         }
     };
 
-    isButtonDisabled = () => !this.state.name || this.props.isLoading;
+    isButtonDisabled = () => !this.state.name && !this.props.selectedTemplate || this.props.isLoading;
 
     render() {
+        if (this.props.selectedItem && !this.props.isEditMode) {
+            return <Redirect to={'./edit/' + this.props.selectedItem.id} />
+        }
         return (
             <div className="Item-view-card" style={{ display: 'flex', flexDirection: 'column' }}>
                 <form className="Item-view" onSubmit={this.onItemFormSubmit}>

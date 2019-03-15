@@ -142,6 +142,9 @@ class TemplateForm extends React.Component<ITemplateFormProps & RouteComponentPr
     }
 
     render() {
+        if (!this.props.isEditMode && this.props.selectedTemplate) {
+            return <Redirect to={'./edit/' + this.props.selectedTemplate.id} />;
+        }
         return (
             <div className="template-view-card" style={{ display: 'flex', flexDirection: 'column' }}>
                 <form className="template-view" onSubmit={this.onTemplateFormSubmit}>
@@ -199,7 +202,7 @@ class TemplateForm extends React.Component<ITemplateFormProps & RouteComponentPr
                         <PropertyForm sortIndex={this.props.properties.length + 1} onClose={() => this.setState({ isAdding: false })} />
                     </div>}
                 <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }} >
-                    {!this.state.isAdding && <Button color="primary" variant='contained' onClick={this.addProperty}> Add property</Button>}
+                    {!this.state.isAdding && this.props.isEditMode && <Button color="primary" variant='contained' onClick={this.addProperty}> Add property</Button>}
                 </div>
             </div>
         );

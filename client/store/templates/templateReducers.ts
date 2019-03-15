@@ -3,6 +3,7 @@ import { Action, Reducer } from 'redux';
 import { ActionsUtil } from '../actionsUtil';
 import { TemplatesState } from './templateState';
 import { TemplateAction } from './templateActions';
+import { Redirect } from 'react-router';
 
 export const templatesReducer: Reducer<TemplatesState> = (
     state: TemplatesState = TemplatesState.initialState(),
