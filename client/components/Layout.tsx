@@ -4,10 +4,10 @@ import NavMenu from './NavMenu';
 export class Layout extends React.Component<{}, {}> {
     public render() {
         return (
-            <div style={{ backgroundColor: '#e8ebef', height: '100vh' }}>
+            <React.Fragment>
                 <NavMenu />
                 {this.props.children}
-            </div>
+            </React.Fragment>
         );
     }
 }

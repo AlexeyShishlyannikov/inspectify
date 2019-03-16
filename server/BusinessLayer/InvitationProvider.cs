@@ -21,9 +21,9 @@ namespace Inspectify.BusinessLayer
     
     public class InvitationProvider : IInvitationProvider
     {
-        private readonly LogisticsDbContext dbContext;
+        private readonly InspectifyDbContext dbContext;
 
-        public InvitationProvider(LogisticsDbContext dbContext)
+        public InvitationProvider(InspectifyDbContext dbContext)
         {
             this.dbContext = dbContext;
         }

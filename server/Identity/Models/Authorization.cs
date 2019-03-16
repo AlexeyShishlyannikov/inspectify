@@ -2,6 +2,12 @@
 
 namespace Inspectify.Models.Identity
 {
+    public class TokenObject
+    {
+        public string Token { get; set; }
+        public string RefreshToken { get; set; }    
+    }
+
     public class RegisterModel
     {
         [Required]

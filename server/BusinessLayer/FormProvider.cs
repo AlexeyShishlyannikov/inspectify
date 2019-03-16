@@ -12,16 +12,17 @@ namespace Inspectify.BusinessLayer
     {
         Task<Form> AddForm(Form form);
         Task<Form> GetForm(string id);
-        Task<List<Form>> GetForms(string companyId, string searchTerm);
+        Task<List<Form>> SearchForms(string companyId, string searchTerm);
         Task<Form> UpdateForm(Form form);
+        Task<Form> DeactivateForm(Form form);
         Task DeleteForm(Form form);
     }
 
     public class FormProvider : IFormProvider
     {
-        private readonly LogisticsDbContext dbContext;
+        private readonly InspectifyDbContext dbContext;
 
-        public FormProvider(LogisticsDbContext dbContext)
+        public FormProvider(InspectifyDbContext dbContext)
         {
             this.dbContext = dbContext;
         }
@@ -35,23 +36,36 @@ namespace Inspectify.BusinessLayer
 
         public async Task<Form> GetForm(string id)
         {
-            return await dbContext.Forms.SingleOrDefaultAsync(f => f.Id == id);
+            return await dbContext.Forms
+                .Include(f => f.Fields)
+                    .ThenInclude(f => f.Options)
+                .SingleOrDefaultAsync(f => f.Id == id);
         }
 
-        public async Task<List<Form>> GetForms(string companyId, string searchTerm)
+        public async Task<List<Form>> SearchForms(string companyId, string searchTerm)
         {
             var forms = dbContext.Forms.Where(f => f.CompanyId == companyId);
             if (!String.IsNullOrEmpty(searchTerm))
             {
                 forms = forms.Where(f => f.Name == searchTerm);
             }
-            return await forms.ToListAsync();
+            return await forms
+                .Include(f => f.Fields)
+                    .ThenInclude(f => f.Options)
+                .ToListAsync();
         }
 
         public async Task<Form> UpdateForm(Form form)
         {
             dbContext.Update(form);
             await dbContext.SaveChangesAsync();
+            return form;
+        }
+
+        public async Task<Form> DeactivateForm(Form form)
+        {
+            form.IsArchived = true;
+            form = await UpdateForm(form);
             return form;
         }
 

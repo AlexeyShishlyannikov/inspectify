@@ -15,7 +15,5 @@ namespace Inspectify.Models
         [Required]
         public string ApplicationUserId { get; set; }
         public ICollection<Team> Teams { get; set; }
-        public ICollection<VehicleCompany> VehicleCompanies { get; set; }
-        public ICollection<ReportCompany> ReportCompanies { get; set; }
     }
 }

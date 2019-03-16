@@ -14,8 +14,6 @@ namespace Inspectify.Models
         [Required]
         public string CompanyId { get; set; }
         public Company Company { get; set; }
-        public ICollection<Vehicle> Vehicles { get; set; }
-        public ICollection<ReportTeam> ReportTeams { get; set; }
         public ICollection<Person> Persons { get; set; }
     }
 }

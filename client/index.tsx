@@ -21,6 +21,7 @@ let routes = RoutesModule.routes;
 const renderApp = () => {
     // This code starts up the React app when it runs in a browser. It sets up the routing configuration
     // and injects the app into a DOM element.
+    document.body.style.backgroundColor = "#e8ebef";
     ReactDOM.render(
         <AppContainer>
             <Provider store={store}>

@@ -22,9 +22,9 @@ namespace Inspectify.BusinessLayer
 
     public class UsersProvider : IUsersProvider
     {
-        private readonly LogisticsDbContext dbContext;
+        private readonly InspectifyDbContext dbContext;
         public UsersProvider(
-            LogisticsDbContext dbContext)
+            InspectifyDbContext dbContext)
         {
             this.dbContext = dbContext;
         }

@@ -10,11 +10,12 @@ export const authReducer: Reducer<AuthenticationState> = (
     const action = incomingAction as AuthenticationAction;
     switch (action.type) {
         case 'LOADED_USER_ACTION':
-            localStorage.setItem('token', action.token);
+            localStorage.setItem('token', action.token.token);
+            localStorage.setItem('refreshToken', action.token.refreshToken);
             return new AuthenticationState({
                 isAuthenticated: true,
                 isLoading: false,
-                user: new User(action.token),
+                user: new User(action.token.token),
                 errorMessage: undefined
             });
         case 'CHANGE_IS_LOADING_ACTION':

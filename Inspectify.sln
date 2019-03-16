@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 17
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inspectify", "Inspectify\Inspectify.csproj", "{5C4C9BC7-B0CB-46B2-878B-F83D8F19CE1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inspectify", "server\Inspectify.csproj", "{5C4C9BC7-B0CB-46B2-878B-F83D8F19CE1D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

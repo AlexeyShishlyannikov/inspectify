@@ -12,16 +12,16 @@ namespace Inspectify.BusinessLayer
     {
         Task<Report> AddReport(Report report);
         Task<Report> UpdateReport(Report report);
-        Task DeleteReport(string id);
+        Task DeleteReport(Report report);
         Task<Report> GetReport(string id);
-        Task<List<Report>> GetReports(string teamId, DateTime? since, DateTime? to, string vehicleId = null);
+        Task<List<Report>> GetReports(string companyId, string teamId, string personId, string itemId, string formId, DateTime? from, DateTime? to);
     }
 
     public class ReportProvider : IReportsProvider
     {
-        private readonly LogisticsDbContext dbContext;
+        private readonly InspectifyDbContext dbContext;
 
-        public ReportProvider(LogisticsDbContext dbContext)
+        public ReportProvider(InspectifyDbContext dbContext)
         {
             this.dbContext = dbContext;
         }
@@ -33,39 +33,74 @@ namespace Inspectify.BusinessLayer
             return report;
         }
 
-        public async Task DeleteReport(string id)
-        {
-            var report = await dbContext.Reports.FindAsync(id);
-            if (report != null)
-            {
-                dbContext.Reports.Remove(report);
-                await dbContext.SaveChangesAsync();
-            }
-        }
-
         public async Task<Report> GetReport(string id)
         {
             return await dbContext.Reports
-                .Where(r => r.Id == id)
                 .Include(r => r.Form)
-                .FirstOrDefaultAsync();
+                .Include(r => r.Item)
+                .Include(r => r.Person)
+                .Include(r => r.Values)
+                .SingleOrDefaultAsync(r => r.Id == id);
         }
 
-        public async Task<List<Report>> GetReports(string teamId, DateTime? since, DateTime? to, string vehicleId = null)
+        public async Task<List<Report>> GetReports(
+            string companyId,
+            string teamId,
+            string personId,
+            string itemId,
+            string formId,
+            DateTime? from,
+            DateTime? to)
         {
-            throw new NotImplementedException();
+            var reports = dbContext.Reports
+                .Include(r => r.Person)
+                .Include(r => r.Item)
+                .Include(r => r.Form)
+                .Include(r => r.Values)
+                .AsQueryable();
+            if (from != null)
+            {
+                reports = reports.Where(t => t.DateCreated.CompareTo(from) >= 0);
+            }
+            if (to != null)
+            {
+                reports = reports.Where(t => t.DateCreated.CompareTo(to) < 0);
+            }
+            if (!String.IsNullOrEmpty(companyId))
+            {
+                reports = reports.Where(t => t.Person.CompanyId == companyId);
+            }
+            if (!String.IsNullOrEmpty(teamId))
+            {
+                reports = reports.Where(t => t.Person.TeamId == teamId);
+            }
+            if (!String.IsNullOrEmpty(personId))
+            {
+                reports = reports.Where(t => t.PersonId == personId);
+            }
+            if (!String.IsNullOrEmpty(itemId))
+            {
+                reports = reports.Where(t => t.ItemId == itemId);
+            }
+            if (!String.IsNullOrEmpty(formId))
+            {
+                reports = reports.Where(t => t.FormId == formId);
+            }
+            return await reports.ToListAsync();
         }
 
         public async Task<Report> UpdateReport(Report report)
         {
-            var dbReport = await dbContext.Reports.FirstOrDefaultAsync(r => report.Id == r.Id);
-            if (dbReport != null)
-            {
-                dbContext.Reports.Update(report);
-                await dbContext.SaveChangesAsync();
-                return report;
-            }
-            return null;
+            dbContext.Reports.Update(report);
+            await dbContext.SaveChangesAsync();
+            return report;
+        }
+
+        public async Task DeleteReport(Report report)
+        {
+
+            dbContext.Reports.Remove(report);
+            await dbContext.SaveChangesAsync();
         }
     }
 }
